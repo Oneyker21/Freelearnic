@@ -1,7 +1,7 @@
 // src/screens/LoginScreen.js
 import React, { useState, useContext } from "react";
 import { View, TextInput, Button, Text } from "react-native";
-import { loginUser } from "../services/auth.js";
+import { loginUser } from "../services/auth";
 import { AuthContext } from "../context/AuthContext";
 
 const LoginScreen = ({ navigation }) => {
@@ -11,10 +11,14 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      await loginUser(email, password);
-      // Navigate to home or profile screen
+      // Verifica si loginUser está definida antes de llamarla
+      if (typeof loginUser === 'function') {
+        await loginUser(email, password);
+      } else {
+        console.error('loginUser no está definida o no es una función');
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Error al iniciar sesión:', error);
     }
   };
 
