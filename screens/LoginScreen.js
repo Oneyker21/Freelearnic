@@ -1,12 +1,19 @@
 import React from 'react'
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button, Alert } from 'react-native'
 import { BlurView } from 'expo-blur'
-import { useNavigation } from '@react-navigation/native';
-
-//Importaciones del Auth con Firebase
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { initializeApp } from 'firebase/app'
+import { useNavigation } from '@react-navigation/native'
+import { initializeApp } from 'firebase/app'; // Asegúrate de importar esto primero
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, initializeAuth, getReactNativePersistence } from 'firebase/auth'; // Importación única
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { firebaseConfig } from '../config/firebaseConfig';
+
+// Inicializa Firebase
+const app = initializeApp(firebaseConfig); // Mueve esta línea aquí
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
+
+
 
 //URL del fondo del login
 const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg'
@@ -22,8 +29,7 @@ export default function LoginScreen() {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  const auth = getAuth();
   const navigation = useNavigation();
 
   const handleCreateAccount = () => {
