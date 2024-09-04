@@ -63,7 +63,7 @@ export default function LoginScreen() {
 
 
             <Image
-              source={require('../assets/favicon.png')}
+              source={require('../assets/icon/favicon.png')}
               style={styles.logo}
             />
 
