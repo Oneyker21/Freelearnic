@@ -33,17 +33,10 @@ export default function LoginScreen() {
   const navigation = useNavigation();
 
   const handleCreateAccount = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log('Cuenta creada!')
-        const user = userCredential.user;
-        console.log(user)
-      })
-      .catch(error => {
-        console.log(error)
-        Alert.alert(error.message)
-      })
+    // Redirige a la pantalla de registro
+    navigation.navigate('Register'); // Cambia 'RegisterScreen' por el nombre de tu pantalla de registro
   }
+  
   const handleSignIn = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
@@ -78,6 +71,7 @@ export default function LoginScreen() {
                 imagen de logo externa
                    
                    */}
+                   
 
             <Text style={styles.title}>Bienvenido</Text>
 
