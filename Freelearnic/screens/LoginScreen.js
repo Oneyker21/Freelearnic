@@ -1,6 +1,7 @@
 import React from 'react'
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button, Alert } from 'react-native'
 import { BlurView } from 'expo-blur'
+import { useNavigation } from '@react-navigation/native';
 
 //Importaciones del Auth con Firebase
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
@@ -23,6 +24,7 @@ export default function LoginScreen() {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const navigation = useNavigation();
 
   const handleCreateAccount = () => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -33,6 +35,7 @@ export default function LoginScreen() {
       })
       .catch(error => {
         console.log(error)
+        Alert.alert(error.message)
       })
   }
   const handleSignIn = () => {
@@ -41,6 +44,7 @@ export default function LoginScreen() {
         console.log('Sesión iniciada!')
         const user = userCredential.user;
         console.log(user)
+        navigation.navigate('Home');
       })
       .catch(error => {
         console.log(error)
@@ -76,7 +80,7 @@ export default function LoginScreen() {
             <TextInput style={styles.input} onChangeText={(text) => setPassword(text)} placeholder="Contraseña" secureTextEntry />
 
 
-            <TouchableOpacity nPress={handleSignIn} style={styles.buttonLogin}>
+            <TouchableOpacity onPress={handleSignIn} style={styles.buttonLogin}>
               <Text style={styles.buttonText}>Iniciar Sesión</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleCreateAccount} style={styles.buttonRegister}>
