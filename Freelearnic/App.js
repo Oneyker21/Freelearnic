@@ -1,12 +1,31 @@
 import React from "react";
-import { AuthProvider } from "./context/AuthContext";
-import AppNavigator from './navigation/AppNavigator';
+import { View, StyleSheet } from 'react-native';
+import LoginScreen from "./screens/LoginScreen";
 
 
-export default function App() {
+
+function HomeScreen() {
   return (
-    <AuthProvider>
-      <AppNavigator />
-    </AuthProvider>
-  );
+    <View style={{ flex: 1, alignItems: 'center' }}>
+      <Text>Home Screen</Text>
+    </View>
+  )
 }
+
+
+
+const App = () => {
+  return (
+    <View style={styles.container}>
+      <LoginScreen />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
+
+export default App;

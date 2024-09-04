@@ -1,44 +1,170 @@
-// src/screens/LoginScreen.js
-import React, { useState, useContext } from "react";
-import { View, TextInput, Button, Text } from "react-native";
-import { loginUser } from "../services/auth";
-import { AuthContext } from "../context/AuthContext";
+import React from 'react'
+import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button, Alert } from 'react-native'
+import { BlurView } from 'expo-blur'
 
-const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { user } = useContext(AuthContext);
+//Importaciones del Auth con Firebase
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { initializeApp } from 'firebase/app'
+import { firebaseConfig } from '../config/firebaseConfig';
 
-  const handleLogin = async () => {
-    try {
-      // Verifica si loginUser está definida antes de llamarla
-      if (typeof loginUser === 'function') {
-        await loginUser(email, password);
-      } else {
-        console.error('loginUser no está definida o no es una función');
-      }
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-    }
-  };
+//URL del fondo del login
+const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg'
+
+
+
+
+//imagen del logo 
+//const logoUrl = 'https://ejemplo.com/ruta-a-tu-logo.png'
+
+export default function LoginScreen() {
+
+  const [email, setEmail] = React.useState('')
+  const [password, setPassword] = React.useState('')
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const handleCreateAccount = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log('Cuenta creada!')
+        const user = userCredential.user;
+        console.log(user)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+  const handleSignIn = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log('Sesión iniciada!')
+        const user = userCredential.user;
+        console.log(user)
+      })
+      .catch(error => {
+        console.log(error)
+        Alert.alert(error.message)
+      })
+  }
+
+
 
   return (
-    <View>
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <Button title="Login" onPress={handleLogin} />
-      {user && <Text>Welcome, {user.email}</Text>}
-    </View>
-  );
-};
+    <View style={styles.container}>
+      <Image source={{ uri: url }} style={[styles.image, StyleSheet.absoluteFill]} />
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <BlurView intensity={90} tint="light" style={styles.blurContainer}>
+          <View style={styles.login}>
 
-export default LoginScreen;
+
+            <Image
+              source={require('../assets/favicon.png')}
+              style={styles.logo}
+            />
+
+            {/*   
+                <Image source={{uri: logoUrl}} style={styles.logo} /> 
+                imagen de logo externa
+                   
+                   */}
+
+            <Text style={styles.title}>Bienvenido</Text>
+
+
+            <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} placeholder="Usuario" />
+            <TextInput style={styles.input} onChangeText={(text) => setPassword(text)} placeholder="Contraseña" secureTextEntry />
+
+
+            <TouchableOpacity nPress={handleSignIn} style={styles.buttonLogin}>
+              <Text style={styles.buttonText}>Iniciar Sesión</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCreateAccount} style={styles.buttonRegister}>
+              <Text style={styles.buttonTextRegister}>Registrarse</Text>
+            </TouchableOpacity>
+
+
+          </View>
+        </BlurView>
+      </ScrollView>
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  scrollViewContent: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  blurContainer: {
+    width: '80%',
+    padding: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  login: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    borderRadius: 4,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 1
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  buttonLogin: {
+    width: '100%',
+    height: 40,
+    backgroundColor: '#007AFF',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonRegister: {
+    width: '100%',
+    height: 40,
+    backgroundColor: '#E6F3FF',
+    borderRadius: 5,
+    borderColor: '#007AFF',
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  buttonTextRegister: {
+    color: '#007AFF',
+    fontWeight: 'bold',
+  },
+})
