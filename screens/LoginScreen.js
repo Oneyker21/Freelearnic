@@ -36,7 +36,7 @@ export default function LoginScreen() {
 
   const handleCreateAccount = () => {
     // Redirige a la pantalla de registro
-    navigation.navigate('Register'); // Cambia 'RegisterScreen' por el nombre de tu pantalla de registro
+    navigation.navigate('Registrar Cuenta'); // Cambia 'RegisterScreen' por el nombre de tu pantalla de registro
   }
   
   const handleSignIn = () => {

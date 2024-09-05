@@ -2,10 +2,8 @@ import React from 'react';
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button, Alert } from 'react-native';
 import { BlurView } from 'expo-blur'
 import { useNavigation } from '@react-navigation/native'
-import { initializeApp } from 'firebase/app'; // Asegúrate de importar esto primero
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, initializeAuth, getReactNativePersistence } from 'firebase/auth'; // Importación única
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { firebaseConfig } from '../config/firebaseConfig';
+
 
 
 
