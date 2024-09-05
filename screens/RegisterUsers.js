@@ -27,6 +27,11 @@ const RegisterUsers = () => {
         console.log('Cuenta creada!')
         const user = userCredential.user;
         console.log(user)
+        Alert.alert('Cuenta creada!, Inicia Sesión')
+        //limpiar los campos
+        setEmail('')
+        setPassword('')
+        navigation.navigate('Login')
       })
       .catch(error => {
         console.log(error)
@@ -55,7 +60,7 @@ const RegisterUsers = () => {
                    */}
 
 
-            <Text style={styles.title}>Bienvenido</Text>
+            <Text style={styles.title}>Registrarse</Text>
 
 
             <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} placeholder="Correo Electronico" />

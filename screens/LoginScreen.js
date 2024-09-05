@@ -45,12 +45,20 @@ export default function LoginScreen() {
         console.log('Sesión iniciada!')
         const user = userCredential.user;
         console.log(user)
+        // Limpiar los campos
+        setEmail('')
+        setPassword('')
         navigation.navigate('Home');
       })
       .catch(error => {
         console.log(error)
         Alert.alert(error.message)
       })
+  }
+
+  const limpiarCampos = () => {
+    setEmail('')
+    setPassword('')
   }
 
 
@@ -75,17 +83,28 @@ export default function LoginScreen() {
                    */}
                    
 
-            <Text style={styles.title}>Bienvenido</Text>
+            <Text style={styles.title}>Iniciar Sesión</Text>
 
 
-            <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} placeholder="Correo Electronico" />
-            <TextInput style={styles.input} onChangeText={(text) => setPassword(text)} placeholder="Contraseña" secureTextEntry />
+            <TextInput 
+              style={styles.input} 
+              onChangeText={(text) => setEmail(text)} 
+              value={email}
+              placeholder="Correo Electrónico" 
+            />
+            <TextInput 
+              style={styles.input} 
+              onChangeText={(text) => setPassword(text)} 
+              value={password}
+              placeholder="Contraseña" 
+              secureTextEntry 
+            />
 
 
             <TouchableOpacity onPress={handleSignIn} style={styles.buttonLogin}>
               <Text style={styles.buttonText}>Iniciar Sesión</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleCreateAccount} style={styles.buttonRegister}>
+            <TouchableOpacity onPress={() => { handleCreateAccount(); limpiarCampos(); }} style={styles.buttonRegister}>
               <Text style={styles.buttonTextRegister}>Registrarse</Text>
             </TouchableOpacity>
 
