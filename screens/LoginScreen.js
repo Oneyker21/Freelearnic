@@ -21,6 +21,8 @@ const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg'
 
 
 
+
+
 //imagen del logo 
 //const logoUrl = 'https://ejemplo.com/ruta-a-tu-logo.png'
 
@@ -76,7 +78,7 @@ export default function LoginScreen() {
             <Text style={styles.title}>Bienvenido</Text>
 
 
-            <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} placeholder="Usuario" />
+            <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} placeholder="Correo Electronico" />
             <TextInput style={styles.input} onChangeText={(text) => setPassword(text)} placeholder="Contraseña" secureTextEntry />
 
 
@@ -86,6 +88,7 @@ export default function LoginScreen() {
             <TouchableOpacity onPress={handleCreateAccount} style={styles.buttonRegister}>
               <Text style={styles.buttonTextRegister}>Registrarse</Text>
             </TouchableOpacity>
+
 
 
           </View>
