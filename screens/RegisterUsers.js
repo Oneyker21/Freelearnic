@@ -6,6 +6,7 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Importar los iconos
 
 const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg';
 
@@ -27,7 +28,6 @@ const RegisterUsers = () => {
   const navigation = useNavigation();
 
   const pickImage = async (setImageFunction, useCamera = false) => {
-    // Solicitar permisos para acceder a la cámara
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('Permiso denegado', 'Se requieren permisos de cámara para tomar fotos.');
@@ -36,14 +36,12 @@ const RegisterUsers = () => {
 
     let result;
     if (useCamera) {
-      // Abrir la cámara
       result = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
       });
     } else {
-      // Abrir la galería
       result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -137,29 +135,38 @@ const RegisterUsers = () => {
             <TextInput style={styles.input} onChangeText={setMunicipio} value={municipio} placeholder="Municipio" />
             <TextInput style={styles.input} onChangeText={setDepartamento} value={departamento} placeholder="Departamento" />
 
-            {/* Botones para seleccionar imagen de la galería o la cámara */}
-            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront, false)}>
-              <Text style={styles.imageButtonText}>Seleccionar Foto Cédula (Frente) de la Galería</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront, true)}>
-              <Text style={styles.imageButtonText}>Tomar Foto Cédula (Frente) con Cámara</Text>
-            </TouchableOpacity>
+            {/* Botones de selección de imagen con iconos de archivo y cámara */}
+            <View style={styles.imageRow}>
+              <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront, false)}>
+                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Text style={styles.imageButtonText}>Cédula (Frente)</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => pickImage(setFotoCedulaFront, true)}>
+                <Icon name="camera" size={25} color="#007AFF" />
+              </TouchableOpacity>
+            </View>
             {fotoCedulaFront && <Image source={{ uri: fotoCedulaFront }} style={styles.previewImage} />}
-            
-            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack, false)}>
-              <Text style={styles.imageButtonText}>Seleccionar Foto Cédula (Reverso) de la Galería</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack, true)}>
-              <Text style={styles.imageButtonText}>Tomar Foto Cédula (Reverso) con Cámara</Text>
-            </TouchableOpacity>
+
+            <View style={styles.imageRow}>
+              <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack, false)}>
+                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Text style={styles.imageButtonText}>Cédula (Reverso)</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => pickImage(setFotoCedulaBack, true)}>
+                <Icon name="camera" size={25} color="#007AFF" />
+              </TouchableOpacity>
+            </View>
             {fotoCedulaBack && <Image source={{ uri: fotoCedulaBack }} style={styles.previewImage} />}
-            
-            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil, false)}>
-              <Text style={styles.imageButtonText}>Seleccionar Foto de Perfil de la Galería</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil, true)}>
-              <Text style={styles.imageButtonText}>Tomar Foto de Perfil con Cámara</Text>
-            </TouchableOpacity>
+
+            <View style={styles.imageRow}>
+              <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil, false)}>
+                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Text style={styles.imageButtonText}>Foto de Perfil</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => pickImage(setFotoPerfil, true)}>
+                <Icon name="camera" size={25} color="#007AFF" />
+              </TouchableOpacity>
+            </View>
             {fotoPerfil && <Image source={{ uri: fotoPerfil }} style={styles.previewImage} />}
 
             <TouchableOpacity onPress={registrarUsuario} style={styles.buttonRegister}>
@@ -235,23 +242,32 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   imageButton: {
-    width: '100%',
+    flex: 1,
     height: 40,
     backgroundColor: '#007AFF',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    marginRight: 5,
   },
   imageButtonText: {
     color: '#fff',
     fontWeight: 'bold',
+    marginLeft: 5,
   },
   previewImage: {
     width: 100,
     height: 100,
     marginBottom: 10,
     borderRadius: 5,
+  },
+  imageRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
   },
 });
 
