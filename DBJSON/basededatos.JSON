@@ -1,0 +1,116 @@
+{
+    "Usuario": {
+      "id_usuario_1": {
+        "nombres": "John",
+        "apellidos": "Doe",
+        "nombre_usuario": "johndoe",
+        "email": "john.doe@example.com",
+        "passwor": "hashed_password",
+        "tipo_usuario": "cliente",
+        "estado_verificacion": true,
+        "fecha_registro": "2024-09-06T10:00:00Z",
+        "num_cedula": "1234567890",
+        "foto_cedula_fron": "url_to_front_photo",
+        "foto_cedula_back": "url_to_back_photo",
+        "foto_perfil": "url_to_profile_photo",
+        "estado_usuario": "activo",
+        "fecha_suspension": null,
+        "tipo_suspension": null,
+        "municipio": "Municipio1",
+        "departamento": "Departamento1"
+      }
+    },
+    "Cliente": {
+      "id_cliente_1": {
+        "id_usuario": "id_usuario_1",
+        "reputacion_cliente": 4.5,
+        "num_proyectos_terminado": 3
+      }
+    },
+    "Freelancer": {
+      "id_freelancer_1": {
+        "id_usuario": "id_usuario_2",
+        "profesion": "Diseñador Gráfico",
+        "id_categoria": "id_categoria_1",
+        "descripcion": "Freelancer especializado en diseño gráfico",
+        "calificacion_promedio": 4.8,
+        "num_trabajos_completados": 5,
+        "estado_disponibilidad": "disponible"
+      }
+    },
+    "Categoria": {
+      "id_categoria_1": {
+        "nombre_categoria": "Diseño",
+        "descripcion_categoria": "Categoría para proyectos de diseño gráfico"
+      }
+    },
+    "Proyecto": {
+      "id_proyecto_1": {
+        "id_cliente": "id_cliente_1",
+        "id_freelancer": "id_freelancer_1",
+        "titulo": "Diseño de logo",
+        "descripcion_proyecto": "Creación de un logo profesional",
+        "estado_proyecto": "activo",
+        "fecha_inicio": "2024-09-01",
+        "fecha_fin": "2024-09-10",
+        "precio": 150.00,
+        "monto_escrow": 100.00
+      }
+    },
+    "Propuesta": {
+      "id_propuesta_1": {
+        "id_proyecto": "id_proyecto_1",
+        "id_freelancer": "id_freelancer_1",
+        "descripcion": "Propuesta para el proyecto de diseño de logo",
+        "precio_ofrecido": 140.00,
+        "fecha_propuesta": "2024-09-01T12:00:00Z",
+        "estado_propuesta": "pendiente"
+      }
+    },
+    "Escrow": {
+      "id_escrow_1": {
+        "id_proyecto": "id_proyecto_1",
+        "id_cliente": "id_cliente_1",
+        "monto": 100.00,
+        "fecha_deposito": "2024-09-02",
+        "estado_escrow": "pendiente"
+      }
+    },
+    "Transaccion": {
+      "id_transaccion_1": {
+        "id_usuario": "id_usuario_1",
+        "id_proyecto": "id_proyecto_1",
+        "monto": 150.00,
+        "fecha_transaccion": "2024-09-06",
+        "estado_transaccion": "completada",
+        "metodo_pago": "tarjeta"
+      }
+    },
+    "Calificacion": {
+      "id_calificacion_1": {
+        "id_proyecto": "id_proyecto_1",
+        "id_cliente": "id_cliente_1",
+        "id_freelancer": "id_freelancer_1",
+        "puntuacion": 5,
+        "comentario": "Excelente trabajo",
+        "fecha_calificacion": "2024-09-11"
+      }
+    },
+    "Mensaje": {
+      "id_mensaje_1": {
+        "id_usuario_emisor": "id_usuario_1",
+        "id_usuario_receptor": "id_usuario_2",
+        "contenido": "Hola, necesito más detalles sobre el proyecto.",
+        "fecha_envio": "2024-09-01T15:30:00Z"
+      }
+    },
+    "Notificacion": {
+      "id_notificacion_1": {
+        "id_usuario": "id_usuario_1",
+        "contenido_notificacion": "Tu proyecto ha sido aceptado.",
+        "fecha_notificacion": "2024-09-02T08:00:00Z",
+        "estado_notificacion": "no leida"
+      }
+    }
+  }
+  
