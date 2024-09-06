@@ -4,12 +4,20 @@ import { BlurView } from 'expo-blur'
 import { useNavigation } from '@react-navigation/native'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, initializeAuth, getReactNativePersistence } from 'firebase/auth'; // Importación única
 import { Picker } from '@react-native-picker/picker'; // Asegúrate de importar el Picker
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../config/firebaseConfig";
+
+
 
 const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg'
 
 const RegisterUsers = () => {
 
-  
+
+
+
+
+
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [profesion, setProfesion] = React.useState('') // Nueva variable de estado
@@ -19,29 +27,42 @@ const RegisterUsers = () => {
   const auth = getAuth();
   const navigation = useNavigation();
 
+
+  
+  const addCity = async () => {
+    try {
+      await setDoc(doc(db, "cities", "LA"), {
+        name: "Los Angeles",
+        state: "CA",
+        country: "USA"
+      });
+      console.log('Ciudad añadida con éxito');
+    } catch (error) {
+      console.error('Error al añadir la ciudad: ', error);
+    }
+  };
+
   const handleCreateAccount = () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log('Cuenta creada!')
+      .then(async (userCredential) => {
+        console.log('Cuenta creada!');
         const user = userCredential.user;
-        console.log(user)
-        Alert.alert('Cuenta creada!, Inicia Sesión')
-        // Aquí puedes agregar la lógica para guardar el freelancer en la base de datos
-        // Ejemplo: guardarFreelancer(user.uid, profesion, idCategoria, descripcion);
+        console.log(user);
+        Alert.alert('Cuenta creada!, Inicia Sesión');
+        await addCity(); // Llama a la función para añadir la ciudad
         // Limpiar los campos
-        setEmail('')
-        setPassword('')
-        setProfesion('') // Limpiar profesion
-        setCategoria('') // Limpiar categoria
-        setDescripcion('') // Limpiar descripcion
-        navigation.navigate('Inicio de sesión')
+        setEmail('');
+        setPassword('');
+        setProfesion(''); // Limpiar profesion
+        setCategoria(''); // Limpiar categoria
+        setDescripcion(''); // Limpiar descripcion
+        navigation.navigate('Inicio de sesión');
       })
       .catch(error => {
-        console.log(error)
-        Alert.alert(error.message)
-      })
+        console.log(error);
+        Alert.alert(error.message);
+      });
   }
-
 
   return (
     <View style={styles.container}>
@@ -80,7 +101,7 @@ const RegisterUsers = () => {
               <Picker.Item label="Profesional" value="profesional" />
             </Picker>
             <TextInput style={styles.input} onChangeText={(text) => setDescripcion(text)} placeholder="Descripción" />
-            <TouchableOpacity onPress={handleCreateAccount} style={styles.buttonRegister}>
+            <TouchableOpacity onPress={addCity } style={styles.buttonRegister}>
               <Text style={styles.buttonTextRegister}>Registrarse</Text>
             </TouchableOpacity>
 
