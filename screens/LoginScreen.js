@@ -48,7 +48,7 @@ export default function LoginScreen() {
         // Limpiar los campos
         setEmail('')
         setPassword('')
-        navigation.navigate('Home');
+        navigation.navigate('Inicio');
       })
       .catch(error => {
         console.log(error)

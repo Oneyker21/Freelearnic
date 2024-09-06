@@ -29,7 +29,7 @@ const RegisterUsers = () => {
         //limpiar los campos
         setEmail('')
         setPassword('')
-        navigation.navigate('Login')
+        navigation.navigate('Inicio de sesión')
       })
       .catch(error => {
         console.log(error)
