@@ -21,6 +21,17 @@ const HomeScreen = () => {
         >
           <Text style={styles.buttonTextRegister}>Registrarse</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buttonVendedor}
+          onPress={() => {
+            // Aquí puedes agregar la navegación a la pantalla de inicio de sesión para vendedores
+            // Por ejemplo: navigation.navigate('InicioSesionVendedor')
+            console.log('Iniciar como vendedor');
+          }}
+        >
+          <Text style={styles.buttonTextVendedor}>Iniciar como vendedor</Text>
+        </TouchableOpacity>
       </View>
       <Text style={styles.title}>Bienvenido a Freelearnic</Text>
       <Text style={styles.subtitle}>Aprende y crece con nosotros</Text>
@@ -63,6 +74,17 @@ const styles = StyleSheet.create({
   },
   buttonTextRegister: {
     color: '#007AFF',
+    fontWeight: 'bold',
+  },
+  buttonVendedor: {
+    backgroundColor: '#4CAF50', // Color verde para distinguirlo
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  buttonTextVendedor: {
+    color: 'white',
     fontWeight: 'bold',
   },
   title: {
