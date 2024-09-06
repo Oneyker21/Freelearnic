@@ -3,7 +3,9 @@ import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput,
 import { BlurView } from 'expo-blur'
 import { useNavigation } from '@react-navigation/native'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, initializeAuth, getReactNativePersistence } from 'firebase/auth'; // Importación única
-
+import { Picker } from '@react-native-picker/picker'; // Asegúrate de importar el Picker
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../config/firebaseConfig";
 
 
 
@@ -11,32 +13,56 @@ const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg'
 
 const RegisterUsers = () => {
 
-  
+
+
+
+
+
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
-
+  const [profesion, setProfesion] = React.useState('') // Nueva variable de estado
+  const [categoria, setCategoria] = React.useState(''); // Cambiar idCategoria a categoria
+  const [descripcion, setDescripcion] = React.useState('') // Nueva variable de estado
 
   const auth = getAuth();
   const navigation = useNavigation();
 
+
+  
+  const addCity = async () => {
+    try {
+      await setDoc(doc(db, "cities", "LA"), {
+        name: "Los Angeles",
+        state: "CA",
+        country: "USA"
+      });
+      console.log('Ciudad añadida con éxito');
+    } catch (error) {
+      console.error('Error al añadir la ciudad: ', error);
+    }
+  };
+
   const handleCreateAccount = () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log('Cuenta creada!')
+      .then(async (userCredential) => {
+        console.log('Cuenta creada!');
         const user = userCredential.user;
-        console.log(user)
-        Alert.alert('Cuenta creada!, Inicia Sesión')
-        //limpiar los campos
-        setEmail('')
-        setPassword('')
-        navigation.navigate('Inicio de sesión')
+        console.log(user);
+        Alert.alert('Cuenta creada!, Inicia Sesión');
+        await addCity(); // Llama a la función para añadir la ciudad
+        // Limpiar los campos
+        setEmail('');
+        setPassword('');
+        setProfesion(''); // Limpiar profesion
+        setCategoria(''); // Limpiar categoria
+        setDescripcion(''); // Limpiar descripcion
+        navigation.navigate('Inicio de sesión');
       })
       .catch(error => {
-        console.log(error)
-        Alert.alert(error.message)
-      })
+        console.log(error);
+        Alert.alert(error.message);
+      });
   }
-
 
   return (
     <View style={styles.container}>
@@ -63,9 +89,19 @@ const RegisterUsers = () => {
 
             <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} placeholder="Correo Electronico" />
             <TextInput style={styles.input} onChangeText={(text) => setPassword(text)} placeholder="Contraseña" secureTextEntry />
-
-
-            <TouchableOpacity onPress={handleCreateAccount} style={styles.buttonRegister}>
+            <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} placeholder="Profesión" />
+            <Picker
+              selectedValue={categoria}
+              onValueChange={(itemValue) => setCategoria(itemValue)}
+              style={styles.input} // Estilo similar al input
+            >
+              <Picker.Item label="Selecciona una categoría" value="" />
+              <Picker.Item label="Principiante" value="principiante" />
+              <Picker.Item label="Intermedio" value="intermedio" />
+              <Picker.Item label="Profesional" value="profesional" />
+            </Picker>
+            <TextInput style={styles.input} onChangeText={(text) => setDescripcion(text)} placeholder="Descripción" />
+            <TouchableOpacity onPress={addCity } style={styles.buttonRegister}>
               <Text style={styles.buttonTextRegister}>Registrarse</Text>
             </TouchableOpacity>
 
