@@ -48,7 +48,7 @@ export default function LoginScreen() {
         // Limpiar los campos
         setEmail('')
         setPassword('')
-        navigation.navigate('Inicio');
+        navigation.replace('HomeAuth'); // Cambiado a 'HomeAuth'
       })
       .catch(error => {
         console.log(error)
