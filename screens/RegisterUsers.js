@@ -3,7 +3,6 @@ import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput,
 import { BlurView } from 'expo-blur';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { Picker } from '@react-native-picker/picker';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
@@ -27,13 +26,31 @@ const RegisterUsers = () => {
   const auth = getAuth();
   const navigation = useNavigation();
 
-  const pickImage = async (setImageFunction) => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const pickImage = async (setImageFunction, useCamera = false) => {
+    // Solicitar permisos para acceder a la cámara
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso denegado', 'Se requieren permisos de cámara para tomar fotos.');
+      return;
+    }
+
+    let result;
+    if (useCamera) {
+      // Abrir la cámara
+      result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+    } else {
+      // Abrir la galería
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+    }
 
     if (!result.canceled) {
       setImageFunction(result.assets[0].uri);
@@ -45,11 +62,9 @@ const RegisterUsers = () => {
     const contadorDoc = await getDoc(contadorRef);
 
     if (!contadorDoc.exists()) {
-      // Si el documento no existe, lo creamos con el valor inicial
       await setDoc(contadorRef, { contador: 1 });
       return 1;
     } else {
-      // Si existe, incrementamos el contador y devolvemos el nuevo valor
       const nuevoContador = contadorDoc.data().contador + 1;
       await updateDoc(contadorRef, { contador: increment(1) });
       return nuevoContador;
@@ -81,7 +96,7 @@ const RegisterUsers = () => {
         apellidos: apellidos,
         nombre_usuario: nombreUsuario,
         email: email,
-        passwor: password, // Nota: deberías hashear la contraseña antes de guardarla
+        passwor: password,
         tipo_usuario: 'cliente',
         estado_verificacion: false,
         fecha_registro: new Date().toISOString(),
@@ -98,8 +113,6 @@ const RegisterUsers = () => {
 
       console.log('Usuario registrado con éxito');
       Alert.alert('Éxito', 'Usuario registrado correctamente');
-
-      // Limpiar los campos después de un registro exitoso
       limpiarCampos();
     } catch (error) {
       console.error('Error al registrar el usuario: ', error);
@@ -115,27 +128,40 @@ const RegisterUsers = () => {
           <View style={styles.login}>
             <Image source={require('../assets/icon/favicon.png')} style={styles.logo} />
             <Text style={styles.title}>Registrarse</Text>
-            <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" />
-            <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" />
-            <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" />
-            <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} value={email} placeholder="Correo Electrónico" />
-            <TextInput style={styles.input} onChangeText={(text) => setPassword(text)} value={password} placeholder="Contraseña" secureTextEntry />
-            <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" />
-            <TextInput style={styles.input} onChangeText={(text) => setMunicipio(text)} value={municipio} placeholder="Municipio" />
-            <TextInput style={styles.input} onChangeText={(text) => setDepartamento(text)} value={departamento} placeholder="Departamento" />
-            
-            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront)}>
-              <Text style={styles.imageButtonText}>Seleccionar Foto Cédula (Frente)</Text>
+            <TextInput style={styles.input} onChangeText={setNombres} value={nombres} placeholder="Nombres" />
+            <TextInput style={styles.input} onChangeText={setApellidos} value={apellidos} placeholder="Apellidos" />
+            <TextInput style={styles.input} onChangeText={setNombreUsuario} value={nombreUsuario} placeholder="Nombre de usuario" />
+            <TextInput style={styles.input} onChangeText={setEmail} value={email} placeholder="Correo Electrónico" />
+            <TextInput style={styles.input} onChangeText={setPassword} value={password} placeholder="Contraseña" secureTextEntry />
+            <TextInput style={styles.input} onChangeText={setNumCedula} value={numCedula} placeholder="Número de Cédula" />
+            <TextInput style={styles.input} onChangeText={setMunicipio} value={municipio} placeholder="Municipio" />
+            <TextInput style={styles.input} onChangeText={setDepartamento} value={departamento} placeholder="Departamento" />
+
+            {/* Botones para seleccionar imagen de la galería o la cámara */}
+            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront, false)}>
+              <Text style={styles.imageButtonText}>Seleccionar Foto Cédula (Frente) de la Galería</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront, true)}>
+              <Text style={styles.imageButtonText}>Tomar Foto Cédula (Frente) con Cámara</Text>
             </TouchableOpacity>
             {fotoCedulaFront && <Image source={{ uri: fotoCedulaFront }} style={styles.previewImage} />}
-            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack)}>
-              <Text style={styles.imageButtonText}>Seleccionar Foto Cédula (Reverso)</Text>
+            
+            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack, false)}>
+              <Text style={styles.imageButtonText}>Seleccionar Foto Cédula (Reverso) de la Galería</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack, true)}>
+              <Text style={styles.imageButtonText}>Tomar Foto Cédula (Reverso) con Cámara</Text>
             </TouchableOpacity>
             {fotoCedulaBack && <Image source={{ uri: fotoCedulaBack }} style={styles.previewImage} />}
-            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil)}>
-              <Text style={styles.imageButtonText}>Seleccionar Foto de Perfil</Text>
+            
+            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil, false)}>
+              <Text style={styles.imageButtonText}>Seleccionar Foto de Perfil de la Galería</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil, true)}>
+              <Text style={styles.imageButtonText}>Tomar Foto de Perfil con Cámara</Text>
             </TouchableOpacity>
             {fotoPerfil && <Image source={{ uri: fotoPerfil }} style={styles.previewImage} />}
+
             <TouchableOpacity onPress={registrarUsuario} style={styles.buttonRegister}>
               <Text style={styles.buttonTextRegister}>Registrarse</Text>
             </TouchableOpacity>
@@ -207,13 +233,6 @@ const styles = StyleSheet.create({
   buttonTextRegister: {
     color: '#007AFF',
     fontWeight: 'bold',
-  },
-  picker: {
-    width: '100%',
-    height: 40,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderRadius: 5,
-    marginBottom: 10,
   },
   imageButton: {
     width: '100%',
