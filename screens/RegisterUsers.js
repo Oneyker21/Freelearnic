@@ -4,7 +4,7 @@ import { BlurView } from 'expo-blur'
 import { useNavigation } from '@react-navigation/native'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, initializeAuth, getReactNativePersistence } from 'firebase/auth'; // Importación única
 import { Picker } from '@react-native-picker/picker'; // Asegúrate de importar el Picker
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, increment } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 
 
@@ -29,40 +29,60 @@ const RegisterUsers = () => {
 
 
   
-  const addCity = async () => {
-    try {
-      await setDoc(doc(db, "cities", "LA"), {
-        name: "Los Angeles",
-        state: "CA",
-        country: "USA"
-      });
-      console.log('Ciudad añadida con éxito');
-    } catch (error) {
-      console.error('Error al añadir la ciudad: ', error);
+  const obtenerSiguienteId = async () => {
+    const contadorRef = doc(db, "contadores", "usuarios");
+    const contadorDoc = await getDoc(contadorRef);
+
+    if (!contadorDoc.exists()) {
+      // Si el documento no existe, lo creamos con el valor inicial
+      await setDoc(contadorRef, { contador: 1 });
+      return 1;
+    } else {
+      // Si existe, incrementamos el contador y devolvemos el nuevo valor
+      const nuevoContador = contadorDoc.data().contador + 1;
+      await updateDoc(contadorRef, { contador: increment(1) });
+      return nuevoContador;
     }
   };
 
-  const handleCreateAccount = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        console.log('Cuenta creada!');
-        const user = userCredential.user;
-        console.log(user);
-        Alert.alert('Cuenta creada!, Inicia Sesión');
-        await addCity(); // Llama a la función para añadir la ciudad
-        // Limpiar los campos
-        setEmail('');
-        setPassword('');
-        setProfesion(''); // Limpiar profesion
-        setCategoria(''); // Limpiar categoria
-        setDescripcion(''); // Limpiar descripcion
-        navigation.navigate('Inicio de sesión');
-      })
-      .catch(error => {
-        console.log(error);
-        Alert.alert(error.message);
+  const registrarUsuario = async () => {
+    try {
+      const idUsuario = await obtenerSiguienteId();
+
+      await setDoc(doc(db, "Usuario", `id_usuario_${idUsuario}`), {
+        id: idUsuario,
+        nombres: "John", // Deberías reemplazar esto con el valor del input
+        apellidos: "Doe", // Deberías reemplazar esto con el valor del input
+        nombre_usuario: "johndoe", // Deberías reemplazar esto con el valor del input
+        email: email,
+        passwor: password, // Nota: deberías hashear la contraseña antes de guardarla
+        tipo_usuario: "cliente",
+        estado_verificacion: false,
+        fecha_registro: new Date().toISOString(),
+        num_cedula: "", // Deberías reemplazar esto con el valor del input
+        foto_cedula_fron: "",
+        foto_cedula_back: "",
+        foto_perfil: "",
+        estado_usuario: "activo",
+        fecha_suspension: null,
+        tipo_suspension: null,
+        municipio: "", // Deberías reemplazar esto con el valor del input
+        departamento: "", // Deberías reemplazar esto con el valor del input
+        profesion: profesion,
+        categoria: categoria,
+        descripcion: descripcion
       });
-  }
+
+      console.log('Usuario registrado con éxito');
+      Alert.alert('Éxito', 'Usuario registrado correctamente');
+      // Aquí podrías navegar a otra pantalla o limpiar el formulario
+    } catch (error) {
+      console.error('Error al registrar el usuario: ', error);
+      Alert.alert('Error', 'No se pudo registrar el usuario');
+    }
+  };
+
+
 
   return (
     <View style={styles.container}>
@@ -101,7 +121,7 @@ const RegisterUsers = () => {
               <Picker.Item label="Profesional" value="profesional" />
             </Picker>
             <TextInput style={styles.input} onChangeText={(text) => setDescripcion(text)} placeholder="Descripción" />
-            <TouchableOpacity onPress={addCity } style={styles.buttonRegister}>
+            <TouchableOpacity onPress={registrarUsuario} style={styles.buttonRegister}>
               <Text style={styles.buttonTextRegister}>Registrarse</Text>
             </TouchableOpacity>
 
