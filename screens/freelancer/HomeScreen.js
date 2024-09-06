@@ -24,11 +24,7 @@ const HomeScreen = () => {
 
         <TouchableOpacity
           style={styles.buttonVendedor}
-          onPress={() => {
-            // Aquí puedes agregar la navegación a la pantalla de inicio de sesión para vendedores
-            // Por ejemplo: navigation.navigate('InicioSesionVendedor')
-            console.log('Iniciar como vendedor');
-          }}
+          onPress={() => navigation.navigate('Registrar Freelancer')}
         >
           <Text style={styles.buttonTextVendedor}>Iniciar como vendedor</Text>
         </TouchableOpacity>
