@@ -6,6 +6,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, in
 import { Picker } from '@react-native-picker/picker'; // Asegúrate de importar el Picker
 import { doc, setDoc, getDoc, updateDoc, increment } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
+import * as ImagePicker from 'expo-image-picker';
 
 
 
@@ -20,13 +21,32 @@ const RegisterUsers = () => {
 
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const [profesion, setProfesion] = React.useState('') // Nueva variable de estado
-  const [categoria, setCategoria] = React.useState(''); // Cambiar idCategoria a categoria
-  const [descripcion, setDescripcion] = React.useState('') // Nueva variable de estado
+  const [nombres, setNombres] = React.useState('')
+  const [apellidos, setApellidos] = React.useState('')
+  const [nombreUsuario, setNombreUsuario] = React.useState('')
+  const [numCedula, setNumCedula] = React.useState('')
+  const [municipio, setMunicipio] = React.useState('')
+  const [departamento, setDepartamento] = React.useState('')
+  const [tipoUsuario, setTipoUsuario] = React.useState('')
+  const [fotoCedulaFront, setFotoCedulaFront] = React.useState(null);
+  const [fotoCedulaBack, setFotoCedulaBack] = React.useState(null);
+  const [fotoPerfil, setFotoPerfil] = React.useState(null);
 
   const auth = getAuth();
   const navigation = useNavigation();
 
+  const pickImage = async (setImageFunction) => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageFunction(result.assets[0].uri);
+    }
+  };
 
   
   const obtenerSiguienteId = async () => {
@@ -45,37 +65,52 @@ const RegisterUsers = () => {
     }
   };
 
+  const limpiarCampos = () => {
+    // Limpiamos todos los campos de texto
+    setEmail('');
+    setPassword('');
+    setNombres('');
+    setApellidos('');
+    setNombreUsuario('');
+    setNumCedula('');
+    setMunicipio('');
+    setDepartamento('');
+    setTipoUsuario('');
+    
+    // Limpiamos las imágenes
+    setFotoCedulaFront(null);
+    setFotoCedulaBack(null);
+    setFotoPerfil(null);
+  };
+
   const registrarUsuario = async () => {
     try {
       const idUsuario = await obtenerSiguienteId();
 
       await setDoc(doc(db, "Usuario", `id_usuario_${idUsuario}`), {
         id: idUsuario,
-        nombres: "John", // Deberías reemplazar esto con el valor del input
-        apellidos: "Doe", // Deberías reemplazar esto con el valor del input
-        nombre_usuario: "johndoe", // Deberías reemplazar esto con el valor del input
+        nombres: nombres,
+        apellidos: apellidos,
+        nombre_usuario: nombreUsuario,
         email: email,
         passwor: password, // Nota: deberías hashear la contraseña antes de guardarla
-        tipo_usuario: "cliente",
+        tipo_usuario: tipoUsuario,
         estado_verificacion: false,
         fecha_registro: new Date().toISOString(),
-        num_cedula: "", // Deberías reemplazar esto con el valor del input
-        foto_cedula_fron: "",
-        foto_cedula_back: "",
-        foto_perfil: "",
+        num_cedula: numCedula,
+        foto_cedula_fron: fotoCedulaFront,
+        foto_cedula_back: fotoCedulaBack,
+        foto_perfil: fotoPerfil,
         estado_usuario: "activo",
         fecha_suspension: null,
         tipo_suspension: null,
-        municipio: "", // Deberías reemplazar esto con el valor del input
-        departamento: "", // Deberías reemplazar esto con el valor del input
-        profesion: profesion,
-        categoria: categoria,
-        descripcion: descripcion
+        municipio: municipio,
+        departamento: departamento,
       });
-
+    
       console.log('Usuario registrado con éxito');
       Alert.alert('Éxito', 'Usuario registrado correctamente');
-      // Aquí podrías navegar a otra pantalla o limpiar el formulario
+      limpiarCampos(); // Llamamos a la función para limpiar todos los campos
     } catch (error) {
       console.error('Error al registrar el usuario: ', error);
       Alert.alert('Error', 'No se pudo registrar el usuario');
@@ -107,21 +142,38 @@ const RegisterUsers = () => {
             <Text style={styles.title}>Registrarse</Text>
 
 
-            <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} placeholder="Correo Electronico" />
+            <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} placeholder="Nombres" />
+            <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} placeholder="Apellidos" />
+            <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} placeholder="Nombre de usuario" />
+            <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} placeholder="Correo Electrónico" />
             <TextInput style={styles.input} onChangeText={(text) => setPassword(text)} placeholder="Contraseña" secureTextEntry />
-            <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} placeholder="Profesión" />
+            <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} placeholder="Número de Cédula" />
+            <TextInput style={styles.input} onChangeText={(text) => setMunicipio(text)} placeholder="Municipio" />
+            <TextInput style={styles.input} onChangeText={(text) => setDepartamento(text)} placeholder="Departamento" />
             <Picker
-              selectedValue={categoria}
-              onValueChange={(itemValue) => setCategoria(itemValue)}
-              style={styles.input} // Estilo similar al input
+              selectedValue={tipoUsuario}
+              style={styles.picker}
+              onValueChange={(itemValue) => setTipoUsuario(itemValue)}
             >
-              <Picker.Item label="Selecciona una categoría" value="" />
-              <Picker.Item label="Principiante" value="principiante" />
-              <Picker.Item label="Intermedio" value="intermedio" />
-              <Picker.Item label="Profesional" value="profesional" />
+              <Picker.Item label="Cliente" value="cliente" />
+              <Picker.Item label="Freelancer" value="freelancer" />
             </Picker>
-            <TextInput style={styles.input} onChangeText={(text) => setDescripcion(text)} placeholder="Descripción" />
-            <TouchableOpacity onPress={registrarUsuario} style={styles.buttonRegister}>
+            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront)}>
+              <Text style={styles.imageButtonText}>Seleccionar Foto Cédula (Frente)</Text>
+            </TouchableOpacity>
+            {fotoCedulaFront && <Image source={{ uri: fotoCedulaFront }} style={styles.previewImage} />}
+            
+            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack)}>
+              <Text style={styles.imageButtonText}>Seleccionar Foto Cédula (Reverso)</Text>
+            </TouchableOpacity>
+            {fotoCedulaBack && <Image source={{ uri: fotoCedulaBack }} style={styles.previewImage} />}
+            
+            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil)}>
+              <Text style={styles.imageButtonText}>Seleccionar Foto de Perfil</Text>
+            </TouchableOpacity>
+            {fotoPerfil && <Image source={{ uri: fotoPerfil }} style={styles.previewImage} />}
+            
+            <TouchableOpacity onPress={() => {registrarUsuario();  limpiarCampos();}} style={styles.buttonRegister}>
               <Text style={styles.buttonTextRegister}>Registrarse</Text>
             </TouchableOpacity>
 
@@ -144,11 +196,10 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   scrollViewContent: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 20,
   },
   blurContainer: {
     width: '80%',
@@ -209,6 +260,32 @@ const styles = StyleSheet.create({
   buttonTextRegister: {
     color: '#007AFF',
     fontWeight: 'bold',
+  },
+  picker: {
+    width: '100%',
+    height: 40,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  imageButton: {
+    width: '100%',
+    height: 40,
+    backgroundColor: '#007AFF',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  imageButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  previewImage: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
+    borderRadius: 5,
   },
 });
 
