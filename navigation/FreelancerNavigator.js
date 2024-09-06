@@ -14,6 +14,7 @@ export const AppNavigation = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="RegisterUsers" component={RegisterUsers} />
+        <Stack.Screen name="Inicio" component={HomeScreenSb} />
       </Stack.Navigator>
     </NavigationContainer>
   );
