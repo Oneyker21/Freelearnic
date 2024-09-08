@@ -6,6 +6,7 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Importar los iconos
 
 const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg';
 
@@ -17,12 +18,67 @@ const RegisterFreelancer = () => {
   const [nombreUsuario, setNombreUsuario] = React.useState('');
   const [numCedula, setNumCedula] = React.useState('');
   const [profesion, setProfesion] = React.useState('');
+  const [fotoCedulaFront, setFotoCedulaFront] = React.useState(null);
+  const [fotoCedulaBack, setFotoCedulaBack] = React.useState(null);
   const [fotoPerfil, setFotoPerfil] = React.useState(null);
 
   const auth = getAuth();
   const navigation = useNavigation();
 
-  // ... funciones auxiliares (pickImage, obtenerSiguienteId, limpiarCampos) ...
+  const pickImage = async (setImageFunction, useCamera = false) => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso denegado', 'Se requieren permisos de cámara para tomar fotos.');
+      return;
+    }
+
+    let result;
+    if (useCamera) {
+      result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+    } else {
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+    }
+
+    if (!result.canceled) {
+      setImageFunction(result.assets[0].uri);
+    }
+  };
+
+  const obtenerSiguienteId = async () => {
+    const contadorRef = doc(db, 'contadores', 'freelancers');
+    const contadorDoc = await getDoc(contadorRef);
+
+    if (!contadorDoc.exists()) {
+      await setDoc(contadorRef, { contador: 1 });
+      return 1;
+    } else {
+      const nuevoContador = contadorDoc.data().contador + 1;
+      await updateDoc(contadorRef, { contador: increment(1) });
+      return nuevoContador;
+    }
+  };
+
+  const limpiarCampos = () => {
+    setEmail('');
+    setPassword('');
+    setNombres('');
+    setApellidos('');
+    setNombreUsuario('');
+    setNumCedula('');
+    setProfesion('');
+    setFotoCedulaFront(null);
+    setFotoCedulaBack(null);
+    setFotoPerfil(null);
+  };
 
   const registrarFreelancer = async () => {
     try {
@@ -39,6 +95,8 @@ const RegisterFreelancer = () => {
         estado_verificacion: false,
         fecha_registro: new Date().toISOString(),
         num_cedula: numCedula,
+        foto_cedula_front: fotoCedulaFront,
+        foto_cedula_back: fotoCedulaBack,
         foto_perfil: fotoPerfil,
         estado_usuario: 'activo',
         profesion: profesion,
@@ -70,10 +128,40 @@ const RegisterFreelancer = () => {
             <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" />
             <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" />
             
-            <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil)}>
-              <Text style={styles.imageButtonText}>Seleccionar Foto de Perfil</Text>
-            </TouchableOpacity>
+            {/* Botones de selección de imagen con iconos de archivo y cámara */}
+            <View style={styles.imageRow}>
+              <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront, false)}>
+                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Text style={styles.imageButtonText}>Cédula (Frente)</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => pickImage(setFotoCedulaFront, true)}>
+                <Icon name="camera" size={25} color="#007AFF" />
+              </TouchableOpacity>
+            </View>
+            {fotoCedulaFront && <Image source={{ uri: fotoCedulaFront }} style={styles.previewImage} />}
+
+            <View style={styles.imageRow}>
+              <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack, false)}>
+                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Text style={styles.imageButtonText}>Cédula (Reverso)</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => pickImage(setFotoCedulaBack, true)}>
+                <Icon name="camera" size={25} color="#007AFF" />
+              </TouchableOpacity>
+            </View>
+            {fotoCedulaBack && <Image source={{ uri: fotoCedulaBack }} style={styles.previewImage} />}
+
+            <View style={styles.imageRow}>
+              <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil, false)}>
+                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Text style={styles.imageButtonText}>Foto de Perfil</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => pickImage(setFotoPerfil, true)}>
+                <Icon name="camera" size={25} color="#007AFF" />
+              </TouchableOpacity>
+            </View>
             {fotoPerfil && <Image source={{ uri: fotoPerfil }} style={styles.previewImage} />}
+
             <TouchableOpacity onPress={registrarFreelancer} style={styles.buttonRegister}>
               <Text style={styles.buttonTextRegister}>Registrarse como Freelancer</Text>
             </TouchableOpacity>
@@ -146,18 +234,27 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontWeight: 'bold',
   },
+  imageRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   imageButton: {
-    width: '100%',
+    flex: 1,
     height: 40,
     backgroundColor: '#007AFF',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    marginRight: 5,
   },
   imageButtonText: {
     color: '#fff',
     fontWeight: 'bold',
+    marginLeft: 5,
   },
   previewImage: {
     width: 100,
