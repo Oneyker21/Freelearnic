@@ -61,11 +61,11 @@ const RegisterUsers = () => {
 
     if (!contadorDoc.exists()) {
       await setDoc(contadorRef, { contador: 1 });
-      return 1;
+      return 'id_usuario_1';
     } else {
       const nuevoContador = contadorDoc.data().contador + 1;
       await updateDoc(contadorRef, { contador: increment(1) });
-      return nuevoContador;
+      return `id_usuario_${nuevoContador}`;
     }
   };
 
@@ -86,20 +86,25 @@ const RegisterUsers = () => {
 
   const registrarUsuario = async () => {
     try {
+      // Primero, crear el usuario en Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Obtener el siguiente ID en el formato deseado
       const idUsuario = await obtenerSiguienteId();
 
-      await setDoc(doc(db, 'Usuario', `id_usuario_${idUsuario}`), {
-        id: idUsuario,
+      // Guardar los datos adicionales en Firestore usando el nuevo ID
+      await setDoc(doc(db, 'Usuario', idUsuario), {
+        uid: user.uid, // Guardamos el UID de Authentication para referencia
         nombres: nombres,
         apellidos: apellidos,
         nombre_usuario: nombreUsuario,
         email: email,
-        passwor: password,
         tipo_usuario: 'cliente',
         estado_verificacion: false,
         fecha_registro: new Date().toISOString(),
         num_cedula: numCedula,
-        foto_cedula_fron: fotoCedulaFront,
+        foto_cedula_front: fotoCedulaFront,
         foto_cedula_back: fotoCedulaBack,
         foto_perfil: fotoPerfil,
         estado_usuario: 'activo',
@@ -114,7 +119,7 @@ const RegisterUsers = () => {
       limpiarCampos();
     } catch (error) {
       console.error('Error al registrar el usuario: ', error);
-      Alert.alert('Error', 'No se pudo registrar el usuario');
+      Alert.alert('Error', 'No se pudo registrar el usuario: ' + error.message);
     }
   };
 
