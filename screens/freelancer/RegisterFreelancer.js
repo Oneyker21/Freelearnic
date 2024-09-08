@@ -128,10 +128,10 @@ const RegisterFreelancer = () => {
             <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" />
             <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" />
             
-            {/* Botones de selección de imagen con iconos de archivo y cámara */}
+            {/* Botones de selección de imagen con iconos */}
             <View style={styles.imageRow}>
               <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront, false)}>
-                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Icon name="id-card-o" size={20} color="#fff" style={styles.icon} />
                 <Text style={styles.imageButtonText}>Cédula (Frente)</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => pickImage(setFotoCedulaFront, true)}>
@@ -142,7 +142,7 @@ const RegisterFreelancer = () => {
 
             <View style={styles.imageRow}>
               <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack, false)}>
-                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Icon name="id-card-o" size={20} color="#fff" style={styles.icon} />
                 <Text style={styles.imageButtonText}>Cédula (Reverso)</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => pickImage(setFotoCedulaBack, true)}>
@@ -153,7 +153,7 @@ const RegisterFreelancer = () => {
 
             <View style={styles.imageRow}>
               <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil, false)}>
-                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Icon name="user-circle-o" size={20} color="#fff" style={styles.icon} />
                 <Text style={styles.imageButtonText}>Foto de Perfil</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => pickImage(setFotoPerfil, true)}>
@@ -238,6 +238,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    width: '100%',
   },
   imageButton: {
     flex: 1,
