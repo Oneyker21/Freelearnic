@@ -16,10 +16,7 @@ const RegisterFreelancer = () => {
   const [apellidos, setApellidos] = React.useState('');
   const [nombreUsuario, setNombreUsuario] = React.useState('');
   const [numCedula, setNumCedula] = React.useState('');
-  const [municipio, setMunicipio] = React.useState('');
-  const [departamento, setDepartamento] = React.useState('');
-  const [habilidades, setHabilidades] = React.useState('');
-  const [experiencia, setExperiencia] = React.useState('');
+  const [profesion, setProfesion] = React.useState('');
   const [fotoPerfil, setFotoPerfil] = React.useState(null);
 
   const auth = getAuth();
@@ -44,10 +41,7 @@ const RegisterFreelancer = () => {
         num_cedula: numCedula,
         foto_perfil: fotoPerfil,
         estado_usuario: 'activo',
-        municipio: municipio,
-        departamento: departamento,
-        habilidades: habilidades,
-        experiencia: experiencia,
+        profesion: profesion,
       });
 
       console.log('Freelancer registrado con éxito');
@@ -74,10 +68,7 @@ const RegisterFreelancer = () => {
             <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} value={email} placeholder="Correo Electrónico" />
             <TextInput style={styles.input} onChangeText={(text) => setPassword(text)} value={password} placeholder="Contraseña" secureTextEntry />
             <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" />
-            <TextInput style={styles.input} onChangeText={(text) => setMunicipio(text)} value={municipio} placeholder="Municipio" />
-            <TextInput style={styles.input} onChangeText={(text) => setDepartamento(text)} value={departamento} placeholder="Departamento" />
-            <TextInput style={styles.input} onChangeText={(text) => setHabilidades(text)} value={habilidades} placeholder="Habilidades" />
-            <TextInput style={styles.input} onChangeText={(text) => setExperiencia(text)} value={experiencia} placeholder="Experiencia" />
+            <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" />
             
             <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil)}>
               <Text style={styles.imageButtonText}>Seleccionar Foto de Perfil</Text>
