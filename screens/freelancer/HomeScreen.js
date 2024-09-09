@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import ProjectList from '../ProjectList'; // Asegúrate de que la ruta sea correcta
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -29,8 +30,10 @@ const HomeScreen = () => {
           <Text style={styles.buttonTextVendedor}>Iniciar como vendedor</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.title}>Bienvenido a Freelearnic</Text>
-      <Text style={styles.subtitle}>Aprende y crece con nosotros</Text>
+      {/* Aquí se agrega el componente ProjectList para mostrar los proyectos */}
+      <View style={styles.projectListContainer}>
+        <ProjectList />
+      </View>
     </View>
   );
 };
@@ -91,6 +94,10 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#666',
+  },
+  projectListContainer: {
+    marginTop: 20, // Ajusta el margen superior según sea necesario
+    width: '100%', // Asegúrate de que ocupe el ancho completo
   },
 });
 
