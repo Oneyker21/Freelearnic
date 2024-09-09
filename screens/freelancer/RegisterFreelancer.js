@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useNavigation } from '@react-navigation/native';
@@ -6,7 +6,7 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Importar los iconos
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg';
 
@@ -21,6 +21,7 @@ const RegisterFreelancer = () => {
   const [fotoCedulaFront, setFotoCedulaFront] = React.useState(null);
   const [fotoCedulaBack, setFotoCedulaBack] = React.useState(null);
   const [fotoPerfil, setFotoPerfil] = React.useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const auth = getAuth();
   const navigation = useNavigation();
@@ -90,7 +91,7 @@ const RegisterFreelancer = () => {
         apellidos: apellidos,
         nombre_usuario: nombreUsuario,
         email: email,
-        password: password, // Nota: deberías hashear la contraseña antes de guardarla
+        password: password,
         tipo_usuario: 'freelancer',
         estado_verificacion: false,
         fecha_registro: new Date().toISOString(),
@@ -124,7 +125,18 @@ const RegisterFreelancer = () => {
             <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" />
             <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" />
             <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} value={email} placeholder="Correo Electrónico" />
-            <TextInput style={styles.input} onChangeText={(text) => setPassword(text)} value={password} placeholder="Contraseña" secureTextEntry />
+            <View style={styles.passwordContainer}>
+              <TextInput 
+                style={styles.passwordInput} 
+                onChangeText={(text) => setPassword(text)} 
+                value={password} 
+                placeholder="Contraseña" 
+                secureTextEntry={!showPassword} 
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#007AFF" />
+              </TouchableOpacity>
+            </View>
             <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" />
             <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" />
             
@@ -219,6 +231,23 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    height: 40,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    height: '100%',
+    paddingHorizontal: 10,
+  },
+  eyeIcon: {
+    padding: 10,
   },
   buttonRegister: {
     width: '100%',

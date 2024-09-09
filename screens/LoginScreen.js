@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button, Alert } from 'react-native'
 import { BlurView } from 'expo-blur'
 import { useNavigation } from '@react-navigation/native'
@@ -6,6 +6,7 @@ import { initializeApp } from 'firebase/app'; // Asegúrate de importar esto pri
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, initializeAuth, getReactNativePersistence } from 'firebase/auth'; // Importación única
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { firebaseConfig } from '../config/firebaseConfig';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Importar los iconos
 
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig); // Mueve esta línea aquí
@@ -13,23 +14,16 @@ const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
 
-
-
 //URL del fondo del login
 const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg'
-
-
-
-
-
 
 //imagen del logo 
 //const logoUrl = 'https://ejemplo.com/ruta-a-tu-logo.png'
 
 export default function LoginScreen() {
-
-  const [email, setEmail] = React.useState('')
-  const [password, setPassword] = React.useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   const auth = getAuth();
   const navigation = useNavigation();
@@ -61,16 +55,12 @@ export default function LoginScreen() {
     setPassword('')
   }
 
-
-
   return (
     <View style={styles.container}>
       <Image source={{ uri: url }} style={[styles.image, StyleSheet.absoluteFill]} />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <BlurView intensity={90} tint="light" style={styles.blurContainer}>
           <View style={styles.login}>
-
-
             <Image
               source={require('../assets/icon/favicon.png')}
               style={styles.logo}
@@ -85,21 +75,24 @@ export default function LoginScreen() {
 
             <Text style={styles.title}>Iniciar Sesión</Text>
 
-
             <TextInput 
               style={styles.input} 
               onChangeText={(text) => setEmail(text)} 
               value={email}
               placeholder="Correo Electrónico" 
             />
-            <TextInput 
-              style={styles.input} 
-              onChangeText={(text) => setPassword(text)} 
-              value={password}
-              placeholder="Contraseña" 
-              secureTextEntry 
-            />
-
+            <View style={styles.passwordContainer}>
+              <TextInput 
+                style={styles.passwordInput} 
+                onChangeText={(text) => setPassword(text)} 
+                value={password}
+                placeholder="Contraseña" 
+                secureTextEntry={!showPassword} 
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#007AFF" />
+              </TouchableOpacity>
+            </View>
 
             <TouchableOpacity onPress={handleSignIn} style={styles.buttonLogin}>
               <Text style={styles.buttonText}>Iniciar Sesión</Text>
@@ -107,9 +100,6 @@ export default function LoginScreen() {
             <TouchableOpacity onPress={() => { handleCreateAccount(); limpiarCampos(); }} style={styles.buttonRegister}>
               <Text style={styles.buttonTextRegister}>Registrarse</Text>
             </TouchableOpacity>
-
-
-
           </View>
         </BlurView>
       </ScrollView>
@@ -165,6 +155,23 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    height: 40,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    height: '100%',
+    paddingHorizontal: 10,
+  },
+  eyeIcon: {
+    padding: 10,
   },
   buttonLogin: {
     width: '100%',

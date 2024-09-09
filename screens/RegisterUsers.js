@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useNavigation } from '@react-navigation/native';
@@ -23,6 +23,7 @@ const RegisterUsers = () => {
   const [fotoCedulaFront, setFotoCedulaFront] = React.useState(null);
   const [fotoCedulaBack, setFotoCedulaBack] = React.useState(null);
   const [fotoPerfil, setFotoPerfil] = React.useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const auth = getAuth();
   const navigation = useNavigation();
@@ -148,7 +149,18 @@ const RegisterUsers = () => {
             <TextInput style={styles.input} onChangeText={setApellidos} value={apellidos} placeholder="Apellidos" />
             <TextInput style={styles.input} onChangeText={setNombreUsuario} value={nombreUsuario} placeholder="Nombre de usuario" />
             <TextInput style={styles.input} onChangeText={setEmail} value={email} placeholder="Correo Electrónico" />
-            <TextInput style={styles.input} onChangeText={setPassword} value={password} placeholder="Contraseña" secureTextEntry />
+            <View style={styles.passwordContainer}>
+              <TextInput 
+                style={styles.passwordInput} 
+                onChangeText={setPassword} 
+                value={password} 
+                placeholder="Contraseña" 
+                secureTextEntry={!showPassword} 
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#007AFF" />
+              </TouchableOpacity>
+            </View>
             <TextInput style={styles.input} onChangeText={setNumCedula} value={numCedula} placeholder="Número de Cédula" />
             <TextInput style={styles.input} onChangeText={setMunicipio} value={municipio} placeholder="Municipio" />
             <TextInput style={styles.input} onChangeText={setDepartamento} value={departamento} placeholder="Departamento" />
@@ -287,6 +299,23 @@ const styles = StyleSheet.create({
     height: 100,
     marginBottom: 10,
     borderRadius: 5,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    height: 40,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    height: '100%',
+    paddingHorizontal: 10,
+  },
+  eyeIcon: {
+    padding: 10,
   },
 });
 
