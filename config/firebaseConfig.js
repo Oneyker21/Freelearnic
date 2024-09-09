@@ -1,10 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
-
-
-
-export const firebaseConfig = {
+// Tu configuración de Firebase aquí
+const firebaseConfig = {
   apiKey: "AIzaSyD2lBEopK9_fmDuCRq_sh3gKAq-SiZ3zT4",
   authDomain: "freelearnic.firebaseapp.com",
   projectId: "freelearnic",
@@ -14,11 +14,20 @@ export const firebaseConfig = {
   measurementId: "G-FBNJ92Y7MN"
 };
 
-
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-
 // Initialize Cloud Firestore and get a reference to the service
 export const db = getFirestore(app);
+
+// Initialize Auth
+let auth;
+try {
+  auth = getAuth(app);
+} catch (error) {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+  });
+}
+
+export { auth };
