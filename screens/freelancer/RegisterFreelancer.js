@@ -11,16 +11,16 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg';
 
 const RegisterFreelancer = () => {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [nombres, setNombres] = React.useState('');
-  const [apellidos, setApellidos] = React.useState('');
-  const [nombreUsuario, setNombreUsuario] = React.useState('');
-  const [numCedula, setNumCedula] = React.useState('');
-  const [profesion, setProfesion] = React.useState('');
-  const [fotoCedulaFront, setFotoCedulaFront] = React.useState(null);
-  const [fotoCedulaBack, setFotoCedulaBack] = React.useState(null);
-  const [fotoPerfil, setFotoPerfil] = React.useState(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [nombres, setNombres] = useState('');
+  const [apellidos, setApellidos] = useState('');
+  const [nombreUsuario, setNombreUsuario] = useState('');
+  const [numCedula, setNumCedula] = useState('');
+  const [profesion, setProfesion] = useState('');
+  const [fotoCedulaFront, setFotoCedulaFront] = useState(null);
+  const [fotoCedulaBack, setFotoCedulaBack] = useState(null);
+  const [fotoPerfil, setFotoPerfil] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const auth = getAuth();
@@ -55,16 +55,27 @@ const RegisterFreelancer = () => {
   };
 
   const obtenerSiguienteId = async () => {
-    const contadorRef = doc(db, 'contadores', 'freelancers');
-    const contadorDoc = await getDoc(contadorRef);
+    try {
+      const contadorRef = doc(db, 'contadores', 'freelancers');
+      const contadorDoc = await getDoc(contadorRef);
 
-    if (!contadorDoc.exists()) {
-      await setDoc(contadorRef, { contador: 1 });
-      return 1;
-    } else {
-      const nuevoContador = contadorDoc.data().contador + 1;
-      await updateDoc(contadorRef, { contador: increment(1) });
-      return nuevoContador;
+      if (!contadorDoc.exists()) {
+        await setDoc(contadorRef, { contador: 1 });
+        return 'id_freelancer_1';
+      } else {
+        const data = contadorDoc.data();
+        if (data && typeof data.contador === 'number') {
+          const nuevoContador = data.contador + 1;
+          await updateDoc(contadorRef, { contador: increment(1) });
+          return `id_freelancer_${nuevoContador}`;
+        } else {
+          console.error('El documento del contador no tiene el formato esperado');
+          throw new Error('Error al obtener el siguiente ID');
+        }
+      }
+    } catch (error) {
+      console.error('Error al obtener el siguiente ID:', error);
+      throw error;
     }
   };
 
@@ -83,15 +94,21 @@ const RegisterFreelancer = () => {
 
   const registrarFreelancer = async () => {
     try {
-      const idUsuario = await obtenerSiguienteId();
+      // Crear el usuario en Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-      await setDoc(doc(db, 'Freelancer', `id_freelancer_${idUsuario}`), {
-        id: idUsuario,
+      // Obtener el siguiente ID en el formato deseado
+      const idFreelancer = await obtenerSiguienteId();
+
+      // Guardar los datos adicionales en Firestore usando el nuevo ID
+      await setDoc(doc(db, 'Freelancer', idFreelancer), {
+        uid: user.uid, // Guardamos el UID de Authentication para referencia
+        id: idFreelancer,
         nombres: nombres,
         apellidos: apellidos,
         nombre_usuario: nombreUsuario,
         email: email,
-        password: password,
         tipo_usuario: 'freelancer',
         estado_verificacion: false,
         fecha_registro: new Date().toISOString(),
@@ -104,12 +121,22 @@ const RegisterFreelancer = () => {
       });
 
       console.log('Freelancer registrado con éxito');
-      Alert.alert('Éxito', 'Freelancer registrado correctamente');
-
-      limpiarCampos();
+      Alert.alert(
+        'Éxito',
+        'Freelancer registrado correctamente',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              limpiarCampos();
+              navigation.replace('Inicio de sesión');
+            }
+          }
+        ]
+      );
     } catch (error) {
       console.error('Error al registrar el freelancer: ', error);
-      Alert.alert('Error', 'No se pudo registrar el freelancer');
+      Alert.alert('Error', 'No se pudo registrar el freelancer: ' + error.message);
     }
   };
 
@@ -125,18 +152,7 @@ const RegisterFreelancer = () => {
             <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" />
             <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" />
             <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} value={email} placeholder="Correo Electrónico" />
-            <View style={styles.passwordContainer}>
-              <TextInput 
-                style={styles.passwordInput} 
-                onChangeText={(text) => setPassword(text)} 
-                value={password} 
-                placeholder="Contraseña" 
-                secureTextEntry={!showPassword} 
-              />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#007AFF" />
-              </TouchableOpacity>
-            </View>
+            <TextInput style={styles.input} onChangeText={(text) => setPassword(text)} value={password} placeholder="Contraseña" secureTextEntry={!showPassword} />
             <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" />
             <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" />
             
@@ -231,23 +247,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    height: 40,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  passwordInput: {
-    flex: 1,
-    height: '100%',
-    paddingHorizontal: 10,
-  },
-  eyeIcon: {
-    padding: 10,
   },
   buttonRegister: {
     width: '100%',
