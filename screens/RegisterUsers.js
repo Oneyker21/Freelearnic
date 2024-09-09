@@ -115,8 +115,21 @@ const RegisterUsers = () => {
       });
 
       console.log('Usuario registrado con éxito');
-      Alert.alert('Éxito', 'Usuario registrado correctamente');
-      limpiarCampos();
+      Alert.alert(
+        'Éxito',
+        'Usuario registrado correctamente',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              limpiarCampos();
+              navigation.replace('Inicio de sesión');
+            }
+          }
+        ]
+      );
+      
+      // Eliminamos el setTimeout y la navegación automática
     } catch (error) {
       console.error('Error al registrar el usuario: ', error);
       Alert.alert('Error', 'No se pudo registrar el usuario: ' + error.message);
@@ -143,7 +156,7 @@ const RegisterUsers = () => {
             {/* Botones de selección de imagen con iconos de archivo y cámara */}
             <View style={styles.imageRow}>
               <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront, false)}>
-                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Icon name="id-card-o" size={20} color="#fff" style={styles.icon} />
                 <Text style={styles.imageButtonText}>Cédula (Frente)</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => pickImage(setFotoCedulaFront, true)}>
@@ -154,7 +167,7 @@ const RegisterUsers = () => {
 
             <View style={styles.imageRow}>
               <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack, false)}>
-                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Icon name="id-card-o" size={20} color="#fff" style={styles.icon} />
                 <Text style={styles.imageButtonText}>Cédula (Reverso)</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => pickImage(setFotoCedulaBack, true)}>
@@ -165,7 +178,7 @@ const RegisterUsers = () => {
 
             <View style={styles.imageRow}>
               <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil, false)}>
-                <Icon name="file" size={20} color="#fff" style={styles.icon} />
+                <Icon name="user-circle-o" size={20} color="#fff" style={styles.icon} />
                 <Text style={styles.imageButtonText}>Foto de Perfil</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => pickImage(setFotoPerfil, true)}>
@@ -246,6 +259,12 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontWeight: 'bold',
   },
+  imageRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    width: '100%',
+  },
   imageButton: {
     flex: 1,
     height: 40,
@@ -268,11 +287,6 @@ const styles = StyleSheet.create({
     height: 100,
     marginBottom: 10,
     borderRadius: 5,
-  },
-  imageRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
   },
 });
 
