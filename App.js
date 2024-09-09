@@ -6,6 +6,7 @@ import HomeScreen from "./screens/freelancer/HomeScreen";
 import RegisterUsers from "./screens/RegisterUsers";
 import HomeScreenSb from "./screens/freelancer/HomeScreenSb";
 import RegisterFreelancer from "./screens/freelancer/RegisterFreelancer";
+import CreateProject from "./screens/cliente/CreateProject";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ const App = () => {
         <Stack.Screen name="Registrar Cuenta" component={RegisterUsers} />
         <Stack.Screen name="Inicio" component={HomeScreenSb} />
         <Stack.Screen name="Registrar Freelancer" component={RegisterFreelancer} />
+        <Stack.Screen name="Crear Proyecto" component={CreateProject} />
       </Stack.Navigator>
     </NavigationContainer>
   );
