@@ -1,77 +1,78 @@
-import React, { useState } from 'react'
-import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button, Alert } from 'react-native'
-import { BlurView } from 'expo-blur'
-import { useNavigation } from '@react-navigation/native'
-import { initializeApp } from 'firebase/app'; // Asegúrate de importar esto primero
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, initializeAuth, getReactNativePersistence } from 'firebase/auth'; // Importación única
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { firebaseConfig } from '../config/firebaseConfig';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Importar los iconos
+import React, { useState } from 'react';
+import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { useNavigation } from '@react-navigation/native';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../config/firebaseConfig';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-// Inicializa Firebase
-const app = initializeApp(firebaseConfig); // Mueve esta línea aquí
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-});
-
-//URL del fondo del login
-const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg'
-
-//imagen del logo 
-//const logoUrl = 'https://ejemplo.com/ruta-a-tu-logo.png'
+// URL del fondo del login
+const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const auth = getAuth();
   const navigation = useNavigation();
 
   const handleCreateAccount = () => {
-    // Redirige a la pantalla de registro
-    navigation.navigate('Registrar Cuenta'); // Cambia 'RegisterScreen' por el nombre de tu pantalla de registro
-  }
-  
-  const handleSignIn = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log('Sesión iniciada!')
-        const user = userCredential.user;
-        console.log(user)
-        // Limpiar los campos
-        setEmail('')
-        setPassword('')
-        navigation.replace('Inicio'); // Cambiado a 'Inicio'
-      })
-      .catch(error => {
-        console.log(error)
-        Alert.alert(error.message)
-      })
-  }
+    navigation.navigate('Registrar Cuenta');
+  };
+
+  const handleSignIn = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Buscar en la colección de Usuarios
+      const usuariosQuery = query(collection(db, 'Usuario'), where('uid', '==', user.uid));
+      const usuariosSnapshot = await getDocs(usuariosQuery);
+
+      // Buscar en la colección de Freelancers
+      const freelancersQuery = query(collection(db, 'Freelancer'), where('uid', '==', user.uid));
+      const freelancersSnapshot = await getDocs(freelancersQuery);
+
+      if (!usuariosSnapshot.empty) {
+        // Es un usuario regular
+        console.log('Usuario regular encontrado');
+        navigation.replace('HomeScreenSb');
+      } else if (!freelancersSnapshot.empty) {
+        // Es un freelancer
+        console.log('Freelancer encontrado');
+        navigation.replace('HomeScreenFreelancer');
+      } else {
+        // No se encontró el documento del usuario
+        console.log('No se encontró información del usuario');
+        Alert.alert('Error', 'No se encontró información del usuario');
+      }
+
+      // Limpiar los campos
+      setEmail('');
+      setPassword('');
+    } catch (error) {
+      console.error('Error de inicio de sesión:', error);
+      Alert.alert('Error de inicio de sesión', error.message);
+    }
+  };
 
   const limpiarCampos = () => {
-    setEmail('')
-    setPassword('')
-  }
+    setEmail('');
+    setPassword('');
+  };
 
   return (
     <View style={styles.container}>
       <Image source={{ uri: url }} style={[styles.image, StyleSheet.absoluteFill]} />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <BlurView intensity={90} tint="light" style={styles.blurContainer}>
+        <BlurView intensity={100} tint="light" style={styles.blurContainer}>
           <View style={styles.login}>
             <Image
               source={require('../assets/icon/favicon.png')}
               style={styles.logo}
             />
-
-            {/*   
-                <Image source={{uri: logoUrl}} style={styles.logo} /> 
-                imagen de logo externa
-                   
-                   */}
-                   
 
             <Text style={styles.title}>Iniciar Sesión</Text>
 
@@ -100,6 +101,7 @@ export default function LoginScreen() {
             <TouchableOpacity onPress={() => { handleCreateAccount(); limpiarCampos(); }} style={styles.buttonRegister}>
               <Text style={styles.buttonTextRegister}>Registrarse</Text>
             </TouchableOpacity>
+
           </View>
         </BlurView>
       </ScrollView>
@@ -156,23 +158,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
   },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    height: 40,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  passwordInput: {
-    flex: 1,
-    height: '100%',
-    paddingHorizontal: 10,
-  },
-  eyeIcon: {
-    padding: 10,
-  },
   buttonLogin: {
     width: '100%',
     height: 40,
@@ -199,5 +184,22 @@ const styles = StyleSheet.create({
   buttonTextRegister: {
     color: '#007AFF',
     fontWeight: 'bold',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    height: 40,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    height: '100%',
+    paddingHorizontal: 10,
+  },
+  eyeIcon: {
+    padding: 10,
   },
 })

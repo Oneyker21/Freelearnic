@@ -151,8 +151,19 @@ const RegisterFreelancer = () => {
             <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" />
             <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" />
             <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" />
-            <TextInput style={styles.input} onChangeText={(text) => setEmail(text)} value={email} placeholder="Correo Electrónico" />
-            <TextInput style={styles.input} onChangeText={(text) => setPassword(text)} value={password} placeholder="Contraseña" secureTextEntry={!showPassword} />
+            <TextInput style={styles.input} onChangeText={setEmail} value={email} placeholder="Correo Electrónico" />
+            <View style={styles.passwordContainer}>
+              <TextInput 
+                style={styles.passwordInput} 
+                onChangeText={setPassword} 
+                value={password} 
+                placeholder="Contraseña" 
+                secureTextEntry={!showPassword} 
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#007AFF" />
+              </TouchableOpacity>
+            </View>
             <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" />
             <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" />
             
@@ -247,6 +258,23 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    height: 40,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    height: '100%',
+    paddingHorizontal: 10,
+  },
+  eyeIcon: {
+    padding: 10,
   },
   buttonRegister: {
     width: '100%',
