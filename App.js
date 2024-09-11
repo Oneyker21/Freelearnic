@@ -20,7 +20,7 @@ const App = () => {
         <Stack.Screen name="Registrar Cuenta" component={RegisterUsers} />
         <Stack.Screen name="HomeScreenSb" component={HomeScreenSb} />
         <Stack.Screen name="HomeScreenFreelancer" component={HomeScreenFreelancer} />
-        <Stack.Screen name="Registrar Freelancer" component={RegisterFreelancer} />
+        <Stack.Screen name="Registrar Freelancer" component={RegisterFreelancer} options={{ headerShown: false }} />
         <Stack.Screen name="Crear Proyecto" component={CreateProject} />
       </Stack.Navigator>
     </NavigationContainer>

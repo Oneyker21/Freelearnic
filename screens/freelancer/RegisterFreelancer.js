@@ -6,7 +6,7 @@ import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import { Ionicons } from '@expo/vector-icons'; // Asegúrate de importar Ionicons
 
 const RegisterFreelancer = () => {
   const [email, setEmail] = useState('');
@@ -140,35 +140,39 @@ const RegisterFreelancer = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-         <Image source={require('../../assets/Freelearnic.png')} style={styles.logo} />
-        {/* Se eliminó el BlurView y se reemplazó por un contenedor */}
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Ionicons name="arrow-back" size={30} color="#15297C" />
+      </TouchableOpacity>
+
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+       
+        <Image source={require('../../assets/Freelearnic.png')} style={styles.logo} />
         <View style={styles.containerView}>
           <View style={styles.login}>
-           
+
             <Text style={styles.title}>
               Crear una cuenta de <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text>
             </Text>
-            <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" placeholderTextColor="#fff"/>
-            <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" placeholderTextColor="#fff"/>
-            <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" placeholderTextColor="#fff"/>
-            <TextInput style={styles.input} onChangeText={setEmail} value={email} placeholder="Correo Electrónico" placeholderTextColor="#fff"/>
+            <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" placeholderTextColor="#fff" />
+            <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" placeholderTextColor="#fff" />
+            <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" placeholderTextColor="#fff" />
+            <TextInput style={styles.input} onChangeText={setEmail} value={email} placeholder="Correo Electrónico" placeholderTextColor="#fff" />
             <View style={styles.passwordContainer}>
-              <TextInput 
-                style={styles.passwordInput} 
-                onChangeText={setPassword} 
-                value={password} 
-                placeholder="Contraseña" 
+              <TextInput
+                style={styles.passwordInput}
+                onChangeText={setPassword}
+                value={password}
+                placeholder="Contraseña"
                 placeholderTextColor="#fff"
-                secureTextEntry={!showPassword} 
+                secureTextEntry={!showPassword}
               />
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
                 <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#fff" />
               </TouchableOpacity>
             </View>
-            <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" placeholderTextColor="#fff"/>
-            <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" placeholderTextColor="#fff"/>
-            
+            <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" placeholderTextColor="#fff" />
+            <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" placeholderTextColor="#fff" />
+
             {/* Botones de selección de imagen con iconos */}
             <View style={styles.imageRow}>
               <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront, false)}>
@@ -216,23 +220,29 @@ const RegisterFreelancer = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 50,
+    position: 'relative',
   },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
+  scrollView: {
+    zIndex: 0,
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   scrollViewContent: {
+    paddingTop: 60,
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   containerView: {
-    backgroundColor: '#388ABD', // Color de fondo del contenedor
+    backgroundColor: '#388ABD',
     width: '100%',
     padding: 30,
-    borderTopLeftRadius: 130, // Ajusta el valor para el radio del borde
-    overflow: 'hidden', // Asegura que el contenido no sobresalga
+    borderTopLeftRadius: 130,
+    overflow: 'hidden',
   },
   login: {
     width: '100%',
@@ -319,6 +329,12 @@ const styles = StyleSheet.create({
     height: 100,
     marginBottom: 10,
     borderRadius: 5,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    zIndex: 1,
   },
 });
 
