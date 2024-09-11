@@ -5,7 +5,6 @@ import HomeScreen from "../screens/freelancer/HomeScreen";
 import RegisterUsers  from "../screens/freelancer/RegisterUsers";
 import HomeScreenSb from "../screens/freelancer/HomeScreenSb";
 import Category from "../screens/admin/Category";
-import { useNavigation } from "@react-navigation/native";
 
 const Stack = createNativeStackNavigator();
 

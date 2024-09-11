@@ -141,12 +141,14 @@ const RegisterFreelancer = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-         <Image source={require('../../assets/icon/favicon.png')} style={styles.logo} />
+         <Image source={require('../../assets/Freelearnic.png')} style={styles.logo} />
         {/* Se eliminó el BlurView y se reemplazó por un contenedor */}
         <View style={styles.containerView}>
           <View style={styles.login}>
            
-            <Text style={styles.title}>Registrarse como Freelancer</Text>
+            <Text style={styles.title}>
+              Crear una cuenta de <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text>
+            </Text>
             <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" placeholderTextColor="#fff"/>
             <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" placeholderTextColor="#fff"/>
             <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" placeholderTextColor="#fff"/>
@@ -202,7 +204,7 @@ const RegisterFreelancer = () => {
             {fotoPerfil && <Image source={{ uri: fotoPerfil }} style={styles.previewImage} />}
 
             <TouchableOpacity onPress={registrarFreelancer} style={styles.buttonRegister}>
-              <Text style={styles.buttonTextRegister}>Registrarse como Freelancer</Text>
+              <Text style={styles.buttonTextRegister}>Siguiente</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -229,7 +231,7 @@ const styles = StyleSheet.create({
   containerView: {
     backgroundColor: '#388ABD', // Color de fondo del contenedor
     width: '100%',
-    padding: 20,
+    padding: 30,
     borderTopLeftRadius: 130, // Ajusta el valor para el radio del borde
     overflow: 'hidden', // Asegura que el contenido no sobresalga
   },
@@ -238,18 +240,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 80,
-    height: 80,
+    width: 120,
+    height: 130,
     borderRadius: 4,
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: 'none',
     marginBottom: 20,
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 1,
   },
   input: {
@@ -282,15 +283,13 @@ const styles = StyleSheet.create({
   buttonRegister: {
     width: '100%',
     height: 40,
-    backgroundColor: '#E6F3FF',
-    borderRadius: 5,
-    borderColor: '#007AFF',
-    borderWidth: 1,
+    backgroundColor: '#15297C',
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttonTextRegister: {
-    color: '#007AFF',
+    color: '#fff',
     fontWeight: 'bold',
   },
   imageRow: {
