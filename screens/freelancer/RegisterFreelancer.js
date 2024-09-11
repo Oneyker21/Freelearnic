@@ -226,7 +226,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 20,
   },
   containerView: {
     backgroundColor: '#388ABD', // Color de fondo del contenedor
