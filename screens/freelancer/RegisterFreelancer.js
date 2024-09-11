@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
-import { BlurView } from 'expo-blur';
-import { useNavigation } from '@react-navigation/native';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { useNavigation } from '@react-navigation/native';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg';
 
 const RegisterFreelancer = () => {
   const [email, setEmail] = useState('');
@@ -142,30 +140,32 @@ const RegisterFreelancer = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: url }} style={[styles.image, StyleSheet.absoluteFill]} />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <BlurView intensity={90} tint="light" style={styles.blurContainer}>
+         <Image source={require('../../assets/icon/favicon.png')} style={styles.logo} />
+        {/* Se eliminó el BlurView y se reemplazó por un contenedor */}
+        <View style={styles.containerView}>
           <View style={styles.login}>
-            <Image source={require('../../assets/icon/favicon.png')} style={styles.logo} />
+           
             <Text style={styles.title}>Registrarse como Freelancer</Text>
-            <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" />
-            <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" />
-            <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" />
-            <TextInput style={styles.input} onChangeText={setEmail} value={email} placeholder="Correo Electrónico" />
+            <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" placeholderTextColor="#fff"/>
+            <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" placeholderTextColor="#fff"/>
+            <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" placeholderTextColor="#fff"/>
+            <TextInput style={styles.input} onChangeText={setEmail} value={email} placeholder="Correo Electrónico" placeholderTextColor="#fff"/>
             <View style={styles.passwordContainer}>
               <TextInput 
                 style={styles.passwordInput} 
                 onChangeText={setPassword} 
                 value={password} 
                 placeholder="Contraseña" 
+                placeholderTextColor="#fff"
                 secureTextEntry={!showPassword} 
               />
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#007AFF" />
+                <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#fff" />
               </TouchableOpacity>
             </View>
-            <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" />
-            <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" />
+            <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" placeholderTextColor="#fff"/>
+            <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" placeholderTextColor="#fff"/>
             
             {/* Botones de selección de imagen con iconos */}
             <View style={styles.imageRow}>
@@ -174,7 +174,7 @@ const RegisterFreelancer = () => {
                 <Text style={styles.imageButtonText}>Cédula (Frente)</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => pickImage(setFotoCedulaFront, true)}>
-                <Icon name="camera" size={25} color="#007AFF" />
+                <Icon name="camera" size={25} color="#fff" />
               </TouchableOpacity>
             </View>
             {fotoCedulaFront && <Image source={{ uri: fotoCedulaFront }} style={styles.previewImage} />}
@@ -185,7 +185,7 @@ const RegisterFreelancer = () => {
                 <Text style={styles.imageButtonText}>Cédula (Reverso)</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => pickImage(setFotoCedulaBack, true)}>
-                <Icon name="camera" size={25} color="#007AFF" />
+                <Icon name="camera" size={25} color="#fff" />
               </TouchableOpacity>
             </View>
             {fotoCedulaBack && <Image source={{ uri: fotoCedulaBack }} style={styles.previewImage} />}
@@ -196,7 +196,7 @@ const RegisterFreelancer = () => {
                 <Text style={styles.imageButtonText}>Foto de Perfil</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => pickImage(setFotoPerfil, true)}>
-                <Icon name="camera" size={25} color="#007AFF" />
+                <Icon name="camera" size={25} color="#fff" />
               </TouchableOpacity>
             </View>
             {fotoPerfil && <Image source={{ uri: fotoPerfil }} style={styles.previewImage} />}
@@ -205,7 +205,7 @@ const RegisterFreelancer = () => {
               <Text style={styles.buttonTextRegister}>Registrarse como Freelancer</Text>
             </TouchableOpacity>
           </View>
-        </BlurView>
+        </View>
       </ScrollView>
     </View>
   );
@@ -226,11 +226,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
   },
-  blurContainer: {
-    width: '80%',
+  containerView: {
+    backgroundColor: '#388ABD', // Color de fondo del contenedor
+    width: '100%',
     padding: 20,
-    borderRadius: 10,
-    overflow: 'hidden',
+    borderTopLeftRadius: 130, // Ajusta el valor para el radio del borde
+    overflow: 'hidden', // Asegura que el contenido no sobresalga
   },
   login: {
     width: '100%',
@@ -254,18 +255,20 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     height: 40,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderRadius: 5,
+    backgroundColor: null,
+    borderBottomWidth: 1,
+    borderColor: '#fff',
     marginBottom: 10,
     paddingHorizontal: 10,
   },
   passwordContainer: {
+    borderBottomWidth: 1,
+    borderColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
     height: 40,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderRadius: 5,
+    backgroundColor: null,
     marginBottom: 10,
   },
   passwordInput: {
