@@ -137,6 +137,7 @@ const RegisterFreelancer = () => {
       Alert.alert('Error', 'No se pudo registrar el freelancer: ' + error.message);
     }
   };
+  
 
   return (
     <View style={styles.container}>
