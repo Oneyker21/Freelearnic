@@ -138,7 +138,6 @@ const RegisterFreelancer = () => {
     }
   };
   
-
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
