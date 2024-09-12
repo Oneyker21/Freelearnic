@@ -6,6 +6,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 import Icon from 'react-native-vector-icons/FontAwesome';
+//probando rama
 
 // URL del fondo del login
 const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg';
