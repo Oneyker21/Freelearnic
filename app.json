@@ -4,10 +4,10 @@
     "slug": "Freelearnic",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/PCarga.jpg",
+    "icon": "../../assets/icon/freelearnic.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/PCarga.jpg",
+      "image": "../../assets/icon/ampliada.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
