@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
-import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { CustomTextInput, ImagePickerButton, PreviewImage } from '../../utils/inputs'; // Importar componentes personalizados
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'; // Importa SkeletonPlaceholder
+
 
 const RegisterFreelancer = () => {
   const [email, setEmail] = useState('');
@@ -24,6 +28,17 @@ const RegisterFreelancer = () => {
   const [isLoading, setIsLoading] = useState(false); // Estado de carga
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+
+
+  useEffect(() => { // Depuración para ver los valores actuales
+    if (password && confirmPassword && password !== confirmPassword) {
+      setError('Las contraseñas no coinciden');
+    } else {
+      setError('');
+    }
+  }, [password, confirmPassword]);
+
+
 
   const auth = getAuth();
   const navigation = useNavigation();
@@ -98,6 +113,7 @@ const RegisterFreelancer = () => {
     setIsLoading(true); // Activar estado de carga
     try {
       if (password !== confirmPassword) {
+        setIsLoading(false); // Desactivar estado de carga antes de mostrar el alerta
         Alert.alert('Error', 'Las contraseñas no coinciden');
         return;
       }
@@ -168,6 +184,26 @@ const RegisterFreelancer = () => {
               <Text style={styles.title}>
                 Crear una cuenta de <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text>
               </Text>
+              <CustomTextInput onChangeText={setNombres} value={nombres} placeholder="Nombres" />
+              <CustomTextInput onChangeText={setApellidos} value={apellidos} placeholder="Apellidos" />
+              <CustomTextInput onChangeText={setNombreUsuario} value={nombreUsuario} placeholder="Nombre de usuario" />
+              <CustomTextInput onChangeText={setEmail} value={email} placeholder="Correo Electrónico" />
+              <CustomTextInput onChangeText={setPassword} value={password} placeholder="Contraseña" secureTextEntry={true} showPassword={showPassword} toggleShowPassword={() => setShowPassword(!showPassword)} />
+              <CustomTextInput onChangeText={setConfirmPassword} value={confirmPassword} placeholder="Confirmar Contraseña" secureTextEntry={true} />
+              <View style={styles.errorContainer}>
+                {error ? <Text style={styles.errorText}>{error}</Text> : null}
+              </View>
+              <CustomTextInput onChangeText={setNumCedula} value={numCedula} placeholder="Número de Cédula" />
+              <CustomTextInput onChangeText={setProfesion} value={profesion} placeholder="Profesión" />
+
+              <ImagePickerButton onPress={() => pickImage(setFotoCedulaFront, false)} iconName="id-card-o" buttonText="Cédula (Frente)" />
+              <PreviewImage uri={fotoCedulaFront} />
+              <ImagePickerButton onPress={() => pickImage(setFotoCedulaBack, false)} iconName="id-card-o" buttonText="Cédula (Reverso)" />
+              <PreviewImage uri={fotoCedulaBack} />
+              <ImagePickerButton onPress={() => pickImage(setFotoPerfil, false)} iconName="user-circle-o" buttonText="Foto de Perfil" />
+              <PreviewImage uri={fotoPerfil} />
+
+
               <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" placeholderTextColor="#fff" />
               <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" placeholderTextColor="#fff" />
               <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" placeholderTextColor="#fff" />
@@ -249,8 +285,7 @@ const RegisterFreelancer = () => {
               </View>
               {fotoPerfil && <Image source={{ uri: fotoPerfil }} style={styles.previewImage} />}
 
-
-              <TouchableOpacity onPress={registrarFreelancer} style={styles.buttonRegister}>
+         <TouchableOpacity onPress={registrarFreelancer} style={styles.buttonRegister}>
                 <Text style={styles.buttonTextRegister}>Siguiente</Text>
               </TouchableOpacity>
             </View>
@@ -306,6 +341,8 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowRadius: 1,
   },
+  
+  
   input: {
     width: '100%',
     height: 40,
@@ -331,6 +368,7 @@ const styles = StyleSheet.create({
   eyeIcon: {
     padding: 10,
   },
+  
   buttonRegister: {
     width: '100%',
     height: 40,
@@ -343,35 +381,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-  imageRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    width: '100%',
-  },
-  imageButton: {
-    flex: 1,
-    height: 40,
-    backgroundColor: '#007AFF',
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-    flexDirection: 'row',
-    paddingHorizontal: 10,
-    marginRight: 5,
-  },
-  imageButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    marginLeft: 5,
-  },
-  previewImage: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
   backButton: {
     position: 'absolute',
     top: 40,
@@ -379,12 +388,24 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   errorContainer: {
+
+    width: '100%',
+    alignItems: 'start',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginTop: 5,
+    fontWeight: 'bold',
+    backgroundColor: null, // Asegurarse de que el texto sea visible
+
     alignItems: 'flex-start',
      width: '100%',
   },
   errorText: {
     color: 'red',
     fontSize: 12,
+
   },
 });
 
