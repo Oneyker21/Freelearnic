@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/freelancer/HomeScreen";
 import RegisterUsers from "./screens/RegisterUsers";
-import HomeScreenSb from "./screens/freelancer/HomeScreenSb";
+import HomeScreenSb from "./screens/cliente/HomeScreenSb";
 import HomeScreenFreelancer from "./screens/freelancer/HomeScreenFreelancer";
 import RegisterFreelancer from "./screens/freelancer/RegisterFreelancer";
 import CreateProject from "./screens/cliente/CreateProject";

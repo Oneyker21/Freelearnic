@@ -5,12 +5,15 @@ import { useNavigation } from '@react-navigation/native';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { CustomTextInput, ImagePickerButton, PreviewImage } from '../../utils/inputs';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Ionicons } from '@expo/vector-icons'; // Asegúrate de importar Ionicons
 
 const RegisterFreelancer = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [nombres, setNombres] = useState('');
   const [apellidos, setApellidos] = useState('');
   const [nombreUsuario, setNombreUsuario] = useState('');
@@ -20,6 +23,8 @@ const RegisterFreelancer = () => {
   const [fotoCedulaBack, setFotoCedulaBack] = useState(null);
   const [fotoPerfil, setFotoPerfil] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const auth = getAuth();
   const navigation = useNavigation();
@@ -80,6 +85,7 @@ const RegisterFreelancer = () => {
   const limpiarCampos = () => {
     setEmail('');
     setPassword('');
+    setConfirmPassword('');
     setNombres('');
     setApellidos('');
     setNombreUsuario('');
@@ -91,22 +97,25 @@ const RegisterFreelancer = () => {
   };
 
   const registrarFreelancer = async () => {
+    if (password !== confirmPassword) {
+      setError('Las contraseñas no coinciden');
+      return;
+    }
+
+    setIsLoading(true);
     try {
-      // Crear el usuario en Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Obtener el siguiente ID en el formato deseado
       const idFreelancer = await obtenerSiguienteId();
 
-      // Guardar los datos adicionales en Firestore usando el nuevo ID
       await setDoc(doc(db, 'Freelancer', idFreelancer), {
-        uid: user.uid, // Guardamos el UID de Authentication para referencia
+        uid: user.uid,
         id: idFreelancer,
-        nombres: nombres,
-        apellidos: apellidos,
+        nombres,
+        apellidos,
         nombre_usuario: nombreUsuario,
-        email: email,
+        email,
         tipo_usuario: 'freelancer',
         estado_verificacion: false,
         fecha_registro: new Date().toISOString(),
@@ -115,104 +124,75 @@ const RegisterFreelancer = () => {
         foto_cedula_back: fotoCedulaBack,
         foto_perfil: fotoPerfil,
         estado_usuario: 'activo',
-        profesion: profesion,
+        profesion,
       });
 
       console.log('Freelancer registrado con éxito');
-      Alert.alert(
-        'Éxito',
-        'Freelancer registrado correctamente',
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              limpiarCampos();
-              navigation.replace('Inicio de sesión');
-            }
+      Alert.alert('Éxito', 'Freelancer registrado correctamente', [
+        {
+          text: 'OK',
+          onPress: () => {
+            limpiarCampos();
+            navigation.replace('Inicio de sesión');
           }
-        ]
-      );
+        }
+      ]);
     } catch (error) {
       console.error('Error al registrar el freelancer: ', error);
       Alert.alert('Error', 'No se pudo registrar el freelancer: ' + error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
-  
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={30} color="#15297C" />
-      </TouchableOpacity>
+      {isLoading ? (
+        <SkeletonPlaceholder>
+          <SkeletonPlaceholder.Item flexDirection="column" alignItems="center">
+            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={20} />
+            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={10} />
+            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={10} />
+            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={10} />
+          </SkeletonPlaceholder.Item>
+        </SkeletonPlaceholder>
+      ) : (
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={30} color="#15297C" />
+          </TouchableOpacity>
+          <Image source={require('../../assets/freelearnic.png')} style={styles.logo} />
+          <View style={styles.containerView}>
+            <View style={styles.login}>
+              <Text style={styles.title}>
+                Crear una cuenta de <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text>
+              </Text>
+              <CustomTextInput onChangeText={setNombres} value={nombres} placeholder="Nombres" />
+              <CustomTextInput onChangeText={setApellidos} value={apellidos} placeholder="Apellidos" />
+              <CustomTextInput onChangeText={setNombreUsuario} value={nombreUsuario} placeholder="Nombre de usuario" />
+              <CustomTextInput onChangeText={setEmail} value={email} placeholder="Correo Electrónico" />
+              <CustomTextInput onChangeText={setPassword} value={password} placeholder="Contraseña" secureTextEntry={true} showPassword={showPassword} toggleShowPassword={() => setShowPassword(!showPassword)} />
+              <CustomTextInput onChangeText={setConfirmPassword} value={confirmPassword} placeholder="Confirmar Contraseña" secureTextEntry={true} />
+              <View style={styles.errorContainer}>
+                {error ? <Text style={styles.errorText}>{error}</Text> : null}
+              </View>
+              <CustomTextInput onChangeText={setNumCedula} value={numCedula} placeholder="Número de Cédula" />
+              <CustomTextInput onChangeText={setProfesion} value={profesion} placeholder="Profesión" />
 
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
-       
-        <Image source={require('../../assets/Freelearnic.png')} style={styles.logo} />
-        <View style={styles.containerView}>
-          <View style={styles.login}>
+              <ImagePickerButton onPress={() => pickImage(setFotoCedulaFront, false)} iconName="id-card-o" buttonText="Cédula (Frente)" />
+              <PreviewImage uri={fotoCedulaFront} />
+              <ImagePickerButton onPress={() => pickImage(setFotoCedulaBack, false)} iconName="id-card-o" buttonText="Cédula (Reverso)" />
+              <PreviewImage uri={fotoCedulaBack} />
+              <ImagePickerButton onPress={() => pickImage(setFotoPerfil, false)} iconName="user-circle-o" buttonText="Foto de Perfil" />
+              <PreviewImage uri={fotoPerfil} />
 
-            <Text style={styles.title}>
-              Crear una cuenta de <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text>
-            </Text>
-            <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" placeholderTextColor="#fff" />
-            <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" placeholderTextColor="#fff" />
-            <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" placeholderTextColor="#fff" />
-            <TextInput style={styles.input} onChangeText={setEmail} value={email} placeholder="Correo Electrónico" placeholderTextColor="#fff" />
-            <View style={styles.passwordContainer}>
-              <TextInput
-                style={styles.passwordInput}
-                onChangeText={setPassword}
-                value={password}
-                placeholder="Contraseña"
-                placeholderTextColor="#fff"
-                secureTextEntry={!showPassword}
-              />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#fff" />
+              <TouchableOpacity onPress={registrarFreelancer} style={styles.buttonRegister}>
+                <Text style={styles.buttonTextRegister}>Registrar</Text>
               </TouchableOpacity>
             </View>
-            <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" placeholderTextColor="#fff" />
-            <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" placeholderTextColor="#fff" />
-
-            {/* Botones de selección de imagen con iconos */}
-            <View style={styles.imageRow}>
-              <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront, false)}>
-                <Icon name="id-card-o" size={20} color="#fff" style={styles.icon} />
-                <Text style={styles.imageButtonText}>Cédula (Frente)</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => pickImage(setFotoCedulaFront, true)}>
-                <Icon name="camera" size={25} color="#fff" />
-              </TouchableOpacity>
-            </View>
-            {fotoCedulaFront && <Image source={{ uri: fotoCedulaFront }} style={styles.previewImage} />}
-
-            <View style={styles.imageRow}>
-              <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack, false)}>
-                <Icon name="id-card-o" size={20} color="#fff" style={styles.icon} />
-                <Text style={styles.imageButtonText}>Cédula (Reverso)</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => pickImage(setFotoCedulaBack, true)}>
-                <Icon name="camera" size={25} color="#fff" />
-              </TouchableOpacity>
-            </View>
-            {fotoCedulaBack && <Image source={{ uri: fotoCedulaBack }} style={styles.previewImage} />}
-
-            <View style={styles.imageRow}>
-              <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil, false)}>
-                <Icon name="user-circle-o" size={20} color="#fff" style={styles.icon} />
-                <Text style={styles.imageButtonText}>Foto de Perfil</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => pickImage(setFotoPerfil, true)}>
-                <Icon name="camera" size={25} color="#fff" />
-              </TouchableOpacity>
-            </View>
-            {fotoPerfil && <Image source={{ uri: fotoPerfil }} style={styles.previewImage} />}
-
-            <TouchableOpacity onPress={registrarFreelancer} style={styles.buttonRegister}>
-              <Text style={styles.buttonTextRegister}>Siguiente</Text>
-            </TouchableOpacity>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      )}
     </View>
   );
 };

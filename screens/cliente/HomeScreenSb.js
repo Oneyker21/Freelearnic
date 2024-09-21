@@ -15,8 +15,6 @@ const HomeScreenSb = () => {
           <Text style={styles.buttonText}>Crear Proyecto</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.title}>Bienvenido a Freelearnic</Text>
-      <Text style={styles.subtitle}>Aprende y crece con nosotros</Text>
     </View>
   );
 };
