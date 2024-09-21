@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, } from 'react-native';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';

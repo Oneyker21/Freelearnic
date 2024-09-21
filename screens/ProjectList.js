@@ -5,7 +5,6 @@ import { collection, getDocs } from 'firebase/firestore';
 
 //prueba
 
-
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
