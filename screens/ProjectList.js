@@ -5,7 +5,7 @@ import { collection, getDocs } from 'firebase/firestore';
 
 //prueba
 
-const ProjectList = () => {
+export const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,9 +56,7 @@ const ProjectList = () => {
           <Text style={styles.projectPropuestas}>
             Propuestas: {item.propuestas ? item.propuestas : 0}
           </Text>
-          <Text style={styles.projectPropuestas}>
-            Propuestas: {item.propuestas ? item.propuestas : 0}
-          </Text>
+
           
           {/* Manejo de las fechas, asegurando que son válidas */}
           <Text style={styles.projectFechaInicio}>

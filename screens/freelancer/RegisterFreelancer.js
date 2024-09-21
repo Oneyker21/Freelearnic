@@ -28,7 +28,7 @@ const RegisterFreelancer = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    console.log(password, confirmPassword); // Depuración para ver los valores actuales
+   // Depuración para ver los valores actuales
     if (password && confirmPassword && password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
     } else {
@@ -185,7 +185,9 @@ const RegisterFreelancer = () => {
               <CustomTextInput onChangeText={setEmail} value={email} placeholder="Correo Electrónico" />
               <CustomTextInput onChangeText={setPassword} value={password} placeholder="Contraseña" secureTextEntry={true} showPassword={showPassword} toggleShowPassword={() => setShowPassword(!showPassword)} />
               <CustomTextInput onChangeText={setConfirmPassword} value={confirmPassword} placeholder="Confirmar Contraseña" secureTextEntry={true} />
-              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+              <View style={styles.errorContainer}>
+                {error ? <Text style={styles.errorText}>{error}</Text> : null}
+              </View>
               <CustomTextInput onChangeText={setNumCedula} value={numCedula} placeholder="Número de Cédula" />
               <CustomTextInput onChangeText={setProfesion} value={profesion} placeholder="Profesión" />
 
@@ -270,11 +272,16 @@ const styles = StyleSheet.create({
     left: 20,
     zIndex: 1,
   },
+  errorContainer: {
+    width: '100%',
+    alignItems: 'flex-end',
+  },
   errorText: {
-    color: 'red',
+    color: '#ffff',
     fontSize: 14,
     marginTop: 5,
-    backgroundColor: 'white', // Asegurarse de que el texto sea visible
+    fontWeight: 'bold',
+    backgroundColor: null, // Asegurarse de que el texto sea visible
   },
 });
 
