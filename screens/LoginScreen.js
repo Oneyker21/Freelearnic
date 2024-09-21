@@ -7,9 +7,6 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-//Probando rama 2
-
-
 // URL del fondo del login
 const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg';
 

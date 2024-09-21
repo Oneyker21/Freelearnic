@@ -9,13 +9,11 @@ import { Ionicons } from '@expo/vector-icons';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { CustomTextInput, ImagePickerButton, PreviewImage } from '../../utils/inputs'; // Importar componentes personalizados
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Ionicons } from '@expo/vector-icons';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder'; // Importa SkeletonPlaceholder
-
 
 const RegisterFreelancer = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [nombres, setNombres] = useState('');
   const [apellidos, setApellidos] = useState('');
   const [nombreUsuario, setNombreUsuario] = useState('');
@@ -37,8 +35,6 @@ const RegisterFreelancer = () => {
       setError('');
     }
   }, [password, confirmPassword]);
-
-
 
   const auth = getAuth();
   const navigation = useNavigation();
@@ -99,6 +95,7 @@ const RegisterFreelancer = () => {
   const limpiarCampos = () => {
     setEmail('');
     setPassword('');
+    setConfirmPassword('');
     setNombres('');
     setApellidos('');
     setNombreUsuario('');
@@ -110,6 +107,7 @@ const RegisterFreelancer = () => {
   };
 
   const registrarFreelancer = async () => {
+
     setIsLoading(true); // Activar estado de carga
     try {
       if (password !== confirmPassword) {
@@ -122,17 +120,15 @@ const RegisterFreelancer = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Obtener el siguiente ID en el formato deseado
       const idFreelancer = await obtenerSiguienteId();
 
-      // Guardar los datos adicionales en Firestore usando el nuevo ID
       await setDoc(doc(db, 'Freelancer', idFreelancer), {
         uid: user.uid,
         id: idFreelancer,
-        nombres: nombres,
-        apellidos: apellidos,
+        nombres,
+        apellidos,
         nombre_usuario: nombreUsuario,
-        email: email,
+        email,
         tipo_usuario: 'freelancer',
         estado_verificacion: false,
         fecha_registro: new Date().toISOString(),
@@ -141,7 +137,7 @@ const RegisterFreelancer = () => {
         foto_cedula_back: fotoCedulaBack,
         foto_perfil: fotoPerfil,
         estado_usuario: 'activo',
-        profesion: profesion,
+        profesion,
       });
 
       console.log('Freelancer registrado con éxito');
@@ -158,6 +154,8 @@ const RegisterFreelancer = () => {
       console.error('Error al registrar el freelancer: ', error);
       Alert.alert('Error', 'No se pudo registrar el freelancer: ' + error.message);
     } finally {
+
+
       setIsLoading(false); // Desactivar estado de carga
     }
   };
@@ -204,7 +202,7 @@ const RegisterFreelancer = () => {
               <PreviewImage uri={fotoPerfil} />
 
 
-              <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" placeholderTextColor="#fff" />
+             <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" placeholderTextColor="#fff" />
               <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" placeholderTextColor="#fff" />
               <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" placeholderTextColor="#fff" />
               <TextInput style={styles.input} onChangeText={setEmail} value={email} placeholder="Correo Electrónico" placeholderTextColor="#fff" />
@@ -287,6 +285,7 @@ const RegisterFreelancer = () => {
 
          <TouchableOpacity onPress={registrarFreelancer} style={styles.buttonRegister}>
                 <Text style={styles.buttonTextRegister}>Siguiente</Text>
+
               </TouchableOpacity>
             </View>
           </View>
