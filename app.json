@@ -4,10 +4,10 @@
     "slug": "Freelearnic",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "../../assets/icon/freelearnic.png",
+    "icon": "./assets/Freelearnic.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "../../assets/icon/ampliada.png",
+      "image": "./assets/ampliada.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -16,12 +16,15 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/freelearnic.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/freelearnic.png"
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
