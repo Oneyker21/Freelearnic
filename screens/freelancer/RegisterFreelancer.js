@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, } from 'react-native';
+import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, TextInput } from 'react-native';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
@@ -26,8 +26,8 @@ const RegisterFreelancer = () => {
   const [isLoading, setIsLoading] = useState(false); // Estado de carga
   const [error, setError] = useState('');
 
-
-  useEffect(() => { // Depuración para ver los valores actuales
+  useEffect(() => {
+    console.log(password, confirmPassword); // Depuración para ver los valores actuales
     if (password && confirmPassword && password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
     } else {
@@ -106,7 +106,6 @@ const RegisterFreelancer = () => {
   };
 
   const registrarFreelancer = async () => {
-
     setIsLoading(true); // Activar estado de carga
     try {
       if (password !== confirmPassword) {
@@ -153,8 +152,6 @@ const RegisterFreelancer = () => {
       console.error('Error al registrar el freelancer: ', error);
       Alert.alert('Error', 'No se pudo registrar el freelancer: ' + error.message);
     } finally {
-
-
       setIsLoading(false); // Desactivar estado de carga
     }
   };
@@ -187,9 +184,7 @@ const RegisterFreelancer = () => {
               <CustomTextInput onChangeText={setEmail} value={email} placeholder="Correo Electrónico" />
               <CustomTextInput onChangeText={setPassword} value={password} placeholder="Contraseña" secureTextEntry={true} showPassword={showPassword} toggleShowPassword={() => setShowPassword(!showPassword)} />
               <CustomTextInput onChangeText={setConfirmPassword} value={confirmPassword} placeholder="Confirmar Contraseña" secureTextEntry={true} />
-              <View style={styles.errorContainer}>
-                {error ? <Text style={styles.errorText}>{error}</Text> : null}
-              </View>
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
               <CustomTextInput onChangeText={setNumCedula} value={numCedula} placeholder="Número de Cédula" />
               <CustomTextInput onChangeText={setProfesion} value={profesion} placeholder="Profesión" />
 
@@ -200,91 +195,8 @@ const RegisterFreelancer = () => {
               <ImagePickerButton onPress={() => pickImage(setFotoPerfil, false)} iconName="user-circle-o" buttonText="Foto de Perfil" />
               <PreviewImage uri={fotoPerfil} />
 
-
-             <TextInput style={styles.input} onChangeText={(text) => setNombres(text)} value={nombres} placeholder="Nombres" placeholderTextColor="#fff" />
-              <TextInput style={styles.input} onChangeText={(text) => setApellidos(text)} value={apellidos} placeholder="Apellidos" placeholderTextColor="#fff" />
-              <TextInput style={styles.input} onChangeText={(text) => setNombreUsuario(text)} value={nombreUsuario} placeholder="Nombre de usuario" placeholderTextColor="#fff" />
-              <TextInput style={styles.input} onChangeText={setEmail} value={email} placeholder="Correo Electrónico" placeholderTextColor="#fff" />
-              <View style={styles.passwordContainer}>
-                <TextInput
-                  style={styles.passwordInput}
-                  onChangeText={(text) => {
-                    setPassword(text);
-                    if (confirmPassword !== text) {
-                      setError('Las contraseñas no coinciden');
-                    } else {
-                      setError('');
-                    }
-                  }}
-                  value={password}
-                  placeholder="Contraseña"
-                  placeholderTextColor="#fff"
-                  secureTextEntry={!showPassword}
-                />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                  <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#fff" />
-                </TouchableOpacity>
-              </View>
-
-              <TextInput
-                style={styles.input}
-                onChangeText={(text) => {
-                  setConfirmPassword(text);
-                  if (password !== text) {
-                    setError('Las contraseñas no coinciden');
-                  } else {
-                    setError('');
-                  }
-                }}
-                value={confirmPassword}
-                placeholder="Confirmar Contraseña"
-                placeholderTextColor="#fff"
-                secureTextEntry={true}
-              />
-              <View style={styles.errorContainer}>
-                {error !== '' && <Text style={styles.errorText}>{error}</Text>}
-              </View>
-
-
-              <TextInput style={styles.input} onChangeText={(text) => setNumCedula(text)} value={numCedula} placeholder="Número de Cédula" placeholderTextColor="#fff" />
-              <TextInput style={styles.input} onChangeText={(text) => setProfesion(text)} value={profesion} placeholder="Profesión" placeholderTextColor="#fff" />
-
-              <View style={styles.imageRow}>
-                <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaFront, false)}>
-                  <Icon name="id-card-o" size={20} color="#fff" style={styles.icon} />
-                  <Text style={styles.imageButtonText}>Cédula (Frente)</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => pickImage(setFotoCedulaFront, true)}>
-                  <Icon name="camera" size={25} color="#fff" />
-                </TouchableOpacity>
-              </View>
-              {fotoCedulaFront && <Image source={{ uri: fotoCedulaFront }} style={styles.previewImage} />}
-
-              <View style={styles.imageRow}>
-                <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoCedulaBack, false)}>
-                  <Icon name="id-card-o" size={20} color="#fff" style={styles.icon} />
-                  <Text style={styles.imageButtonText}>Cédula (Reverso)</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => pickImage(setFotoCedulaBack, true)}>
-                  <Icon name="camera" size={25} color="#fff" />
-                </TouchableOpacity>
-              </View>
-              {fotoCedulaBack && <Image source={{ uri: fotoCedulaBack }} style={styles.previewImage} />}
-
-              <View style={styles.imageRow}>
-                <TouchableOpacity style={styles.imageButton} onPress={() => pickImage(setFotoPerfil, false)}>
-                  <Icon name="user-circle-o" size={20} color="#fff" style={styles.icon} />
-                  <Text style={styles.imageButtonText}>Foto de Perfil</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => pickImage(setFotoPerfil, true)}>
-                  <Icon name="camera" size={25} color="#fff" />
-                </TouchableOpacity>
-              </View>
-              {fotoPerfil && <Image source={{ uri: fotoPerfil }} style={styles.previewImage} />}
-
-         <TouchableOpacity onPress={registrarFreelancer} style={styles.buttonRegister}>
+              <TouchableOpacity onPress={registrarFreelancer} style={styles.buttonRegister}>
                 <Text style={styles.buttonTextRegister}>Siguiente</Text>
-
               </TouchableOpacity>
             </View>
           </View>
@@ -339,34 +251,6 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowRadius: 1,
   },
-  
-  
-  input: {
-    width: '100%',
-    height: 40,
-    borderBottomWidth: 1,
-    borderColor: '#fff',
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  passwordContainer: {
-    borderBottomWidth: 1,
-    borderColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    height: 40,
-    marginBottom: 10,
-  },
-  passwordInput: {
-    flex: 1,
-    height: '100%',
-    paddingHorizontal: 10,
-  },
-  eyeIcon: {
-    padding: 10,
-  },
-  
   buttonRegister: {
     width: '100%',
     height: 40,
@@ -385,25 +269,11 @@ const styles = StyleSheet.create({
     left: 20,
     zIndex: 1,
   },
-  errorContainer: {
-
-    width: '100%',
-    alignItems: 'start',
-  },
   errorText: {
     color: 'red',
     fontSize: 14,
     marginTop: 5,
-    fontWeight: 'bold',
-    backgroundColor: null, // Asegurarse de que el texto sea visible
-
-    alignItems: 'flex-start',
-     width: '100%',
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 12,
-
+    backgroundColor: 'white', // Asegurarse de que el texto sea visible
   },
 });
 
