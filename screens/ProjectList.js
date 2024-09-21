@@ -3,6 +3,9 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button } from 'rea
 import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { collection, getDocs } from 'firebase/firestore';
 
+//prueba
+
+
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);

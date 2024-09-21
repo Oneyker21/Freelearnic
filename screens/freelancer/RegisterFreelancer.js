@@ -24,7 +24,6 @@ const RegisterFreelancer = () => {
   const [fotoPerfil, setFotoPerfil] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // Estado de carga
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
 
@@ -176,7 +175,7 @@ const RegisterFreelancer = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={30} color="#15297C" />
           </TouchableOpacity>
-          <Image source={require('../../assets/freelearnic.png')} style={styles.logo} />
+          <Image source={require('../../assets/Freelearnic.png')} style={styles.logo} />
           <View style={styles.containerView}>
             <View style={styles.login}>
               <Text style={styles.title}>
