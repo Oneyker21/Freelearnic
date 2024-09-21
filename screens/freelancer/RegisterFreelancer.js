@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, TextInput } from 'react-native';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
@@ -9,8 +9,6 @@ import { Ionicons } from '@expo/vector-icons';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { CustomTextInput, ImagePickerButton, PreviewImage } from '../../utils/inputs'; // Importar componentes personalizados
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Ionicons } from '@expo/vector-icons';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder'; // Importa SkeletonPlaceholder
 
 
 const RegisterFreelancer = () => {
@@ -31,6 +29,7 @@ const RegisterFreelancer = () => {
 
 
   useEffect(() => { // Depuración para ver los valores actuales
+    console.log(password, confirmPassword); // Depuración para ver los valores actuales
     if (password && confirmPassword && password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
     } else {
@@ -190,9 +189,7 @@ const RegisterFreelancer = () => {
               <CustomTextInput onChangeText={setEmail} value={email} placeholder="Correo Electrónico" />
               <CustomTextInput onChangeText={setPassword} value={password} placeholder="Contraseña" secureTextEntry={true} showPassword={showPassword} toggleShowPassword={() => setShowPassword(!showPassword)} />
               <CustomTextInput onChangeText={setConfirmPassword} value={confirmPassword} placeholder="Confirmar Contraseña" secureTextEntry={true} />
-              <View style={styles.errorContainer}>
-                {error ? <Text style={styles.errorText}>{error}</Text> : null}
-              </View>
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
               <CustomTextInput onChangeText={setNumCedula} value={numCedula} placeholder="Número de Cédula" />
               <CustomTextInput onChangeText={setProfesion} value={profesion} placeholder="Profesión" />
 
@@ -397,7 +394,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 5,
     fontWeight: 'bold',
-    backgroundColor: null, // Asegurarse de que el texto sea visible
+    backgroundColor: 'white', // Asegurarse de que el texto sea visible
 
     alignItems: 'flex-start',
      width: '100%',
