@@ -10,6 +10,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { CustomTextInput, ImagePickerButton, PreviewImage } from '../../utils/inputs'; // Importar componentes personalizados
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+
 const RegisterFreelancer = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
