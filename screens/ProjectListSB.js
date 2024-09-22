@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button } from 'react-native';
 import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { collection, getDocs } from 'firebase/firestore';
+import CustomText from '../utils/CustomText';
 
-const ProjectList = () => {
+//prueba
+
+export const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,52 +36,43 @@ const ProjectList = () => {
       keyExtractor={item => item.id}
       renderItem={({ item }) => (
         <View style={styles.card}>
-          <Text style={styles.projectTitle}>{item.titulo}</Text>
-          <Text style={styles.projectTipo}>{item.tipo_proyecto}</Text>
-          <Text style={styles.projectUser}>{item.id_cliente}</Text> 
+          <CustomText style={styles.projectTitle} fontFamily="Roboto">{item.titulo}</CustomText>
+          <CustomText style={styles.projectTipo} fontFamily="OpenSans">{item.tipo_proyecto}</CustomText>
+          <CustomText style={styles.projectUser} fontFamily="OpenSans">{item.id_cliente}</CustomText> 
           <View style={styles.priceContainer}>
-            <Text style={styles.projectPrecio}>
+            <CustomText style={styles.projectPrecio} fontFamily="Roboto">
               Rango precio: 
-             
-              <Text>
+              <CustomText fontFamily="OpenSans">
                 {item.precio_minimo ? `\$${item.precio_minimo}` : 'No especificado'}
                 {' - '}
                 {item.precio_maximo ? `\$${item.precio_maximo}` : 'No especificado'}
-              </Text>
-            </Text>
+              </CustomText>
+            </CustomText>
           </View>
           
-          <Text style={styles.projectDescription}>{item.descripcion_proyecto}</Text>
+          <CustomText style={styles.projectDescription} fontFamily="OpenSans">{item.descripcion_proyecto}</CustomText>
           
           {/* Manejo de propuestas para evitar valores null o undefined */}
           <Text style={styles.projectPropuestas}>
             Propuestas: {item.propuestas ? item.propuestas : 0}
           </Text>
+          <Text style={styles.projectPropuestas}>
+            Propuestas: {item.propuestas ? item.propuestas : 0}
+          </Text>
           
-          {/* Manejo de las fechas, asegurando que son válidas */}
-          <Text style={styles.projectFechaInicio}>
+          <CustomText style={styles.projectFechaInicio} fontFamily="OpenSans">
             Fecha de Inicio: {item.fecha_inicio ? item.fecha_inicio : 'No especificada'}
-          </Text>
-          <Text style={styles.projectFechaEntrega}>
+          </CustomText>
+          <CustomText style={styles.projectFechaEntrega} fontFamily="OpenSans">
             Fecha Estimada de Entrega: {item.fecha_estimada_entrega ? item.fecha_estimada_entrega : 'No especificada'}
-          </Text>
+          </CustomText>
           
-          {/* Botón para enviar propuesta */}
-          <Button
-            title="Enviar Propuesta"
-            onPress={() => handleSendProposal(item.id)} // Llama a la función para enviar propuesta
-          />
         </View>
       )}
     />
   );
 };
 
-// Función para manejar el envío de la propuesta
-const handleSendProposal = (projectId) => {
-  // Lógica para enviar la propuesta
-  console.log(`Propuesta enviada para el proyecto: ${projectId}`);
-};
 
 const styles = StyleSheet.create({
   projectItem: {
@@ -88,7 +82,7 @@ const styles = StyleSheet.create({
   },
   projectTitle: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 15,
   },
   card: {
     backgroundColor: '#fff',
