@@ -8,7 +8,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { CustomTextInput, ImagePickerButton, PreviewImage } from '../../utils/inputs'; // Importar componentes personalizados
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 const RegisterFreelancer = () => {
