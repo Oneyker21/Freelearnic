@@ -27,26 +27,19 @@ export default function LoginScreen() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Buscar en la colección de Usuarios
-      const usuariosQuery = query(collection(db, 'Usuario'), where('uid', '==', user.uid));
-      const usuariosSnapshot = await getDocs(usuariosQuery);
-
       // Buscar en la colección de Freelancers
       const freelancersQuery = query(collection(db, 'Freelancer'), where('uid', '==', user.uid));
       const freelancersSnapshot = await getDocs(freelancersQuery);
 
-      if (!usuariosSnapshot.empty) {
-        // Es un usuario regular
-        console.log('Usuario regular encontrado');
-        navigation.replace('HomeScreenSb');
-      } else if (!freelancersSnapshot.empty) {
-        // Es un freelancer
-        console.log('Freelancer encontrado');
-        navigation.replace('HomeScreenFreelancer');
+      if (!freelancersSnapshot.empty) {
+        const freelancerId = freelancersSnapshot.docs[0].id; // Obtener el ID del freelancer
+
+        console.log('Freelancer encontrado con ID:', freelancerId); // Verifica que el ID se recolecte correctamente
+        navigation.replace('HomeScreenFreelancer', { freelancerId }); // Pasar el freelancerId
       } else {
-        // No se encontró el documento del usuario
-        console.log('No se encontró información del usuario');
-        Alert.alert('Error', 'No se encontró información del usuario');
+        // Manejo de error si no se encuentra el freelancer
+        console.log('No se encontró información del freelancer');
+        Alert.alert('Error', 'No se encontró información del freelancer');
       }
 
       // Limpiar los campos

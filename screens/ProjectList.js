@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button, Alert } from 'react-native';
 import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
 
-const ProjectList = () => {
+const ProjectList = ({ route }) => {
+  const { freelancerId } = route.params; // Obtener el ID del freelancer
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,6 +24,34 @@ const ProjectList = () => {
     fetchProjects();
   }, []);
 
+  const handleSendProposal = async (projectId) => {
+    const nuevaPropuesta = {
+      id_freelancer: freelancerId, // Usar el ID del freelancer
+      precio_propuesta: 200.00, // Cambiar según la lógica de tu aplicación
+      mensaje_propuesta: "Propuesta enviada desde ProjectList", // Mensaje de propuesta
+      estado_propuesta: "pendiente",
+      fecha_propuesta: new Date().toISOString()
+    };
+
+    try {
+      const proyectoRef = doc(db, 'Proyecto', projectId);
+      const proyectoSnap = await getDoc(proyectoRef);
+
+      if (proyectoSnap.exists()) {
+        const propuestasPrevias = proyectoSnap.data().Propuestas || [];
+        await updateDoc(proyectoRef, {
+          Propuestas: [...propuestasPrevias, nuevaPropuesta]
+        });
+        Alert.alert('Éxito', 'Propuesta enviada correctamente');
+      } else {
+        console.log('El proyecto no existe');
+      }
+    } catch (error) {
+      console.error('Error al enviar la propuesta: ', error);
+      Alert.alert('Error', 'No se pudo enviar la propuesta: ' + error.message);
+    }
+  };
+
   if (loading) {
     return <ActivityIndicator size="large" color="#007AFF" />;
   }
@@ -35,35 +64,22 @@ const ProjectList = () => {
         <View style={styles.card}>
           <Text style={styles.projectTitle}>{item.titulo}</Text>
           <Text style={styles.projectTipo}>{item.tipo_proyecto}</Text>
-          <Text style={styles.projectUser}>{item.id_cliente}</Text> 
+          <Text style={styles.projectUser}>{item.id_cliente}</Text>
           <View style={styles.priceContainer}>
             <Text style={styles.projectPrecio}>
-              Rango precio: 
-             
-              <Text>
-                {item.precio_minimo ? `\$${item.precio_minimo}` : 'No especificado'}
-                {' - '}
-                {item.precio_maximo ? `\$${item.precio_maximo}` : 'No especificado'}
-              </Text>
+              Rango precio: {item.precio_minimo ? `\$${item.precio_minimo}` : 'No especificado'} - {item.precio_maximo ? `\$${item.precio_maximo}` : 'No especificado'}
             </Text>
           </View>
-          
           <Text style={styles.projectDescription}>{item.descripcion_proyecto}</Text>
-          
-          {/* Manejo de propuestas para evitar valores null o undefined */}
           <Text style={styles.projectPropuestas}>
-            Propuestas: {item.propuestas ? item.propuestas : 0}
+            Propuestas: {item.Propuestas ? item.Propuestas.length : 0}
           </Text>
-          
-          {/* Manejo de las fechas, asegurando que son válidas */}
           <Text style={styles.projectFechaInicio}>
             Fecha de Inicio: {item.fecha_inicio ? item.fecha_inicio : 'No especificada'}
           </Text>
           <Text style={styles.projectFechaEntrega}>
             Fecha Estimada de Entrega: {item.fecha_estimada_entrega ? item.fecha_estimada_entrega : 'No especificada'}
           </Text>
-          
-          {/* Botón para enviar propuesta */}
           <Button
             title="Enviar Propuesta"
             onPress={() => handleSendProposal(item.id)} // Llama a la función para enviar propuesta
@@ -74,22 +90,7 @@ const ProjectList = () => {
   );
 };
 
-// Función para manejar el envío de la propuesta
-const handleSendProposal = (projectId) => {
-  // Lógica para enviar la propuesta
-  console.log(`Propuesta enviada para el proyecto: ${projectId}`);
-};
-
 const styles = StyleSheet.create({
-  projectItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  projectTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
   card: {
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -104,8 +105,14 @@ const styles = StyleSheet.create({
     shadowRadius: 2.62,
     elevation: 4,
   },
-  projectDescription: {
-    marginVertical: 5,
+  projectTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  projectTipo: {
+    color: '#666',
+  },
+  projectUser: {
     color: '#666',
   },
   priceContainer: {
@@ -115,6 +122,10 @@ const styles = StyleSheet.create({
   projectPrecio: {
     fontWeight: 'bold',
     color: '#007AFF',
+  },
+  projectDescription: {
+    marginVertical: 5,
+    color: '#666',
   },
   projectPropuestas: {
     color: '#666',
