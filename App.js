@@ -16,6 +16,7 @@ import FreelancerProfile from './screens/freelancer/FreelancerProfile';
 
 const Stack = createNativeStackNavigator();
 
+
 const loadFonts = async () => {
   await Font.loadAsync({
     'Roboto-regular': Roboto_400Regular,
@@ -24,6 +25,7 @@ const loadFonts = async () => {
     'OpenSans-bold': OpenSans_700Bold,       // Cargar Open Sans Bold
   });
 };
+
 
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
