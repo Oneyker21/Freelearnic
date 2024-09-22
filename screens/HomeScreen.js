@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import ProjectList from '../ProjectList'; // Asegúrate de que la ruta sea correcta
+import ProjectListSB from './ProjectListSB'; // Asegúrate de que la ruta sea correcta
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -32,7 +32,7 @@ const HomeScreen = () => {
       </View>
       {/* Aquí se agrega el componente ProjectList para mostrar los proyectos */}
       <View style={styles.projectListContainer}>
-        <ProjectList />
+        <ProjectListSB  />
       </View>
     </View>
   );

@@ -63,6 +63,9 @@ const CreateProject = () => {
       console.error('Error al crear el proyecto: ', error);
       Alert.alert('Error', 'No se pudo crear el proyecto: ' + error.message);
     }
+
+
+    
   };
 
   const limpiarCampos = () => {
