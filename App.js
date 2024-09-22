@@ -10,7 +10,7 @@ import RegisterFreelancer from "./screens/freelancer/RegisterFreelancer";
 import CreateProject from "./screens/cliente/CreateProject";
 
 const Stack = createNativeStackNavigator();
-///h
+ ///h
 const App = () => {
   return (
     <NavigationContainer>
