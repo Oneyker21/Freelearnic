@@ -7,7 +7,7 @@
     "icon": "./assets/Freelearnic.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/ampliada.png",
+      "image": "./assets/Ampliada.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

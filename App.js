@@ -8,10 +8,11 @@ import { OpenSans_400Regular, OpenSans_700Bold } from '@expo-google-fonts/open-s
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/freelancer/HomeScreen';
 import RegisterUsers from './screens/RegisterUsers';
-import HomeScreenSb from './screens/cliente/HomeScreenSb';
+import HomeScreenSb from './screens/cliente/HomeScreenClient';
 import HomeScreenFreelancer from './screens/freelancer/HomeScreenFreelancer';
 import RegisterFreelancer from './screens/freelancer/RegisterFreelancer';
 import CreateProject from './screens/cliente/CreateProject';
+import FreelancerProfile from './screens/freelancer/FreelancerProfile';
 
 const Stack = createNativeStackNavigator();
 
@@ -47,6 +48,7 @@ const App = () => {
         <Stack.Screen name="Inicio de sesión" component={LoginScreen} />
         <Stack.Screen name="Registrar Cuenta" component={RegisterUsers} />
         <Stack.Screen name="HomeScreenSb" component={HomeScreenSb} />
+        <Stack.Screen name="Profile Freelancer" component={FreelancerProfile}/>
         <Stack.Screen name="HomeScreenFreelancer" component={HomeScreenFreelancer} />
         <Stack.Screen name="Registrar Freelancer" component={RegisterFreelancer} options={{ headerShown: false }} />
         <Stack.Screen name="Crear Proyecto" component={CreateProject} />
