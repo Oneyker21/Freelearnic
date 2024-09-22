@@ -5,6 +5,7 @@ import HomeScreen from "../screens/freelancer/HomeScreen";
 import RegisterUsers  from "../screens/freelancer/RegisterUsers";
 import HomeScreenSb from "../screens/freelancer/HomeScreenSb";
 import Category from "../screens/admin/Category";
+import VerificationStatus from "../screens/VerificationScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,7 @@ export const AppNavigation = () => {
         <Stack.Screen name="RegisterUsers" component={RegisterUsers} />
         <Stack.Screen name="Inicio" component={HomeScreenSb} />
         <Stack.Screen name="Category" component={Category} />
+        <Stack.Screen name="VerificationStatus" component={VerificationStatus} />
       </Stack.Navigator>
     </NavigationContainer>
   );
