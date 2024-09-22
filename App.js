@@ -7,7 +7,7 @@ import { Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
 import { OpenSans_400Regular, OpenSans_700Bold } from '@expo-google-fonts/open-sans'; // Importar Open Sans
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
-import RegisterUsers from './screens/RegisterUsers';
+import RegisterUsers from './screens/cliente/RegisterUsers';
 import HomeScreenSb from './screens/cliente/HomeScreenClient';
 import HomeScreenFreelancer from './screens/freelancer/HomeScreenFreelancer';
 import RegisterFreelancer from './screens/freelancer/RegisterFreelancer';

@@ -4,7 +4,7 @@ import { BlurView } from 'expo-blur';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
-import { db } from '../config/firebaseConfig';
+import { db } from '../../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importar los iconos
 
@@ -143,7 +143,7 @@ const RegisterUsers = () => {
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <BlurView intensity={90} tint="light" style={styles.blurContainer}>
           <View style={styles.login}>
-            <Image source={require('../assets/icon/favicon.png')} style={styles.logo} />
+            <Image source={require('../../assets/Freelearnic.png')} style={styles.logo} />
             <Text style={styles.title}>Registrarse</Text>
             <TextInput style={styles.input} onChangeText={setNombres} value={nombres} placeholder="Nombres" />
             <TextInput style={styles.input} onChangeText={setApellidos} value={apellidos} placeholder="Apellidos" />

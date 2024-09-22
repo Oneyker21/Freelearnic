@@ -56,9 +56,6 @@ export const ProjectList = () => {
           <Text style={styles.projectPropuestas}>
             Propuestas: {item.propuestas ? item.propuestas : 0}
           </Text>
-          <Text style={styles.projectPropuestas}>
-            Propuestas: {item.propuestas ? item.propuestas : 0}
-          </Text>
           
           <CustomText style={styles.projectFechaInicio} fontFamily="OpenSans">
             Fecha de Inicio: {item.fecha_inicio ? item.fecha_inicio : 'No especificada'}
