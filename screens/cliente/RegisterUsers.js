@@ -66,16 +66,16 @@ const RegisterUsers = () => {
   };
 
   const obtenerSiguienteId = async () => {
-    const contadorRef = doc(db, 'contadores', 'usuarios');
+    const contadorRef = doc(db, 'contadores', 'Clientes');
     const contadorDoc = await getDoc(contadorRef);
 
     if (!contadorDoc.exists()) {
       await setDoc(contadorRef, { contador: 1 });
-      return 'id_usuario_1';
+      return 'id_cliente_1';
     } else {
       const nuevoContador = contadorDoc.data().contador + 1;
       await updateDoc(contadorRef, { contador: increment(1) });
-      return `id_usuario_${nuevoContador}`;
+      return `id_cliente_${nuevoContador}`;
     }
   };
 
@@ -108,7 +108,7 @@ const RegisterUsers = () => {
 
       const idUsuario = await obtenerSiguienteId();
 
-      await setDoc(doc(db, 'Usuario', idUsuario), {
+      await setDoc(doc(db, 'Clientes', idUsuario), {
         uid: user.uid,
         id: idUsuario,
         nombres,

@@ -32,16 +32,29 @@ export default function LoginScreen() {
       const freelancersSnapshot = await getDocs(freelancersQuery);
 
       if (!freelancersSnapshot.empty) {
-        const freelancerData = freelancersSnapshot.docs[0].data(); // Asegúrate de obtener los datos del documento
-        if (freelancerData.estado_verificacion === false) { // Cambiado para verificar si es falso
+        const freelancerData = freelancersSnapshot.docs[0].data();
+        if (freelancerData.estado_verificacion === false) {
           navigation.navigate('VerificationStatus');
         } else {
           navigation.navigate('HomeScreenFreelancer', { freelancerId: freelancersSnapshot.docs[0].id });
         }
       } else {
-        // Manejo de error si no se encuentra el freelancer
-        console.log('No se encontró información del freelancer');
-        Alert.alert('Error', 'No se encontró información del freelancer');
+        // Buscar en la colección de Clientes
+        const clientsQuery = query(collection(db, 'Clientes'), where('uid', '==', user.uid));
+        const clientsSnapshot = await getDocs(clientsQuery);
+
+        if (!clientsSnapshot.empty) {
+          const clientData = clientsSnapshot.docs[0].data();
+          if (clientData.estado_verificacion === false) {
+            navigation.navigate('VerificationStatus');
+          } else {
+            navigation.navigate('HomeScreenCliente', { clientId: clientsSnapshot.docs[0].id });
+          }
+        } else {
+          // Manejo de error si no se encuentra ni freelancer ni cliente
+          console.log('No se encontró información del freelancer o cliente');
+          Alert.alert('Error', 'No se encontró información del freelancer o cliente');
+        }
       }
 
       // Limpiar los campos
