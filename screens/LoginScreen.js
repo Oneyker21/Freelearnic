@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
-import { BlurView } from 'expo-blur';
+import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { CustomTextInput } from '../utils/inputs'; // Importar los inputs reutilizables
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// URL del fondo del login
-const url = 'https://ak.picdn.net/shutterstock/videos/1060308725/thumb/1.jpg';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -32,8 +30,8 @@ export default function LoginScreen() {
       const freelancersSnapshot = await getDocs(freelancersQuery);
 
       if (!freelancersSnapshot.empty) {
-        const freelancerData = freelancersSnapshot.docs[0].data(); // Asegúrate de obtener los datos del documento
-        if (freelancerData.estado_verificacion === false) { // Cambiado para verificar si es falso
+        const freelancerData = freelancersSnapshot.docs[0].data();
+        if (freelancerData.estado_verificacion === false) {
           navigation.navigate('VerificationStatus');
         } else {
           navigation.navigate('HomeScreenFreelancer', { freelancerId: freelancersSnapshot.docs[0].id });
@@ -60,104 +58,99 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: url }} style={[styles.image, StyleSheet.absoluteFill]} />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <BlurView intensity={100} tint="light" style={styles.blurContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={30} color="#15297C" />
+        </TouchableOpacity>
+        <Image source={require('../assets/Freelearnic.png')} style={styles.logo} />
+
+        <View style={styles.containerView}>
           <View style={styles.login}>
-            <Image
-              source={require('../assets/icon/favicon.png')}
-              style={styles.logo}
-            />
+            <Text style={styles.title}>
+              Iniciar Sesión en <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text>
+            </Text>
 
-            <Text style={styles.title}>Iniciar Sesión</Text>
-
-            <TextInput 
-              style={styles.input} 
-              onChangeText={(text) => setEmail(text)} 
-              value={email}
+            {/* Usar CustomTextInput para el campo de email */}
+            <CustomTextInput 
+              value={email} 
+              onChangeText={setEmail} 
               placeholder="Correo Electrónico" 
             />
-            <View style={styles.passwordContainer}>
-              <TextInput 
-                style={styles.passwordInput} 
-                onChangeText={(text) => setPassword(text)} 
-                value={password}
-                placeholder="Contraseña" 
-                secureTextEntry={!showPassword} 
-              />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#007AFF" />
-              </TouchableOpacity>
-            </View>
+
+            {/* Usar CustomTextInput para el campo de contraseña con opción de mostrar/ocultar */}
+            <CustomTextInput 
+              value={password} 
+              onChangeText={setPassword} 
+              placeholder="Contraseña" 
+              secureTextEntry={true}
+              showPassword={showPassword}
+              toggleShowPassword={() => setShowPassword(!showPassword)}
+            />
 
             <TouchableOpacity onPress={handleSignIn} style={styles.buttonLogin}>
-              <Text style={styles.buttonText}>Iniciar Sesión</Text>
+              <Text style={styles.buttonTextLogin}>Iniciar Sesión</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { handleCreateAccount(); limpiarCampos(); }} style={styles.buttonRegister}>
               <Text style={styles.buttonTextRegister}>Registrarse</Text>
             </TouchableOpacity>
-
           </View>
-        </BlurView>
+        </View>
       </ScrollView>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
+    paddingTop: 50,
+    position: 'relative',
   },
   scrollViewContent: {
-    flex: 1,
+    zIndex: 0,
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 20,
+    zIndex: 1,
+  },
+  logo: {
+    width: 120,
+    height: 130,
+    borderRadius: 4,
+    marginBottom: 20,
+    alignSelf: 'center',
+  },
+  containerView: {
+    backgroundColor: '#388ABD',
     width: '100%',
     height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  blurContainer: {
-    width: '80%',
-    padding: 20,
-    borderRadius: 10,
+    padding: 30,
+    borderTopLeftRadius: 130,
     overflow: 'hidden',
   },
   login: {
     width: '100%',
     alignItems: 'center',
   },
-  logo: {
-    width: 80,
-    height: 80,
-    borderRadius: 4,
-    marginBottom: 20,
-  },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: 'none',
     marginBottom: 20,
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 1
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderRadius: 5,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    textShadowRadius: 1,
   },
   buttonLogin: {
     width: '100%',
     height: 40,
-    backgroundColor: '#007AFF',
-    borderRadius: 5,
+    backgroundColor: '#15297C',
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
@@ -166,13 +159,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 40,
     backgroundColor: '#E6F3FF',
-    borderRadius: 5,
+    borderRadius: 50,
     borderColor: '#007AFF',
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  buttonText: {
+  buttonTextLogin: {
     color: '#fff',
     fontWeight: 'bold',
   },
@@ -180,21 +173,13 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontWeight: 'bold',
   },
-  passwordContainer: {
+  inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: '#fff',
+    marginBottom: 10,
     width: '100%',
     height: 40,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderRadius: 5,
-    marginBottom: 10,
   },
-  passwordInput: {
-    flex: 1,
-    height: '100%',
-    paddingHorizontal: 10,
-  },
-  eyeIcon: {
-    padding: 10,
-  },
-})
+});

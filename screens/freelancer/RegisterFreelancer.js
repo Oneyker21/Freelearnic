@@ -109,8 +109,6 @@ const RegisterFreelancer = () => {
     setIsLoading(true); // Activar estado de carga
     try {
       if (password !== confirmPassword) {
-        setIsLoading(false); // Desactivar estado de carga antes de mostrar el alerta
-        Alert.alert('Error', 'Las contraseñas no coinciden');
         return;
       }
 
