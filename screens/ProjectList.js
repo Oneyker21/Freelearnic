@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button, Alert } from 'react-native';
 import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { collection, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
+import ProposalModal from '../screens/freelancer/ProposalModal'; // Asegúrate de que la ruta sea correcta
 
 const ProjectList = ({ route }) => {
   const { freelancerId } = route.params; // Obtener el ID del freelancer
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -24,11 +27,11 @@ const ProjectList = ({ route }) => {
     fetchProjects();
   }, []);
 
-  const handleSendProposal = async (projectId) => {
+  const handleSendProposal = async (projectId, proposalData) => {
     const nuevaPropuesta = {
-      id_freelancer: freelancerId, // Usar el ID del freelancer
-      precio_propuesta: 200.00, // Cambiar según la lógica de tu aplicación
-      mensaje_propuesta: "Propuesta enviada desde ProjectList", // Mensaje de propuesta
+      id_freelancer: freelancerId,
+      precio_propuesta: proposalData.precio_propuesta,
+      mensaje_propuesta: proposalData.mensaje_propuesta,
       estado_propuesta: "pendiente",
       fecha_propuesta: new Date().toISOString()
     };
@@ -57,36 +60,49 @@ const ProjectList = ({ route }) => {
   }
 
   return (
-    <FlatList
-      data={projects}
-      keyExtractor={item => item.id}
-      renderItem={({ item }) => (
-        <View style={styles.card}>
-          <Text style={styles.projectTitle}>{item.titulo}</Text>
-          <Text style={styles.projectTipo}>{item.tipo_proyecto}</Text>
-          <Text style={styles.projectUser}>{item.id_cliente}</Text>
-          <View style={styles.priceContainer}>
-            <Text style={styles.projectPrecio}>
-              Rango precio: {item.precio_minimo ? `\$${item.precio_minimo}` : 'No especificado'} - {item.precio_maximo ? `\$${item.precio_maximo}` : 'No especificado'}
+    <View style={{ flex: 1 }}>
+      <FlatList
+        data={projects}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text style={styles.projectTitle}>{item.titulo}</Text>
+            <Text style={styles.projectTipo}>{item.tipo_proyecto}</Text>
+            <Text style={styles.projectUser}>{item.id_cliente}</Text>
+            <View style={styles.priceContainer}>
+              <Text style={styles.projectPrecio}>
+                Rango precio: {item.precio_minimo ? `\$${item.precio_minimo}` : 'No especificado'} - {item.precio_maximo ? `\$${item.precio_maximo}` : 'No especificado'}
+              </Text>
+            </View>
+            <Text style={styles.projectDescription}>{item.descripcion_proyecto}</Text>
+            <Text style={styles.projectPropuestas}>
+              Propuestas: {item.Propuestas ? item.Propuestas.length : 0}
             </Text>
+            <Text style={styles.projectFechaInicio}>
+              Fecha de Inicio: {item.fecha_inicio ? item.fecha_inicio : 'No especificada'}
+            </Text>
+            <Text style={styles.projectFechaEntrega}>
+              Fecha Estimada de Entrega: {item.fecha_estimada_entrega ? item.fecha_estimada_entrega : 'No especificada'}
+            </Text>
+            <Button
+              title="Enviar Propuesta"
+              onPress={() => {
+                setSelectedProjectId(item.id);
+                setModalVisible(true);
+              }} // Abre el modal
+            />
           </View>
-          <Text style={styles.projectDescription}>{item.descripcion_proyecto}</Text>
-          <Text style={styles.projectPropuestas}>
-            Propuestas: {item.Propuestas ? item.Propuestas.length : 0}
-          </Text>
-          <Text style={styles.projectFechaInicio}>
-            Fecha de Inicio: {item.fecha_inicio ? item.fecha_inicio : 'No especificada'}
-          </Text>
-          <Text style={styles.projectFechaEntrega}>
-            Fecha Estimada de Entrega: {item.fecha_estimada_entrega ? item.fecha_estimada_entrega : 'No especificada'}
-          </Text>
-          <Button
-            title="Enviar Propuesta"
-            onPress={() => handleSendProposal(item.id)} // Llama a la función para enviar propuesta
-          />
-        </View>
-      )}
-    />
+        )}
+      />
+      <ProposalModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSubmit={(proposalData) => {
+          handleSendProposal(selectedProjectId, proposalData); // Asegúrate de que proposalData tenga las propiedades correctas
+          setModalVisible(false);
+        }}
+      />
+    </View>
   );
 };
 
