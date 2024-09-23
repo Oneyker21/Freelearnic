@@ -6,7 +6,7 @@ import RegisterUsers  from "../screens/freelancer/RegisterUsers";
 import HomeScreenSb from "../screens/freelancer/HomeScreenSb";
 import Category from "../screens/admin/Category";
 import VerificationStatus from "../screens/VerificationScreen";
-
+import HomeScreenFreelancer from "../screens/freelancer/HomeScreenFreelancer";
 const Stack = createNativeStackNavigator();
 
 export const AppNavigation = () => {
@@ -19,6 +19,7 @@ export const AppNavigation = () => {
         <Stack.Screen name="Inicio" component={HomeScreenSb} />
         <Stack.Screen name="Category" component={Category} />
         <Stack.Screen name="VerificationStatus" component={VerificationStatus} />
+        <Stack.Screen name="HomeScreenFreelancer" component={HomeScreenFreelancer} />
       </Stack.Navigator>
     </NavigationContainer>
   );

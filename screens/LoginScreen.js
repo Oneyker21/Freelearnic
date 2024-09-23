@@ -32,10 +32,12 @@ export default function LoginScreen() {
       const freelancersSnapshot = await getDocs(freelancersQuery);
 
       if (!freelancersSnapshot.empty) {
-        const freelancerId = freelancersSnapshot.docs[0].id; // Obtener el ID del freelancer
-
-        console.log('Freelancer encontrado con ID:', freelancerId); // Verifica que el ID se recolecte correctamente
-        navigation.replace('HomeScreenFreelancer', { freelancerId }); // Pasar el freelancerId
+        const freelancerData = freelancersSnapshot.docs[0].data(); // Asegúrate de obtener los datos del documento
+        if (freelancerData.estado_verificacion === false) { // Cambiado para verificar si es falso
+          navigation.navigate('VerificationStatus');
+        } else {
+          navigation.navigate('HomeScreenFreelancer', { freelancerId: freelancersSnapshot.docs[0].id });
+        }
       } else {
         // Manejo de error si no se encuentra el freelancer
         console.log('No se encontró información del freelancer');

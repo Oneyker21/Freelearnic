@@ -49,7 +49,7 @@ const App = () => {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Inicio de sesión" component={LoginScreen} />
-        <Stack.Screen name="Registrar Cuenta" component={RegisterUsers} />
+        <Stack.Screen name="Registrar Cuenta" component={RegisterUsers} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreenSb" component={HomeScreenSb} />
         <Stack.Screen name="Profile Freelancer" component={FreelancerProfile}/>
         <Stack.Screen name="HomeScreenFreelancer" component={HomeScreenFreelancer} />

@@ -11,7 +11,7 @@ const HomeScreen = () => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('VerificationStatus')}
+          onPress={() => navigation.navigate('Inicio de sesión')}
         >
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
