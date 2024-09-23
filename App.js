@@ -14,6 +14,7 @@ import RegisterFreelancer from './screens/freelancer/RegisterFreelancer';
 import CreateProject from './screens/cliente/CreateProject';
 import FreelancerProfile from './screens/freelancer/FreelancerProfile';
 import VerificationStatus from './screens/VerificationScreen';
+import HomeScreenClient from  './screens/cliente/HomeScreenClient'
 
 const Stack = createNativeStackNavigator();
 
@@ -47,6 +48,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="HomeScreenCliente" component={HomeScreenClient} options={{headerShow: false}} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Inicio de sesión" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Registrar Cuenta" component={RegisterUsers} options={{ headerShown: false }} />
