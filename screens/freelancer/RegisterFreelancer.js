@@ -6,7 +6,6 @@ import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { CustomTextInput, ImagePickerButton, PreviewImage } from '../../utils/inputs'; // Importar componentes personalizados
 
 
@@ -157,14 +156,9 @@ const RegisterFreelancer = () => {
   return (
     <View style={styles.container}>
       {isLoading ? (
-        <SkeletonPlaceholder>
-          <SkeletonPlaceholder.Item flexDirection="column" alignItems="center">
-            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={20} />
-            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={10} />
-            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={10} />
-            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={10} />
-          </SkeletonPlaceholder.Item>
-        </SkeletonPlaceholder>
+    <View style={styles.loadingContainer}>
+    <Text>Cargando...</Text>
+  </View>
       ) : (
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -279,6 +273,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontWeight: 'bold',
     backgroundColor: null, // Asegurarse de que el texto sea visible
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
 });
 
