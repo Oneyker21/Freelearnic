@@ -35,6 +35,7 @@ const HomeScreenFreelancer = ({ route }) => {
   }
 
   return (
+    
     <View style={styles.container}>
       <ProjectList route={{ params: { freelancerId } }} />
     </View>

@@ -54,10 +54,10 @@ const App = () => {
         <Stack.Screen name="Registrar Cuenta" component={RegisterUsers} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreenSb" component={HomeScreenSb} />
         <Stack.Screen name="Profile Freelancer" component={FreelancerProfile}/>
-        <Stack.Screen name="HomeScreenFreelancer" component={HomeScreenFreelancer} />
+        <Stack.Screen name="HomeScreenFreelancer" component={HomeScreenFreelancer} option />
         <Stack.Screen name="Registrar Freelancer" component={RegisterFreelancer} options={{ headerShown: false }} />
         <Stack.Screen name="Crear Proyecto" component={CreateProject} />
-        <Stack.Screen name="VerificationStatus" component={VerificationStatus} />
+        <Stack.Screen name="VerificationStatus" component={VerificationStatus} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
