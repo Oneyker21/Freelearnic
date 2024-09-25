@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 
-const ProposalModal = ({ visible, onClose, onSubmit }) => {
+const ProposalModal = ({ visible, onClose, onSubmit, id_cliente }) => { // Acepta id_cliente como prop
   const [precioPropuesta, setPrecioPropuesta] = useState('');
   const [mensajePropuesta, setMensajePropuesta] = useState('');
 
@@ -11,7 +11,12 @@ const ProposalModal = ({ visible, onClose, onSubmit }) => {
       return;
     }
 
-    onSubmit({ precio_propuesta: parseFloat(precioPropuesta), mensaje_propuesta: mensajePropuesta });
+    // Incluye id_cliente en los datos de la propuesta
+    onSubmit({ 
+      precio_propuesta: parseFloat(precioPropuesta), 
+      mensaje_propuesta: mensajePropuesta,
+      id_cliente: id_cliente // Agrega el id_cliente aquí
+    });
     setPrecioPropuesta('');
     setMensajePropuesta('');
     onClose();

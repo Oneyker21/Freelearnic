@@ -2,32 +2,35 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { collection, getDocs } from 'firebase/firestore';
+import { getDoc,doc } from 'firebase/firestore';
 
-const HomeScreenSb = () => {
+const HomeScreenSb = ({route}) => {
   const navigation = useNavigation();
-  const [freelancerId, setFreelancerId] = useState(null);
+  const { clientId } = route.params; // Obtener el ID del freelancer de los parámetros de la ruta
+  console.log('Client ID en HomeScreenClient:', clientId); // Verifica que el ID se recolecte correctamente
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
-    const fetchFreelancerId = async () => {
+    const fetchClientData = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'Freelancer'));
-        if (!querySnapshot.empty) {
-          const firstFreelancer = querySnapshot.docs[0]; // Obtener el primer freelancer
-          setFreelancerId(firstFreelancer.id); // Almacenar el ID del primer freelancer
+        const docRef = doc(db, 'Clientes', clientId); // Cambia 'Freelancers' por el nombre de tu colección
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          // Aquí puedes manejar los datos si es necesario
         } else {
-          console.log('No freelancers found');
+          console.log('No such document!');
         }
       } catch (error) {
-        console.error('Error fetching freelancers: ', error);
+        console.error('Error fetching client data: ', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchFreelancerId();
-  }, []);
+    fetchClientData();
+  }, [clientId]);
 
   if (loading) {
     return <ActivityIndicator size="large" color="#007AFF" />;
@@ -38,20 +41,19 @@ const HomeScreenSb = () => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Crear Proyecto')} // Navegar al componente CreateProject
+          onPress={() => navigation.navigate('Crear Proyecto', { clientId })} // Pasar el clientId al componente Crear Proyecto
         >
           <Text style={styles.buttonText}>Crear Proyecto</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('SelectProposal', { clientId })} // Navegar al componente CreateProject
+        >
+          <Text style={styles.buttonText}>Propuestas</Text>
+        </TouchableOpacity>
         
-        {/* Botón para navegar al perfil del freelancer */}
-        {freelancerId && (
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Profile Freelancer', { freelancerId })} // Navegar al componente FreelancerProfile
-          >
-            <Text style={styles.buttonText}>Ver Perfil del Freelancer</Text>
-          </TouchableOpacity>
-        )}
+  
       </View>
     </View>
   );

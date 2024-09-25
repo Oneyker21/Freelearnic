@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { doc, setDoc } from 'firebase/firestore';
@@ -7,7 +7,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import DateTimePickerModal from 'react-native-modal-datetime-picker'; // Importar el selector de fechas
 import { Picker } from '@react-native-picker/picker'; // Importar el Picker
 
-const CreateProject = () => {
+const CreateProject = ({ route }) => {
+  const { clientId } = route.params; // Obtener el ID del freelancer de los parámetros de la ruta
+  console.log('Cliente id en createproject:', clientId); // Verifica que el ID se recolecte correctamente
   const [titulo, setTitulo] = React.useState('');
   const [descripcion, setDescripcion] = React.useState('');
   const [precioMinimo, setPrecioMinimo] = React.useState('');
@@ -15,6 +17,8 @@ const CreateProject = () => {
   const [fechaFin, setFechaFin] = React.useState('');
   const [tipoProyecto, setTipoProyecto] = React.useState(''); // Estado para el tipo de proyecto
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+
+
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -42,7 +46,7 @@ const CreateProject = () => {
   const crearProyecto = async () => {
     try {
       const nuevoProyecto = {
-        id_cliente: "id_cliente_1", // Cambiar según el cliente
+        id_cliente: clientId, // Cambiar según el cliente
         titulo,
         descripcion_proyecto: descripcion,
         estado_proyecto: "activo",
@@ -53,7 +57,6 @@ const CreateProject = () => {
         precio_minimo: parseFloat(precioMinimo), // Precio mínimo
         precio_maximo: parseFloat(precioMaximo), // Precio máximo
         precio_final: parseFloat(precioMinimo), // Precio final
-        propuestas: [] // Inicializar el campo de propuestas
       };
 
       await setDoc(doc(db, 'Proyecto', `id_proyecto_${Date.now()}`), nuevoProyecto);

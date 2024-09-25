@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button, Alert, TouchableOpacity } from 'react-native';
 import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { collection, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, updateDoc,addDoc} from 'firebase/firestore';
 import ProposalModal from '../screens/freelancer/ProposalModal'; // Asegúrate de que la ruta sea correcta
 
 const ProjectList = ({ route }) => {
@@ -10,6 +10,7 @@ const ProjectList = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [selectedClientId, setSelectedClientId] = useState(null);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -27,31 +28,21 @@ const ProjectList = ({ route }) => {
     fetchProjects();
   }, []);
 
-  const handleSendProposal = async (projectId, proposalData) => {
-    const nuevaPropuesta = {
-      id_freelancer: freelancerId,
-      precio_propuesta: proposalData.precio_propuesta,
-      mensaje_propuesta: proposalData.mensaje_propuesta,
-      estado_propuesta: "pendiente",
-      fecha_propuesta: new Date().toISOString()
-    };
-
+  const enviarPropuesta = async (projectId, proposalData) => {
     try {
-      const proyectoRef = doc(db, 'Proyecto', projectId);
-      const proyectoSnap = await getDoc(proyectoRef);
-
-      if (proyectoSnap.exists()) {
-        const propuestasPrevias = proyectoSnap.data().Propuestas || [];
-        await updateDoc(proyectoRef, {
-          Propuestas: [...propuestasPrevias, nuevaPropuesta]
-        });
-        Alert.alert('Éxito', 'Propuesta enviada correctamente');
-      } else {
-        console.log('El proyecto no existe');
-      }
+      const propuesta = {
+        id_freelancer: freelancerId,
+        id_proyecto: projectId,
+        precio_propuesta: proposalData.precio_propuesta,
+        mensaje_propuesta: proposalData.mensaje_propuesta,
+        estado_propuesta: 'pendiente',
+        fecha_propuesta: new Date().toISOString(),
+        id_cliente: proposalData.id_cliente // Asegúrate de incluir el id_cliente aquí
+      };
+      await addDoc(collection(db, 'Propuestas'), propuesta);
+      Alert.alert('Propuesta enviada');
     } catch (error) {
-      console.error('Error al enviar la propuesta: ', error);
-      Alert.alert('Error', 'No se pudo enviar la propuesta: ' + error.message);
+      console.error("Error al enviar la propuesta: ", error);
     }
   };
 
@@ -84,13 +75,13 @@ const ProjectList = ({ route }) => {
             <Text style={styles.projectFechaEntrega}>
               Fecha Estimada de Entrega: {item.fecha_estimada_entrega ? item.fecha_estimada_entrega : 'No especificada'}
             </Text>
-            <Button
-              title="Enviar Propuesta"
-              onPress={() => {
-                setSelectedProjectId(item.id);
-                setModalVisible(true);
-              }} // Abre el modal
-            />
+            <TouchableOpacity onPress={() => {
+              setSelectedProjectId(item.id);
+              setSelectedClientId(item.id_cliente); // Establece el id_cliente
+              setModalVisible(true);
+            }} style={styles.button}>
+              <Text style={styles.buttonText}>Enviar Propuesta</Text>
+            </TouchableOpacity>
           </View>
         )}
       />
@@ -98,7 +89,9 @@ const ProjectList = ({ route }) => {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onSubmit={(proposalData) => {
-          handleSendProposal(selectedProjectId, proposalData); // Asegúrate de que proposalData tenga las propiedades correctas
+          // Agrega el id_cliente a proposalData antes de enviarlo
+          proposalData.id_cliente = selectedClientId; // Incluye el id_cliente
+          enviarPropuesta(selectedProjectId, proposalData); // Envía la propuesta
           setModalVisible(false);
         }}
       />
@@ -151,6 +144,18 @@ const styles = StyleSheet.create({
   },
   projectFechaEntrega: {
     color: '#666',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
