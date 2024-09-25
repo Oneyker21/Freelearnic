@@ -11,15 +11,14 @@ const SelectProposals = ({ route }) => {
   useEffect(() => {
     const fetchProposals = async () => {
       try {
-        const proposalsQuery = query(collection(db, 'Proyecto'), where('id_cliente', '==', clientId));
+        // Obtener propuestas directamente de la colección 'Propuestas'
+        const proposalsQuery = query(collection(db, 'Propuestas'), where('id_cliente', '==', clientId));
         const querySnapshot = await getDocs(proposalsQuery);
         const proposalsData = [];
 
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          if (data.Propuestas) {
-            proposalsData.push(...data.Propuestas);
-          }
+          proposalsData.push({ id: doc.id, ...data }); // Agregar el ID del documento
         });
 
         setProposals(proposalsData);
@@ -35,13 +34,18 @@ const SelectProposals = ({ route }) => {
 
   const acceptProposal = async (proposal) => {
     try {
-      // Aquí puedes actualizar el estado de la propuesta a "aceptada"
-      const projectRef = doc(db, 'Proyecto', proposal.projectId); // Asegúrate de tener el ID del proyecto
-      await updateDoc(projectRef, {
-        Propuestas: proposal.estado_propuesta = "aceptada" // Cambiar el estado de la propuesta
+      const proposalRef = doc(db, 'Propuestas', proposal.id); // Obtener la referencia del documento de la propuesta
+      await updateDoc(proposalRef, {
+        estado_propuesta: "aceptada",
+        id_cliente: proposal.id_cliente // Asegúrate de que el id_cliente se guarde en la propuesta
       });
 
       Alert.alert('Éxito', 'Propuesta aceptada correctamente');
+      setProposals(prevProposals => 
+        prevProposals.map(p => 
+          p.id === proposal.id ? { ...p, estado_propuesta: "aceptada" } : p
+        )
+      );
     } catch (error) {
       console.error('Error al aceptar la propuesta: ', error);
       Alert.alert('Error', 'No se pudo aceptar la propuesta: ' + error.message);
@@ -56,12 +60,13 @@ const SelectProposals = ({ route }) => {
     <View style={styles.container}>
       <FlatList
         data={proposals}
-        keyExtractor={(item) => item.id_freelancer} // Asegúrate de que cada propuesta tenga un ID único
+        keyExtractor={(item) => item.id} // Asegúrate de que cada propuesta tenga un ID único
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text style={styles.title}>Propuesta de {item.id_freelancer}</Text>
             <Text>Precio: ${item.precio_propuesta}</Text>
             <Text>Mensaje: {item.mensaje_propuesta}</Text>
+            <Text>Estado: {item.estado_propuesta}</Text> {/* Mostrar el estado actual */}
             <TouchableOpacity onPress={() => acceptProposal(item)} style={styles.button}>
               <Text style={styles.buttonText}>Aceptar Propuesta</Text>
             </TouchableOpacity>

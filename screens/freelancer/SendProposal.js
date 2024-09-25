@@ -4,34 +4,32 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
 
 const SendProposal = ({ route }) => {
+  
   const { projectId } = route.params; // Obtener el ID del proyecto desde la navegación
+  const { freelancerId } = route.params; // Obtener el ID del freelancer de los parámetros de la ruta
+  console.log('Freelancer ID en HomeScreenFreelancer:', freelancerId); // Verifica que el ID se recolecte correctamente
   const [mensajePropuesta, setMensajePropuesta] = React.useState('');
   const [precioPropuesta, setPrecioPropuesta] = React.useState('');
 
+
+
   const enviarPropuesta = async () => {
     try {
-      const nuevaPropuesta = {
-        id_freelancer: "id_freelancer_1", // Cambiar según el freelancer
+      const propuesta = {
+        id_proyecto: projectId,
+        id_freelancer: freelancerId,
+        mensaje_propuesta: mensajePropuesta,
         precio_propuesta: parseFloat(precioPropuesta),
-        mensaje_propuesta,
-        estado_propuesta: "pendiente",
-        fecha_propuesta: new Date().toISOString()
+        estado_propuesta: 'pendiente',
+        fecha_propuesta: new Date().toISOString(),
       };
-
-      // Actualizar el proyecto con la nueva propuesta
-      const proyectoRef = doc(db, 'Proyecto', projectId);
-      await updateDoc(proyectoRef, {
-        propuestas: [...(await proyectoRef.get()).data().propuestas, nuevaPropuesta] // Agregar la propuesta al proyecto
-      });
-
-      Alert.alert('Éxito', 'Propuesta enviada correctamente');
-      setMensajePropuesta('');
-      setPrecioPropuesta('');
+      await addDoc(collection(db, 'Propuestas'), propuesta);
+      Alert.alert('Propuesta enviada');
     } catch (error) {
-      console.error('Error al enviar la propuesta: ', error);
-      Alert.alert('Error', 'No se pudo enviar la propuesta: ' + error.message);
+      console.error("Error al enviar la propuesta: ", error);
     }
   };
+  
 
   return (
     <View>

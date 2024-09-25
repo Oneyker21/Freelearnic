@@ -1,0 +1,8 @@
+{
+    "workbench.editor.decorations.colors": false,
+    "workbench.colorTheme": "Abyss",
+    "workbench.preferredDarkColorTheme": "Default High Contrast",
+    "workbench.iconTheme": "vs-seti",
+    "workbench.sideBar.location": "left",
+    "editor.wordWrap": "on"
+}
