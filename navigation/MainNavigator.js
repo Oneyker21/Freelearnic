@@ -1,14 +1,43 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
 
-const Stack = createNativeStackNavigator();
 
-export const AppNavigation = () => {
+import LoginScreen from '../screens/LoginScreen';
+import HomeScreen from '../screens/HomeScreen';
+import HomeScreenCliente from '../screens/cliente/HomeScreenClient';
+import HomeScreenFreelancer from '../screens/freelancer/HomeScreenFreelancer';
+import VerificationScreen from '../screens/VerificationScreen';
+
+const Tab = createBottomTabNavigator();
+const HomeStackNavigator = createNativeStackNavigator();
+
+function Mystack() {
+  return (
+    <HomeStackNavigator.Navigator initialRouteName='Home'>
+      <HomeStackNavigator.Screen name="Home" component={HomeScreen} />
+      <HomeStackNavigator.Screen name="Login" component={LoginScreen} options={{headerShown: false}} />
+    </HomeStackNavigator.Navigator>
+  );
+}
+
+
+function MyTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={Mystack} options={{headerShown: false}} />
+      <Tab.Screen name="HomeCliente" component={HomeScreenCliente} />
+      <Tab.Screen name="HomeFreelancer" component={HomeScreenFreelancer} />
+      <Tab.Screen name="VerificationStatus" component={VerificationScreen} />
+    </Tab.Navigator>
+  );
+}
+
+export default function MainNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
+      <MyTabs />
     </NavigationContainer>
   );
-};
+}

@@ -17,6 +17,9 @@ import VerificationStatus from './screens/VerificationScreen';
 import HomeScreenClient from  './screens/cliente/HomeScreenClient'
 import SelectProposal from './screens/cliente/SelectProposals';
 
+import MainNavigator from './navigation/MainNavigator';
+
+
 const Stack = createNativeStackNavigator();
 
 
@@ -47,7 +50,7 @@ const App = () => {
   }
 
   return (
-    <NavigationContainer>
+    /* <NavigationContainer>
       <Stack.Navigator initialRouteName="Home" options={{headerShow: false}}>
         <Stack.Screen name="SelectProposal" component={SelectProposal} options={{headerShow: false}}/>
         <Stack.Screen name="HomeScreenCliente" component={HomeScreenClient} options={{headerShow: false}} />
@@ -61,7 +64,9 @@ const App = () => {
         <Stack.Screen name="Crear Proyecto" component={CreateProject} />
         <Stack.Screen name="VerificationStatus" component={VerificationStatus} options={{ headerShown: false }} />
       </Stack.Navigator>
-    </NavigationContainer>
+    </NavigationContainer> */
+      <MainNavigator />
+
   );
 };
 
