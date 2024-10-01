@@ -46,7 +46,7 @@ export default function LoginScreen() {
           if (clientData.estado_verificacion === false) {
             navigation.navigate('VerificationStatus');
           } else {
-            navigation.navigate('HomeScreenCliente', { clientId: clientsSnapshot.docs[0].id });
+            navigation.navigate('HomeCliente', { clientId: clientsSnapshot.docs[0].id });
           }
         } else {
           // Manejo de error si no se encuentra ni freelancer ni cliente

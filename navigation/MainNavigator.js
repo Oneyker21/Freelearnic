@@ -18,6 +18,9 @@ function Mystack() {
     <HomeStackNavigator.Navigator initialRouteName='Home'>
       <HomeStackNavigator.Screen name="Home" component={HomeScreen} />
       <HomeStackNavigator.Screen name="Login" component={LoginScreen} options={{headerShown: false}} />
+      <HomeStackNavigator.Screen name="HomeCliente" component={HomeScreenCliente} options={{headerShown: false}} />
+      <HomeStackNavigator.Screen name="HomeFreelancer" component={HomeScreenFreelancer} options={{headerShown: false}} />
+      <HomeStackNavigator.Screen name="VerificationStatus" component={VerificationScreen} options={{headerShown: false}} />
     </HomeStackNavigator.Navigator>
   );
 }
