@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { collection, getDocs, doc, getDoc, updateDoc,addDoc} from 'firebase/firestore';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
 import ProposalModal from '../screens/freelancer/ProposalModal'; // Asegúrate de que la ruta sea correcta
 
-const ProjectList = ({ route }) => {
+const ProjectList = ({ route, showProposalButton }) => {
   const { freelancerId } = route.params; // Obtener el ID del freelancer
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedClientId, setSelectedClientId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(''); // Estado para la búsqueda
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -46,14 +47,25 @@ const ProjectList = ({ route }) => {
     }
   };
 
+  // Filtrar proyectos según la búsqueda
+  const filteredProjects = projects.filter(project =>
+    project.titulo.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) {
     return <ActivityIndicator size="large" color="#007AFF" />;
   }
 
   return (
     <View style={{ flex: 1 }}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Buscar proyecto..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
       <FlatList
-        data={projects}
+        data={filteredProjects}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
@@ -75,13 +87,15 @@ const ProjectList = ({ route }) => {
             <Text style={styles.projectFechaEntrega}>
               Fecha Estimada de Entrega: {item.fecha_estimada_entrega ? item.fecha_estimada_entrega : 'No especificada'}
             </Text>
-            <TouchableOpacity onPress={() => {
-              setSelectedProjectId(item.id);
-              setSelectedClientId(item.id_cliente); // Establece el id_cliente
-              setModalVisible(true);
-            }} style={styles.button}>
-              <Text style={styles.buttonText}>Enviar Propuesta</Text>
-            </TouchableOpacity>
+            {showProposalButton && (
+              <TouchableOpacity onPress={() => {
+                setSelectedProjectId(item.id);
+                setSelectedClientId(item.id_cliente); // Establece el id_cliente
+                setModalVisible(true);
+              }} style={styles.button}>
+                <Text style={styles.buttonText}>Enviar Propuesta</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       />
@@ -100,6 +114,14 @@ const ProjectList = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  searchInput: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    margin: 10,
+  },
   card: {
     backgroundColor: '#fff',
     borderRadius: 8,

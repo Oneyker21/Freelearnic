@@ -6,7 +6,6 @@ import { doc, getDoc } from 'firebase/firestore';
 
 const HomeScreenFreelancer = ({ route }) => {
   const { freelancerId } = route.params; // Obtener el ID del freelancer de los parámetros de la ruta
-  console.log('Freelancer ID en HomeScreenFreelancer:', freelancerId); // Verifica que el ID se recolecte correctamente
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,7 +35,7 @@ const HomeScreenFreelancer = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <ProjectList route={{ params: { freelancerId } }} />
+      <ProjectList route={{ params: { freelancerId } }} showProposalButton={true} />
     </View>
   );
 };

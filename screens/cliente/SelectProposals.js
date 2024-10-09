@@ -58,19 +58,21 @@ const SelectProposals = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={proposals}
-        keyExtractor={(item) => item.id} // Asegúrate de que cada propuesta tenga un ID único
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.title}>Propuesta de {item.id_freelancer}</Text>
-            <Text>Precio: ${item.precio_propuesta}</Text>
-            <Text>Mensaje: {item.mensaje_propuesta}</Text>
-            <Text>Estado: {item.estado_propuesta}</Text> {/* Mostrar el estado actual */}
-            <TouchableOpacity onPress={() => acceptProposal(item)} style={styles.button}>
-              <Text style={styles.buttonText}>Aceptar Propuesta</Text>
-            </TouchableOpacity>
-          </View>
+    <FlatList
+      data={proposals}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <View style={styles.card}>
+          <Text style={styles.title}>
+            {`Propuesta de ${item.id_freelancer || 'Desconocido'}`}
+          </Text>
+          <Text>{`Precio: $${item.precio_propuesta || 'N/A'}`}</Text>
+          <Text>{`Mensaje: ${item.mensaje_propuesta || 'Sin mensaje'}`}</Text>
+          <Text>{`Estado: ${item.estado_propuesta || 'Desconocido'}`}</Text>
+          <TouchableOpacity onPress={() => acceptProposal(item)} style={styles.button}>
+            <Text style={styles.buttonText}>Aceptar Propuesta</Text>
+          </TouchableOpacity>
+        </View>
         )}
       />
     </View>
