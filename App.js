@@ -16,6 +16,7 @@ import FreelancerProfile from './screens/freelancer/FreelancerProfile';
 import VerificationStatus from './screens/VerificationScreen';
 import HomeScreenClient from  './screens/cliente/HomeScreenClient'
 import SelectProposal from './screens/cliente/SelectProposals';
+import Grafico from './screens/cliente/Graficos';
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +61,7 @@ const App = () => {
         <Stack.Screen name="Registrar Freelancer" component={RegisterFreelancer} options={{ headerShown: false }} />
         <Stack.Screen name="Crear Proyecto" component={CreateProject} />
         <Stack.Screen name="VerificationStatus" component={VerificationStatus} />
+        <Stack.Screen name="GraficoProyecto" component={Grafico} />
       </Stack.Navigator>
     </NavigationContainer>
   );

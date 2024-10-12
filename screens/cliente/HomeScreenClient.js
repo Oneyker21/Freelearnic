@@ -54,6 +54,13 @@ const HomeScreenSb = ({route}) => {
         >
           <Text style={styles.buttonText}>Propuestas</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('GraficoProyecto')} // Navegar al componente CreateProject
+        >
+          <Text style={styles.buttonText}>Grafico</Text>
+        </TouchableOpacity>
         
   
       </View>
