@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   projectListContainer: {
-    marginTop: 20, // Ajusta el margen superior según sea necesario
+    marginTop: 47, // Ajusta el margen superior según sea necesario
     width: '100%', // Asegúrate de que ocupe el ancho completo
   },
 });

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, where, updateDoc, doc, writeBatch } from 'firebase/firestore';
 
 const SelectProposals = ({ route }) => {
   const { clientId } = route.params; // Obtener el ID del cliente
@@ -34,16 +34,30 @@ const SelectProposals = ({ route }) => {
 
   const acceptProposal = async (proposal) => {
     try {
-      const proposalRef = doc(db, 'Propuestas', proposal.id); // Obtener la referencia del documento de la propuesta
-      await updateDoc(proposalRef, {
-        estado_propuesta: "aceptada",
-        id_cliente: proposal.id_cliente // Asegúrate de que el id_cliente se guarde en la propuesta
+      const allProposalsQuery = query(collection(db, 'Propuestas'), where('id_proyecto', '==', proposal.id_proyecto));
+      const allProposalsSnapshot = await getDocs(allProposalsQuery);
+      const batch = writeBatch(db);
+
+      allProposalsSnapshot.forEach((docSnapshot) => {
+        const proposalRef = doc(db, 'Propuestas', docSnapshot.id); // Corrección aquí
+        if (docSnapshot.id === proposal.id) {
+          batch.update(proposalRef, {
+            estado_propuesta: "aceptada",
+            id_cliente: proposal.id_cliente
+          });
+        } else {
+          batch.update(proposalRef, {
+            estado_propuesta: "rechazada"
+          });
+        }
       });
 
-      Alert.alert('Éxito', 'Propuesta aceptada correctamente');
+      await batch.commit();
+
+      Alert.alert('Éxito', 'Propuesta aceptada correctamente y las demás han sido rechazadas');
       setProposals(prevProposals => 
         prevProposals.map(p => 
-          p.id === proposal.id ? { ...p, estado_propuesta: "aceptada" } : p
+          p.id === proposal.id ? { ...p, estado_propuesta: "aceptada" } : { ...p, estado_propuesta: "rechazada" }
         )
       );
     } catch (error) {

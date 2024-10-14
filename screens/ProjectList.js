@@ -1,33 +1,51 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot } from 'firebase/firestore';
 import ProposalModal from '../screens/freelancer/ProposalModal'; // Asegúrate de que la ruta sea correcta
+import { Picker } from '@react-native-picker/picker'; // Importación correcta
 
 const ProjectList = ({ route, showProposalButton }) => {
-  const { freelancerId } = route.params; // Obtener el ID del freelancer
+  const { freelancerId } = route.params;
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedClientId, setSelectedClientId] = useState(null);
-  const [searchQuery, setSearchQuery] = useState(''); // Estado para la búsqueda
+  const [categoryFilter, setCategoryFilter] = useState(''); // Inicializa con un valor vacío
+  const [filteredProjects, setFilteredProjects] = useState([]);
+
+  // Definir las categorías preestablecidas
+  const categories = [
+    { label: 'Todos', value: '' },
+    { label: 'Desarrollo de Aplicaciones', value: 'desarrollo_aplicaciones' },
+    { label: 'Diseño Gráfico', value: 'diseno_grafico' },
+    { label: 'Marketing Digital', value: 'marketing_digital' },
+    { label: 'Escritura', value: 'escritura' },
+  ];
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'Proyecto'));
-        const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setProjects(projectsData);
-      } catch (error) {
-        console.error('Error fetching projects: ', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const unsubscribe = onSnapshot(collection(db, 'Proyecto'), (querySnapshot) => {
+      const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setProjects(projectsData);
+      setLoading(false);
+    }, (error) => {
+      console.error('Error fetching projects: ', error);
+      setLoading(false);
+    });
 
-    fetchProjects();
+    return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const filtered = projects.filter(project => {
+      // Filtrar por categoría
+      const categoryMatch = categoryFilter ? project.tipo_proyecto === categoryFilter : true;
+      return categoryMatch;
+    });
+    setFilteredProjects(filtered);
+    console.log("Proyectos filtrados:", filtered);
+  }, [categoryFilter, projects]);
 
   const enviarPropuesta = async (projectId, proposalData) => {
     try {
@@ -38,7 +56,7 @@ const ProjectList = ({ route, showProposalButton }) => {
         mensaje_propuesta: proposalData.mensaje_propuesta,
         estado_propuesta: 'pendiente',
         fecha_propuesta: new Date().toISOString(),
-        id_cliente: proposalData.id_cliente // Asegúrate de incluir el id_cliente aquí
+        id_cliente: proposalData.id_cliente
       };
       await addDoc(collection(db, 'Propuestas'), propuesta);
       Alert.alert('Propuesta enviada');
@@ -47,23 +65,24 @@ const ProjectList = ({ route, showProposalButton }) => {
     }
   };
 
-  // Filtrar proyectos según la búsqueda
-  const filteredProjects = projects.filter(project =>
-    project.titulo.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   if (loading) {
     return <ActivityIndicator size="large" color="#007AFF" />;
   }
 
   return (
     <View style={{ flex: 1 }}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Buscar proyecto..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-      />
+      <Picker
+        selectedValue={categoryFilter}
+        style={styles.picker}
+        onValueChange={(itemValue) => {
+          setCategoryFilter(itemValue);
+          console.log("Categoría seleccionada:", itemValue); // Verifica que el valor se actualice
+        }}
+      >
+        {categories.map((category) => (
+          <Picker.Item key={category.value} label={category.label} value={category.value} />
+        ))}
+      </Picker>
       <FlatList
         data={filteredProjects}
         keyExtractor={item => item.id}
@@ -90,7 +109,7 @@ const ProjectList = ({ route, showProposalButton }) => {
             {showProposalButton && (
               <TouchableOpacity onPress={() => {
                 setSelectedProjectId(item.id);
-                setSelectedClientId(item.id_cliente); // Establece el id_cliente
+                setSelectedClientId(item.id_cliente);
                 setModalVisible(true);
               }} style={styles.button}>
                 <Text style={styles.buttonText}>Enviar Propuesta</Text>
@@ -103,9 +122,8 @@ const ProjectList = ({ route, showProposalButton }) => {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onSubmit={(proposalData) => {
-          // Agrega el id_cliente a proposalData antes de enviarlo
-          proposalData.id_cliente = selectedClientId; // Incluye el id_cliente
-          enviarPropuesta(selectedProjectId, proposalData); // Envía la propuesta
+          proposalData.id_cliente = selectedClientId;
+          enviarPropuesta(selectedProjectId, proposalData);
           setModalVisible(false);
         }}
       />
@@ -114,13 +132,10 @@ const ProjectList = ({ route, showProposalButton }) => {
 };
 
 const styles = StyleSheet.create({
-  searchInput: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    margin: 10,
+  picker: {
+    height: 50,
+    width: '100%',
+    backgroundColor: '#fff', // Asegúrate de que el fondo sea visible
   },
   card: {
     backgroundColor: '#fff',

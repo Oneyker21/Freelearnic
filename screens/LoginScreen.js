@@ -22,7 +22,10 @@ export default function LoginScreen() {
 
   const handleSignIn = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      // Eliminar espacios en blanco al principio y al final del correo
+      const trimmedEmail = email.trim();
+
+      const userCredential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
       const user = userCredential.user;
 
       // Buscar en la colección de Freelancers
