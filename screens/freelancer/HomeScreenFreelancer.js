@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator,TouchableOpacity,Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import ProjectList from '../ProjectList'; // Asegúrate de que la ruta sea correcta
 import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { doc, getDoc } from 'firebase/firestore';
 
 const HomeScreenFreelancer = ({ route }) => {
   const { freelancerId } = route.params; // Obtener el ID del freelancer de los parámetros de la ruta
+  console.log('Freelancer ID en HomeScreenFreelancer:', freelancerId); 
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchFreelancerData = async () => {
@@ -37,6 +40,17 @@ const HomeScreenFreelancer = ({ route }) => {
     
     <View style={styles.container}>
       <ProjectList route={{ params: { freelancerId } }} showProposalButton={true} />
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Profile Freelancer', { freelancerId })} // Asegúrate de pasar freelancerId aquí
+        >
+          <Text style={styles.buttonText}>Perfil</Text>
+        </TouchableOpacity>
+      
+  
+      </View>
     </View>
   );
 };
@@ -47,6 +61,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
+  },
+  buttonContainer: {
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5, // Espaciado entre botones
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

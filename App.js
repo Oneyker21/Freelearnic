@@ -16,6 +16,7 @@ import FreelancerProfile from './screens/freelancer/FreelancerProfile';
 import VerificationStatus from './screens/VerificationScreen';
 import HomeScreenClient from  './screens/cliente/HomeScreenClient'
 import SelectProposal from './screens/cliente/SelectProposals';
+import Grafico from './screens/cliente/Graficos';
 
 import MainNavigator from './navigation/MainNavigator';
 
@@ -62,7 +63,8 @@ const App = () => {
         <Stack.Screen name="HomeScreenFreelancer" component={HomeScreenFreelancer} option />
         <Stack.Screen name="Registrar Freelancer" component={RegisterFreelancer} options={{ headerShown: false }} />
         <Stack.Screen name="Crear Proyecto" component={CreateProject} />
-        <Stack.Screen name="VerificationStatus" component={VerificationStatus} options={{ headerShown: false }} />
+        <Stack.Screen name="VerificationStatus" component={VerificationStatus} />
+        <Stack.Screen name="GraficoProyecto" component={Grafico} />
       </Stack.Navigator>
     </NavigationContainer> */
       <MainNavigator />
