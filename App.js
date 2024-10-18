@@ -7,17 +7,18 @@ import { Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
 import { OpenSans_400Regular, OpenSans_700Bold } from '@expo-google-fonts/open-sans'; // Importar Open Sans
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
-import RegisterUsers from './screens/cliente/RegisterUsers';
-import HomeScreenSb from './screens/cliente/HomeScreenClient';
+import HomeScreenSb from './screens/client/HomeScreenClient';
 import HomeScreenFreelancer from './screens/freelancer/HomeScreenFreelancer';
 import RegisterFreelancer from './screens/freelancer/RegisterFreelancer';
-import CreateProject from './screens/cliente/CreateProject';
+import CreateProject from './screens/client/CreateProject';
 import FreelancerProfile from './screens/freelancer/FreelancerProfile';
 import VerificationStatus from './screens/VerificationScreen';
-import HomeScreenClient from  './screens/cliente/HomeScreenClient'
-import SelectProposal from './screens/cliente/SelectProposals';
-import Grafico from './screens/cliente/Graficos';
-
+import HomeScreenClient from  './screens/client/HomeScreenClient'
+import SelectProposal from './screens/client/SelectProposals';
+import Grafico from './screens/client/Graficos';
+import Messaging from './screens/Messaging';
+import RegisterClient from './screens/client/RegisterClient';
+import ScreenTypeUser from './screens/ScreenTypeUser';
 const Stack = createNativeStackNavigator();
 
 
@@ -52,16 +53,18 @@ const App = () => {
       <Stack.Navigator initialRouteName="Home" options={{headerShow: false}}>
         <Stack.Screen name="SelectProposal" component={SelectProposal} options={{headerShow: false}}/>
         <Stack.Screen name="HomeScreenCliente" component={HomeScreenClient} options={{headerShow: false}} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Inicio de sesión" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Registrar Cuenta" component={RegisterUsers} options={{ headerShown: false }} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ScreenTypeUser" component={ScreenTypeUser} options={{ headerShown: false }} />
+        <Stack.Screen name="RegisterClient" component={RegisterClient} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreenSb" component={HomeScreenSb} />
-        <Stack.Screen name="Profile Freelancer" component={FreelancerProfile}/>
-        <Stack.Screen name="HomeScreenFreelancer" component={HomeScreenFreelancer} />
-        <Stack.Screen name="Registrar Freelancer" component={RegisterFreelancer} options={{ headerShown: false }} />
-        <Stack.Screen name="Crear Proyecto" component={CreateProject} />
+        <Stack.Screen name="FreelancerProfile" component={FreelancerProfile}/>
+        <Stack.Screen name="HomeScreenFreelancer" component={HomeScreenFreelancer}options={{headerShow: false}}  />
+        <Stack.Screen name="RegisterFreelancer" component={RegisterFreelancer} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateProject" component={CreateProject} />
         <Stack.Screen name="VerificationStatus" component={VerificationStatus} />
         <Stack.Screen name="GraficoProyecto" component={Grafico} />
+        <Stack.Screen name="Messaging" component={Messaging} />
       </Stack.Navigator>
     </NavigationContainer>
   );

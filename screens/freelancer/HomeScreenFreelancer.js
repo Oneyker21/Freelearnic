@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ActivityIndicator,TouchableOpacity,Text } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, TouchableOpacity, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import ProjectList from '../ProjectList'; // Asegúrate de que la ruta sea correcta
-import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
+import ProjectList from '../ProjectList'; // Ensure the path is correct
+import { db } from '../../config/firebaseConfig'; // Ensure the path is correct
 import { doc, getDoc } from 'firebase/firestore';
 
 const HomeScreenFreelancer = ({ route }) => {
-  const { freelancerId } = route.params; // Obtener el ID del freelancer de los parámetros de la ruta
-  console.log('Freelancer ID en HomeScreenFreelancer:', freelancerId); 
+  const { freelancerId } = route.params; // Get the freelancer ID from route parameters
+  console.log('Freelancer ID in HomeScreenFreelancer:', freelancerId);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
     const fetchFreelancerData = async () => {
       try {
-        const docRef = doc(db, 'Freelancer', freelancerId); // Cambia 'Freelancers' por el nombre de tu colección
+        const docRef = doc(db, 'Freelancers', freelancerId); // Change 'Freelancer' to your collection name
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          // Aquí puedes manejar los datos si es necesario
+          // Here you can handle the data if necessary
         } else {
           console.log('No such document!');
         }
@@ -43,12 +43,17 @@ const HomeScreenFreelancer = ({ route }) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Profile Freelancer', { freelancerId })} // Asegúrate de pasar freelancerId aquí
+          onPress={() => navigation.navigate('ProfileFreelancer', { freelancerId })} // Make sure to pass freelancerId here
         >
-          <Text style={styles.buttonText}>Perfil</Text>
+          <Text style={styles.buttonText}>Profile</Text>
         </TouchableOpacity>
-      
-  
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Messaging', { freelancerId })} // Make sure to pass freelancerId here
+        >
+          <Text style={styles.buttonText}>Chats</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -68,7 +73,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     padding: 10,
     borderRadius: 5,
-    marginVertical: 5, // Espaciado entre botones
+    marginVertical: 5, // Spacing between buttons
   },
   buttonText: {
     color: '#fff',

@@ -11,21 +11,21 @@ const HomeScreen = () => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Inicio de sesión')}
+          onPress={() => navigation.navigate('Login')}
         >
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
           style={styles.buttonRegister}
-          onPress={() => navigation.navigate('Registrar Cuenta')}
+          onPress={() => navigation.navigate('RegisterClient')}
         >
           <Text style={styles.buttonTextRegister}>Registrarse</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.buttonVendedor}
-          onPress={() => navigation.navigate('Registrar Freelancer')}
+          onPress={() => navigation.navigate('RegisterFreelancer')}
         >
           <Text style={styles.buttonTextVendedor}>Iniciar como vendedor</Text>
         </TouchableOpacity>

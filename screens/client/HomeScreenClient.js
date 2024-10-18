@@ -61,6 +61,13 @@ const HomeScreenSb = ({route}) => {
         >
           <Text style={styles.buttonText}>Grafico</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Messaging', { clientId })} // Asegúrate de pasar freelancerId aquí
+        >
+          <Text style={styles.buttonText}>Chats</Text>
+        </TouchableOpacity>
         
   
       </View>
