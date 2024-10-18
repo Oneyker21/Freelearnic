@@ -16,6 +16,7 @@ import CreateProject from '../screens/cliente/CreateProject';
 import SelectProposal from '../screens/cliente/SelectProposals';
 import Grafico from '../screens/cliente/Graficos';
 import RegisterClient from '../screens/cliente/RegisterClient';
+import RegisterFreelancer from '../screens/freelancer/RegisterFreelancer';
 
 
 const Tab = createBottomTabNavigator();
@@ -45,8 +46,12 @@ function Mystack({ clientId }) {
     <HomeStackNavigator.Navigator initialRouteName='Home'>
       <HomeStackNavigator.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} initialParams={{ clientId }} />
 
+      <HomeStackNavigator.Screen name="RegisterClient" component={RegisterClient} options={{ headerShown: false }} initialParams={{ clientId }} />
+
       <HomeStackNavigator.Screen name="Login" component={LoginScreen} initialParams={{ clientId }} options={{ headerShown: false }} />
       <HomeStackNavigator.Screen name="HomeCliente" component={HomeScreenClient} initialParams={{ clientId }} options={{ headerShown: false }} />
+
+      <HomeStackNavigator.Screen name="RegisterFreelancer" component={RegisterFreelancer} initialParams={{ clientId }} options={{ headerShown: false }} />
 
       <HomeStackNavigator.Screen name="CreateProject" component={CreateProject} initialParams={{ clientId }} options={{ headerShown: false }} />
       <HomeStackNavigator.Screen name="GraficoProyecto" component={Grafico} initialParams={{ clientId }} options={{ headerShown: false }} />
@@ -79,6 +84,7 @@ export default function MainNavigator({ components = {
   CreateProject: CreateProject,
   SelectProposal: SelectProposal,
   RegisterClient: RegisterClient,
+  RegisterFreelancer: RegisterFreelancer,
   // otros componentes necesarios
 } }) {
   const clientId = {clientId}; // Asegúrate de obtener este valor correctamente
