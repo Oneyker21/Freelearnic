@@ -17,7 +17,7 @@ export default function LoginScreen() {
   const navigation = useNavigation();
 
   const handleCreateAccount = () => {
-    navigation.navigate('Registrar Cuenta');
+    navigation.navigate('ScreenTypeUser');
   };
 
   const handleSignIn = async () => {
@@ -29,27 +29,27 @@ export default function LoginScreen() {
       const user = userCredential.user;
 
       // Buscar en la colección de Freelancers
-      const freelancersQuery = query(collection(db, 'Freelancer'), where('uid', '==', user.uid));
+      const freelancersQuery = query(collection(db, 'Freelancers'), where('uid', '==', user.uid));
       const freelancersSnapshot = await getDocs(freelancersQuery);
 
       if (!freelancersSnapshot.empty) {
         const freelancerData = freelancersSnapshot.docs[0].data();
-        if (freelancerData.estado_verificacion === false) {
+        if (freelancerData.verified === false) {
           navigation.navigate('VerificationStatus');
         } else {
           navigation.navigate('HomeScreenFreelancer', { freelancerId: freelancersSnapshot.docs[0].id });
         }
       } else {
         // Buscar en la colección de Clientes
-        const clientsQuery = query(collection(db, 'Clientes'), where('uid', '==', user.uid));
+        const clientsQuery = query(collection(db, 'Clients'), where('uid', '==', user.uid));
         const clientsSnapshot = await getDocs(clientsQuery);
 
         if (!clientsSnapshot.empty) {
           const clientData = clientsSnapshot.docs[0].data();
-          if (clientData.estado_verificacion === false) {
+          if (clientData.verified === false) {
             navigation.navigate('VerificationStatus');
           } else {
-            navigation.navigate('HomeCliente', { clientId: clientsSnapshot.docs[0].id });
+            navigation.navigate('HomeScreenClient', { clientId: clientsSnapshot.docs[0].id });
           }
         } else {
           // Manejo de error si no se encuentra ni freelancer ni cliente
@@ -63,7 +63,14 @@ export default function LoginScreen() {
       setPassword('');
     } catch (error) {
       console.error('Error de inicio de sesión:', error);
-      Alert.alert('Error de inicio de sesión', error.message);
+      // Mensaje específico para errores de autenticación
+      if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+        Alert.alert('Error de inicio de sesión', 'El correo o la contraseña son incorrectos');
+      } else if (error.code === 'auth/invalid-credential') {
+        Alert.alert('Error de inicio de sesión', 'El correo o la contraseña son incorrectos');
+      } else {
+        Alert.alert('Error de inicio de sesión', error.message);
+      }
     }
   };
 

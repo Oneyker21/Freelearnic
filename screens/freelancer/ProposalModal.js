@@ -1,43 +1,43 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 
-const ProposalModal = ({ visible, onClose, onSubmit, id_cliente }) => { // Acepta id_cliente como prop
-  const [precioPropuesta, setPrecioPropuesta] = useState('');
-  const [mensajePropuesta, setMensajePropuesta] = useState('');
+const ProposalModal = ({ visible, onClose, onSubmit, clientId }) => { // Accepts clientId as a prop
+  const [proposalPrice, setProposalPrice] = useState('');
+  const [proposalMessage, setProposalMessage] = useState('');
 
   const handleSubmit = () => {
-    if (!precioPropuesta || !mensajePropuesta) {
+    if (!proposalPrice || !proposalMessage) {
       Alert.alert('Error', 'Por favor, completa todos los campos.');
       return;
     }
 
-    // Incluye id_cliente en los datos de la propuesta
+    // Includes clientId in the proposal data
     onSubmit({ 
-      precio_propuesta: parseFloat(precioPropuesta), 
-      mensaje_propuesta: mensajePropuesta,
-      id_cliente: id_cliente // Agrega el id_cliente aquí
+      proposedPrice: parseFloat(proposalPrice), 
+      proposalMessage: proposalMessage,
+      client_id: clientId // Adds the clientId here
     });
-    setPrecioPropuesta('');
-    setMensajePropuesta('');
+    setProposalPrice('');
+    setProposalMessage('');
     onClose();
   };
 
   return (
     <Modal visible={visible} animationType="slide">
       <View style={styles.container}>
-        <Text style={styles.title}>Enviar Propuesta</Text>
+        <Text style={styles.title}>Envio de propuesta</Text>
         <TextInput
           style={styles.input}
-          placeholder="Precio de la propuesta"
+          placeholder="Precio"
           keyboardType="numeric"
-          value={precioPropuesta}
-          onChangeText={setPrecioPropuesta}
+          value={proposalPrice}
+          onChangeText={setProposalPrice}
         />
         <TextInput
           style={styles.input}
           placeholder="Mensaje"
-          value={mensajePropuesta}
-          onChangeText={setMensajePropuesta}
+          value={proposalMessage}
+          onChangeText={setProposalMessage}
         />
         <Button title="Enviar" onPress={handleSubmit} />
         <Button title="Cancelar" onPress={onClose} color="red" />

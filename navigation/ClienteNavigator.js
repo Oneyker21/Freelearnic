@@ -8,14 +8,14 @@ import { doc, getDoc } from 'firebase/firestore';
 
 import LoginScreen from '../screens/LoginScreen';
 import HomeScreen from '../screens/HomeScreen';
-import HomeScreenClient from '../screens/cliente/HomeScreenClient';
+import HomeScreenClient from '../screens/client/HomeScreenClient';
 
 import HomeScreenFreelancer from '../screens/freelancer/HomeScreenFreelancer';
 import VerificationScreen from '../screens/VerificationScreen';
-import CreateProject from '../screens/cliente/CreateProject';
-import SelectProposal from '../screens/cliente/SelectProposals';
-import Grafico from '../screens/cliente/Graficos';
-import RegisterClient from '../screens/cliente/RegisterClient';
+import CreateProject from '../screens/client/CreateProject';
+import SelectProposal from '../screens/client/SelectProposals';
+import Grafico from '../screens/client/Graficos';
+import RegisterClient from '../screens/client/RegisterClient';
 import RegisterFreelancer from '../screens/freelancer/RegisterFreelancer';
 
 
@@ -49,7 +49,7 @@ function Mystack({ clientId }) {
       <HomeStackNavigator.Screen name="RegisterClient" component={RegisterClient} options={{ headerShown: false }} initialParams={{ clientId }} />
 
       <HomeStackNavigator.Screen name="Login" component={LoginScreen} initialParams={{ clientId }} options={{ headerShown: false }} />
-      
+
       <HomeStackNavigator.Screen name="HomeCliente" component={HomeScreenClient} initialParams={{ clientId }} options={{ headerShown: false }} />
 
       <HomeStackNavigator.Screen name="RegisterFreelancer" component={RegisterFreelancer} initialParams={{ clientId }} options={{ headerShown: false }} />

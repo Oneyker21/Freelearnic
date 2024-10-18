@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert, Modal, Button,TextInput } from 'react-native';
 import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { collection, addDoc, onSnapshot } from 'firebase/firestore';
 import ProposalModal from '../screens/freelancer/ProposalModal'; // Asegúrate de que la ruta sea correcta
@@ -12,9 +12,11 @@ const ProjectList = ({ route, showProposalButton }) => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState(''); // Inicializa con un valor vacío
+  const [priceFilter, setPriceFilter] = useState({ min: 0, max: 1000 }); // Rango de precios inicial
   const [filteredProjects, setFilteredProjects] = useState([]);
 
   // Definir las categorías preestablecidas
@@ -43,11 +45,12 @@ const ProjectList = ({ route, showProposalButton }) => {
     const filtered = projects.filter(project => {
       // Filtrar por categoría
       const categoryMatch = categoryFilter ? project.tipo_proyecto === categoryFilter : true;
-      return categoryMatch;
+      // Filtrar por rango de precios
+      const priceMatch = project.precio_minimo >= priceFilter.min && project.precio_maximo <= priceFilter.max;
+      return categoryMatch && priceMatch;
     });
     setFilteredProjects(filtered);
-    console.log("Proyectos filtrados:", filtered);
-  }, [categoryFilter, projects]);
+  }, [categoryFilter, priceFilter, projects]);
 
   const enviarPropuesta = async (projectId, proposalData) => {
     try {
@@ -73,18 +76,8 @@ const ProjectList = ({ route, showProposalButton }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Picker
-        selectedValue={categoryFilter}
-        style={styles.picker}
-        onValueChange={(itemValue) => {
-          setCategoryFilter(itemValue);
-          console.log("Categoría seleccionada:", itemValue); // Verifica que el valor se actualice
-        }}
-      >
-        {categories.map((category) => (
-          <Picker.Item key={category.value} label={category.label} value={category.value} />
-        ))}
-      </Picker>
+      <Button title="Filtrar Proyectos" onPress={() => setFilterModalVisible(true)} />
+      
       <FlatList
         data={filteredProjects}
         keyExtractor={item => item.id}
@@ -120,6 +113,51 @@ const ProjectList = ({ route, showProposalButton }) => {
           </View>
         )}
       />
+
+      {/* Modal de Filtrado */}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={filterModalVisible}
+        onRequestClose={() => setFilterModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Filtrar Proyectos</Text>
+          
+          <Text>Seleccionar Tipo de Proyecto:</Text>
+          <Picker
+            selectedValue={categoryFilter}
+            style={styles.picker}
+            onValueChange={(itemValue) => setCategoryFilter(itemValue)}
+          >
+            {categories.map((category) => (
+              <Picker.Item key={category.value} label={category.label} value={category.value} />
+            ))}
+          </Picker>
+
+          <Text>Rango de Precios:</Text>
+          <View style={styles.priceRangeContainer}>
+            <Text>Precio Mínimo:</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={String(priceFilter.min)}
+              onChangeText={(text) => setPriceFilter({ ...priceFilter, min: Number(text) })}
+            />
+            <Text>Precio Máximo:</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={String(priceFilter.max)}
+              onChangeText={(text) => setPriceFilter({ ...priceFilter, max: Number(text) })}
+            />
+          </View>
+
+          <Button title="Aplicar Filtros" onPress={() => setFilterModalVisible(false)} />
+          <Button title="Cerrar" onPress={() => setFilterModalVisible(false)} />
+        </View>
+      </Modal>
+
       <ProposalModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -137,7 +175,7 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     width: '100%',
-    backgroundColor: '#fff', // Asegúrate de que el fondo sea visible
+    backgroundColor: '#fff',
   },
   card: {
     backgroundColor: '#fff',
@@ -195,6 +233,28 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  priceRangeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    width: '45%',
   },
 });
 
