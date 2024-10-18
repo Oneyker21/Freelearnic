@@ -7,6 +7,8 @@ import { Picker } from '@react-native-picker/picker'; // Importación correcta
 
 const ProjectList = ({ route, showProposalButton }) => {
   const { freelancerId } = route.params;
+
+  
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);

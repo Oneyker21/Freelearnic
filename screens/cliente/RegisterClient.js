@@ -6,7 +6,6 @@ import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { CustomTextInput, ImagePickerButton, PreviewImage } from '../../utils/inputs'; // Asegúrate de que la ruta sea correcta
 
 const RegisterUsers = () => {
@@ -23,7 +22,6 @@ const RegisterUsers = () => {
   const [fotoCedulaBack, setFotoCedulaBack] = useState(null);
   const [fotoPerfil, setFotoPerfil] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -65,19 +63,6 @@ const RegisterUsers = () => {
     }
   };
 
-  const obtenerSiguienteId = async () => {
-    const contadorRef = doc(db, 'contadores', 'usuarios');
-    const contadorDoc = await getDoc(contadorRef);
-
-    if (!contadorDoc.exists()) {
-      await setDoc(contadorRef, { contador: 1 });
-      return 'id_usuario_1';
-    } else {
-      const nuevoContador = contadorDoc.data().contador + 1;
-      await updateDoc(contadorRef, { contador: increment(1) });
-      return `id_usuario_${nuevoContador}`;
-    }
-  };
 
   const limpiarCampos = () => {
     setEmail('');
@@ -95,10 +80,8 @@ const RegisterUsers = () => {
   };
 
   const registrarUsuario = async () => {
-    setIsLoading(true);
     try {
       if (password !== confirmPassword) {
-        setIsLoading(false);
         Alert.alert('Error', 'Las contraseñas no coinciden');
         return;
       }
@@ -106,11 +89,11 @@ const RegisterUsers = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      const idUsuario = await obtenerSiguienteId();
+      const idCliente = `id_cliente_${user.uid}`;
 
-      await setDoc(doc(db, 'Usuario', idUsuario), {
+      await setDoc(doc(db, 'Clientes', idCliente), {
         uid: user.uid,
-        id: idUsuario,
+        id: idCliente,
         nombres,
         apellidos,
         nombre_usuario: nombreUsuario,
@@ -133,30 +116,19 @@ const RegisterUsers = () => {
           text: 'OK',
           onPress: () => {
             limpiarCampos();
-            navigation.replace('Inicio de sesión');
+            navigation.replace('Login');
           }
         }
       ]);
     } catch (error) {
       console.error('Error al registrar el usuario: ', error);
       Alert.alert('Error', 'No se pudo registrar el usuario: ' + error.message);
-    } finally {
-      setIsLoading(false);
-    }
+    } 
   };
 
   return (
     <View style={styles.container}>
-      {isLoading ? (
-        <SkeletonPlaceholder>
-          <SkeletonPlaceholder.Item flexDirection="column" alignItems="center">
-            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={20} />
-            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={10} />
-            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={10} />
-            <SkeletonPlaceholder.Item width={300} height={40} borderRadius={4} marginBottom={10} />
-          </SkeletonPlaceholder.Item>
-        </SkeletonPlaceholder>
-      ) : (
+
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={30} color="#15297C" />
@@ -193,7 +165,6 @@ const RegisterUsers = () => {
             </View>
           </View>
         </ScrollView>
-      )}
     </View>
   );
 };

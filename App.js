@@ -18,7 +18,8 @@ import HomeScreenClient from  './screens/cliente/HomeScreenClient'
 import SelectProposal from './screens/cliente/SelectProposals';
 import Grafico from './screens/cliente/Graficos';
 
-import MainNavigator from './navigation/MainNavigator';
+/* import MainNavigator from './navigation/MainNavigator'; */
+import ClienteNavigator from './navigation/ClienteNavigator';
 
 
 const Stack = createNativeStackNavigator();
@@ -51,12 +52,12 @@ const App = () => {
   }
 
   return (
-    /* <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home" options={{headerShow: false}}>
+  /*   <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="SelectProposal" component={SelectProposal} options={{headerShow: false}}/>
         <Stack.Screen name="HomeScreenCliente" component={HomeScreenClient} options={{headerShow: false}} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Inicio de sesión" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{headerShow: false}} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Registrar Cuenta" component={RegisterUsers} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreenSb" component={HomeScreenSb} />
         <Stack.Screen name="Profile Freelancer" component={FreelancerProfile}/>
@@ -67,7 +68,7 @@ const App = () => {
         <Stack.Screen name="GraficoProyecto" component={Grafico} />
       </Stack.Navigator>
     </NavigationContainer> */
-      <MainNavigator />
+      <ClienteNavigator />
 
   );
 };

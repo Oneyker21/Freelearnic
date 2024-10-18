@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { getDoc,doc } from 'firebase/firestore';
+import { getDoc, doc } from 'firebase/firestore';
 import ProjectList from '../ProjectList'; // Asegúrate de que la ruta sea correcta
 
-const HomeScreenSb = ({route}) => {
+const HomeScreenSb = ({ route }) => {
   const navigation = useNavigation();
   const { clientId } = route.params; // Obtener el ID del freelancer de los parámetros de la ruta
   console.log('Client ID en HomeScreenClient:', clientId); // Verifica que el ID se recolecte correctamente
@@ -43,7 +43,7 @@ const HomeScreenSb = ({route}) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Crear Proyecto', { clientId })} // Pasar el clientId al componente Crear Proyecto
+          onPress={() => navigation.navigate('CreateProject', { clientId })} // Pasar el clientId al componente Crear Proyecto
         >
           <Text style={styles.buttonText}>Crear Proyecto</Text>
         </TouchableOpacity>
@@ -61,8 +61,7 @@ const HomeScreenSb = ({route}) => {
         >
           <Text style={styles.buttonText}>Grafico</Text>
         </TouchableOpacity>
-        
-  
+
       </View>
     </View>
   );

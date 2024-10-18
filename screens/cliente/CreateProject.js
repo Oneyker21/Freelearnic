@@ -6,19 +6,28 @@ import { db } from '../../config/firebaseConfig';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DateTimePickerModal from 'react-native-modal-datetime-picker'; // Importar el selector de fechas
 import { Picker } from '@react-native-picker/picker'; // Importar el Picker
+import { useNavigation } from '@react-navigation/native';
 
 const CreateProject = ({ route }) => {
-  const { clientId } = route.params; // Obtener el ID del freelancer de los parámetros de la ruta
-  console.log('Cliente id en createproject:', clientId); // Verifica que el ID se recolecte correctamente
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  const { clientId } = route.params || {}; // Asegúrate de que clientId puede ser undefined
+  console.log('Cliente id en createproject:', clientId);
   const [titulo, setTitulo] = React.useState('');
   const [descripcion, setDescripcion] = React.useState('');
   const [precioMinimo, setPrecioMinimo] = React.useState('');
   const [precioMaximo, setPrecioMaximo] = React.useState('');
   const [fechaFin, setFechaFin] = React.useState('');
-  const [tipoProyecto, setTipoProyecto] = React.useState(''); // Estado para el tipo de proyecto
+  const [tipoProyecto, setTipoProyecto] = React.useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
 
-
+  if (!clientId) {
+    // Si no hay clientId, no renderizar nada o redirigir
+    useEffect(() => {
+      navigation.navigate('Login'); // Asegúrate de que 'Login' es el nombre correcto de la pantalla de inicio de sesión
+    }, []);
+    return null; // No renderizar nada mientras se redirige
+  }
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -29,34 +38,34 @@ const CreateProject = ({ route }) => {
   };
 
   const handleConfirm = (date) => {
-    setFechaFin(date.toISOString().split('T')[0]); // Formato de fecha
+    setFechaFin(date.toISOString().split('T')[0]);
     hideDatePicker();
   };
 
   const handlePrecioMinimoChange = (text) => {
-    const filteredText = text.replace(/[^0-9.]/g, ''); // Solo permite números y punto
+    const filteredText = text.replace(/[^0-9.]/g, '');
     setPrecioMinimo(filteredText);
   };
 
   const handlePrecioMaximoChange = (text) => {
-    const filteredText = text.replace(/[^0-9.]/g, ''); // Solo permite números y punto
+    const filteredText = text.replace(/[^0-9.]/g, '');
     setPrecioMaximo(filteredText);
   };
 
   const crearProyecto = async () => {
     try {
       const nuevoProyecto = {
-        id_cliente: clientId, // Cambiar según el cliente
+        id_cliente: clientId,
         titulo,
         descripcion_proyecto: descripcion,
         estado_proyecto: "activo",
-        fecha_inicio: new Date().toISOString().split('T')[0], // Fecha generada automáticamente
-        fecha_estimada_entrega: fechaFin, // Cambiar a fecha estimada de entrega
-        fecha_finalizacion: null, // Inicialmente nulo
-        tipo_proyecto: tipoProyecto, // Tipo de proyecto seleccionado
-        precio_minimo: parseFloat(precioMinimo), // Precio mínimo
-        precio_maximo: parseFloat(precioMaximo), // Precio máximo
-        precio_final: parseFloat(precioMinimo), // Precio final
+        fecha_inicio: new Date().toISOString().split('T')[0],
+        fecha_estimada_entrega: fechaFin,
+        fecha_finalizacion: null,
+        tipo_proyecto: tipoProyecto,
+        precio_minimo: parseFloat(precioMinimo),
+        precio_maximo: parseFloat(precioMaximo),
+        precio_final: parseFloat(precioMinimo),
       };
 
       await setDoc(doc(db, 'Proyecto', `id_proyecto_${Date.now()}`), nuevoProyecto);
@@ -66,9 +75,6 @@ const CreateProject = ({ route }) => {
       console.error('Error al crear el proyecto: ', error);
       Alert.alert('Error', 'No se pudo crear el proyecto: ' + error.message);
     }
-
-
-    
   };
 
   const limpiarCampos = () => {
@@ -77,59 +83,56 @@ const CreateProject = ({ route }) => {
     setPrecioMinimo('');
     setPrecioMaximo('');
     setFechaFin('');
-    setTipoProyecto(''); // Limpiar el tipo de proyecto
+    setTipoProyecto('');
   };
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <BlurView intensity={90} tint="light" style={styles.blurContainer}>
+        <BlurView intensity={50} style={styles.blurContainer}>
           <View style={styles.login}>
             <Text style={styles.title}>Crear Proyecto</Text>
-            <TextInput style={styles.input} onChangeText={setTitulo} value={titulo} placeholder="Título" />
-            <TextInput 
-              style={[styles.input, styles.descripcionInput]} 
-              onChangeText={setDescripcion} 
-              value={descripcion} 
-              placeholder="Descripción" 
-              multiline 
-              numberOfLines={4} // Número de líneas visibles
-              textAlignVertical="top" // Alinear el texto en la parte superior
+            <TextInput
+              style={styles.input}
+              placeholder="Título del proyecto"
+              value={titulo}
+              onChangeText={setTitulo}
             />
-            <TextInput 
-              style={styles.input} 
-              onChangeText={handlePrecioMinimoChange} 
-              value={precioMinimo} 
-              placeholder="Precio Mínimo" 
-              keyboardType="numeric" 
+            <TextInput
+              style={[styles.input, styles.descripcionInput]}
+              placeholder="Descripción del proyecto"
+              value={descripcion}
+              onChangeText={setDescripcion}
+              multiline
             />
-            <TextInput 
-              style={styles.input} 
-              onChangeText={handlePrecioMaximoChange} 
-              value={precioMaximo} 
-              placeholder="Precio Máximo" 
-              keyboardType="numeric" 
+            <TextInput
+              style={styles.input}
+              placeholder="Precio mínimo"
+              value={precioMinimo}
+              onChangeText={handlePrecioMinimoChange}
+              keyboardType="numeric"
             />
-            
-            <TouchableOpacity onPress={showDatePicker} style={styles.input}>
-              <Text>{fechaFin ? fechaFin : "Fecha Estimada de Entrega"}</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Precio máximo"
+              value={precioMaximo}
+              onChangeText={handlePrecioMaximoChange}
+              keyboardType="numeric"
+            />
+            <TouchableOpacity onPress={showDatePicker} style={styles.buttonRegister}>
+              <Text style={styles.buttonTextRegister}>Seleccionar fecha de entrega</Text>
             </TouchableOpacity>
-
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
               mode="date"
               onConfirm={handleConfirm}
               onCancel={hideDatePicker}
-              minimumDate={new Date()} // Solo permitir fechas futuras
             />
-
-            {/* Selector de tipo de proyecto */}
             <Picker
               selectedValue={tipoProyecto}
+              onValueChange={(itemValue, itemIndex) => setTipoProyecto(itemValue)}
               style={styles.picker}
-              onValueChange={(itemValue) => setTipoProyecto(itemValue)}
             >
-              <Picker.Item label="Selecciona un tipo de proyecto" value="" />
               <Picker.Item label="Programación" value="programacion" />
               <Picker.Item label="Diseño Gráfico" value="diseno_grafico" />
               <Picker.Item label="Marketing Digital" value="marketing_digital" />
@@ -184,7 +187,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   descripcionInput: {
-    height: 100, // Altura aumentada para el campo de descripción
+    height: 100,
   },
   picker: {
     height: 50,

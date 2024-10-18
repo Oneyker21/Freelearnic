@@ -1,15 +1,91 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React, { useEffect, useState } from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { db } from '../config/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
 
-const Stack = createNativeStackNavigator();
 
-export const AppNavigation = () => {
+import LoginScreen from '../screens/LoginScreen';
+import HomeScreen from '../screens/HomeScreen';
+import HomeScreenClient from '../screens/cliente/HomeScreenClient';
+
+import HomeScreenFreelancer from '../screens/freelancer/HomeScreenFreelancer';
+import VerificationScreen from '../screens/VerificationScreen';
+import CreateProject from '../screens/cliente/CreateProject';
+import SelectProposal from '../screens/cliente/SelectProposals';
+import Grafico from '../screens/cliente/Graficos';
+import RegisterClient from '../screens/cliente/RegisterClient';
+
+
+const Tab = createBottomTabNavigator();
+const HomeStackNavigator = createNativeStackNavigator();
+
+function Mystack({ clientId }) {
+  useEffect(() => {
+    const fetchClientData = async () => {
+      try {
+        const docRef = doc(db, 'Clientes', clientId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          console.log('Document data:', docSnap.data());
+        } else {
+          console.log('No such document!');
+        }
+      } catch (error) {
+        console.error('Error fetching client data: ', error);
+      }
+    };
+
+    fetchClientData();
+  }, [clientId]);
+
+  return (
+    <HomeStackNavigator.Navigator initialRouteName='Home'>
+      <HomeStackNavigator.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} initialParams={{ clientId }} />
+
+      <HomeStackNavigator.Screen name="Login" component={LoginScreen} initialParams={{ clientId }} options={{ headerShown: false }} />
+      <HomeStackNavigator.Screen name="HomeCliente" component={HomeScreenClient} initialParams={{ clientId }} options={{ headerShown: false }} />
+
+      <HomeStackNavigator.Screen name="CreateProject" component={CreateProject} initialParams={{ clientId }} options={{ headerShown: false }} />
+      <HomeStackNavigator.Screen name="GraficoProyecto" component={Grafico} initialParams={{ clientId }} options={{ headerShown: false }} />
+    </HomeStackNavigator.Navigator>
+  );
+}
+
+
+function MyTabs({ clientId, components }) {
+  if (!components) {
+    console.error("Components object is undefined");
+    return null; // O manejar de otra manera que prefieras
+  }
+
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="HomeCliente" component={() => <Mystack clientId={clientId} {...components} />} options={{ headerShown: false }} />
+
+      <Tab.Screen name="SelectProposal" component={SelectProposal} initialParams={{ clientId }} />
+      <Tab.Screen name="CreateProject" component={components.CreateProject} initialParams={{ clientId }} />
+      <Tab.Screen name="GraficoProyecto" component={Grafico} initialParams={{ clientId }} />
+    </Tab.Navigator>
+  );
+}
+
+
+export default function MainNavigator({ components = {
+  HomeScreenCliente: HomeScreenClient,
+  VerificationScreen: VerificationScreen,
+  CreateProject: CreateProject,
+  SelectProposal: SelectProposal,
+  RegisterClient: RegisterClient,
+  // otros componentes necesarios
+} }) {
+  const clientId = {clientId}; // Asegúrate de obtener este valor correctamente
+
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-
-      </Stack.Navigator>
+      <MyTabs clientId={clientId} components={components} />
     </NavigationContainer>
   );
-};
+}

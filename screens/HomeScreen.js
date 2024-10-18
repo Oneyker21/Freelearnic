@@ -30,7 +30,6 @@ const HomeScreen = () => {
           <Text style={styles.buttonTextVendedor}>Iniciar como vendedor</Text>
         </TouchableOpacity>
       </View>
-      {/* Aquí se agrega el componente ProjectList para mostrar los proyectos */}
       <View style={styles.projectListContainer}>
         <ProjectListSB  />
       </View>
@@ -40,15 +39,19 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 30,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f3f3f3',
   },
   buttonContainer: {
     position: 'absolute',
     top: 10,
     right: 10,
+    marginBottom: 4,
+    paddingBottom: 4,
+    
     flexDirection: 'row',
   },
   button: {
@@ -96,7 +99,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   projectListContainer: {
-    marginTop: 47, // Ajusta el margen superior según sea necesario
+    paddingTop: 54, // Ajusta el margen superior según sea necesario
     width: '100%', // Asegúrate de que ocupe el ancho completo
   },
 });
