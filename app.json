@@ -7,8 +7,8 @@
     "icon": "./assets/Freelearnic.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/Freelearnic_Black.png",
-      "resizeMode": "center",
+      "image": "./assets/Inicio.png",
+      "resizeMode": "contain",
       "backgroundColor": "#0047AB"
     },
     "ios": {
