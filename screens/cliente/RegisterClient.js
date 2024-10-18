@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   containerView: {
-    backgroundColor: '#388ABD',
+    backgroundColor: '#107acc',
     width: '100%',
     padding: 30,
     borderTopLeftRadius: 130,

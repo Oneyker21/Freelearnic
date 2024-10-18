@@ -49,6 +49,7 @@ function Mystack({ clientId }) {
       <HomeStackNavigator.Screen name="RegisterClient" component={RegisterClient} options={{ headerShown: false }} initialParams={{ clientId }} />
 
       <HomeStackNavigator.Screen name="Login" component={LoginScreen} initialParams={{ clientId }} options={{ headerShown: false }} />
+      
       <HomeStackNavigator.Screen name="HomeCliente" component={HomeScreenClient} initialParams={{ clientId }} options={{ headerShown: false }} />
 
       <HomeStackNavigator.Screen name="RegisterFreelancer" component={RegisterFreelancer} initialParams={{ clientId }} options={{ headerShown: false }} />
