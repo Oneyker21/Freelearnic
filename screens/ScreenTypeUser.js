@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { db } from '../config/firebaseConfig'
 import { doc, getDoc } from 'firebase/firestore';
 
+
 const ScreenTypeUser = () => {
     const navigation = useNavigation();
 

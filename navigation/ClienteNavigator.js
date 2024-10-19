@@ -17,6 +17,8 @@ import SelectProposal from '../screens/client/SelectProposals';
 import Grafico from '../screens/client/Graficos';
 import RegisterClient from '../screens/client/RegisterClient';
 import RegisterFreelancer from '../screens/freelancer/RegisterFreelancer';
+import ScreenTypeUser from '../screens/ScreenTypeUser';
+import ProjectList from '../screens/ProjectList';
 
 
 const Tab = createBottomTabNavigator();
@@ -55,7 +57,15 @@ function Mystack({ clientId }) {
       <HomeStackNavigator.Screen name="RegisterFreelancer" component={RegisterFreelancer} initialParams={{ clientId }} options={{ headerShown: false }} />
 
       <HomeStackNavigator.Screen name="CreateProject" component={CreateProject} initialParams={{ clientId }} options={{ headerShown: false }} />
+
       <HomeStackNavigator.Screen name="GraficoProyecto" component={Grafico} initialParams={{ clientId }} options={{ headerShown: false }} />
+
+      <HomeStackNavigator.Screen name="VerificationStatus" component={VerificationScreen} options={{ headerShown: 
+      false }} />
+      
+      <HomeStackNavigator.Screen name="TypeUser" component={ScreenTypeUser} options={{ headerShown: 
+      false }} />
+
     </HomeStackNavigator.Navigator>
   );
 }

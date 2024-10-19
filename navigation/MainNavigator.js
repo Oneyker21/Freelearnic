@@ -9,7 +9,7 @@ import HomeScreen from '../screens/HomeScreen';
 import HomeScreenCliente from '../screens/cliente/HomeScreenClient';
 import HomeScreenFreelancer from '../screens/freelancer/HomeScreenFreelancer';
 import VerificationScreen from '../screens/VerificationScreen';
-
+import ScreenTypeUser from '../screens/ScreenTypeUser';
 
 const Tab = createBottomTabNavigator();
 const HomeStackNavigator = createNativeStackNavigator();
@@ -23,6 +23,7 @@ function Mystack() {
       <HomeStackNavigator.Screen name="HomeCliente" component={HomeScreenCliente} options={{headerShown: false}} />
       <HomeStackNavigator.Screen name="HomeFreelancer" component={HomeScreenFreelancer} options={{headerShown: false}} />
       <HomeStackNavigator.Screen name="VerificationStatus" component={VerificationScreen} options={{headerShown: false}} />
+      <HomeStackNavigator.Screen name="TypeUser" component={ScreenTypeUser} options={{headerShown: false}} />
     </HomeStackNavigator.Navigator>
   );
 }
@@ -35,6 +36,7 @@ function MyTabs() {
       <Tab.Screen name="HomeCliente" component={() => <HomeScreenCliente someProp={value} />} />
       <Tab.Screen name="HomeFreelancer" component={HomeScreenFreelancer} />
       <Tab.Screen name="VerificationStatus" component={VerificationScreen} />
+      <Tab.Screen name="TypeUser" component={ScreenTypeUser} />
     </Tab.Navigator>
   );
 }

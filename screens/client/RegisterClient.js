@@ -507,8 +507,7 @@ const handleIdNumberChange = (text) => {
           />
         </ScrollView>
       )}
-   </View>
-
+    </View>
   );
 };
 

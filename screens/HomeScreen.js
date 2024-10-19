@@ -10,6 +10,11 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Image source={require('../assets/superior.png')} style={styles.image} />
       <View style={styles.buttonContainer}>
+        <View style={styles.welcomeContainer}> 
+          <Image source={require('../assets/tap.png')} style={styles.logo} />
+          <Text style={styles.welcomeText}>¡En Freelearnic, tu próximo proyecto o 
+          freelancer está a un clic de distancia!</Text>
+        </View>
 
         <TouchableOpacity
           style={styles.button}
@@ -110,6 +115,29 @@ const styles = StyleSheet.create({
     top: 0,
     width: "100%",
     height: 160,
+  },
+  welcomeContainer: {
+    position: 'absolute',
+    top: 100,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+    paddingBottom: 4,
+    flexDirection: 'row',
+  },
+  welcomeText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    paddingLeft: 65,
+    paddingRight: 65,
+    textAlign: 'center',
+    color: 'rgba(0, 0, 0, 0.61)',
+  },
+  logo: {
+    width: 20,
+    height: 20,
+    flexShrink: 0,
   },
 });
 
