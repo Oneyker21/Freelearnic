@@ -62,7 +62,7 @@ export default function LoginScreen() {
       setEmail('');
       setPassword('');
     } catch (error) {
-      console.error('Error de inicio de sesión:', error);
+
       // Mensaje específico para errores de autenticación
       if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
         Alert.alert('Error de inicio de sesión', 'El correo o la contraseña son incorrectos');

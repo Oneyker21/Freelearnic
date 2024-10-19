@@ -383,7 +383,7 @@ const RegisterFreelancer = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
       const user = userCredential.user;
-      const idFreelancer = `id_freelancer_${user.uid}`;
+      const idFreelancer = `FreelancerId_${user.uid}`;
 
       await setDoc(doc(db, 'Freelancers', idFreelancer), {
         uid: user.uid,
@@ -407,11 +407,11 @@ const RegisterFreelancer = () => {
         description: null,
         avgRating: null, // Initially null, can be updated later
         jobsCompleted: 0, // Initially 0, updated as jobs are completed
-        availability: "available",
+        availability: null,
         portfolio: [], // Mantener como arreglo vacío
         certifications: [], // Mantener como arreglo vacío
         languages: [], // Mantener como arreglo vacío
-        professionalExp: "5 years in advertising agencies and as a freelancer.",
+        professionalExp: null,
         skills: [], // Mantener como arreglo vacío
         jobPrefs: { // Mantener como objeto vacío
           projectTypes: [],
@@ -422,7 +422,7 @@ const RegisterFreelancer = () => {
       });
 
       Alert.alert('Success', 'Registrado Correctamente', [
-        { text: 'OK', onPress: () => navigation.replace('Login') }
+        { text: 'OK', onPress: () => navigation.replace('HomeScreenClient') }
       ]);
     } catch (error) {
       Alert.alert('Error', 'Error no se puede registrar: ' + error.message);
@@ -447,7 +447,7 @@ const RegisterFreelancer = () => {
           <View style={styles.containerView}>
             <View style={styles.login}>
               <Text style={styles.title}>
-                Create a <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text> account
+                Crea una <Text>cuenta de</Text> <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text>
               </Text>
               <CustomTextInput onChangeText={setFirstName} value={firstName} placeholder="Nombres" />
               <CustomTextInput onChangeText={setLastName} value={lastName} placeholder="Apellidos" />
@@ -464,6 +464,23 @@ const RegisterFreelancer = () => {
                 placeholder="Numero cedula" 
               />
               {idErrorMessage ? <Text style={styles.textError}>{idErrorMessage}</Text> : null}
+              <View style={styles.selectorContainer}>
+                <TouchableOpacity onPress={() => setModalStateVisible(true)} style={{ width: '48%', marginRight: '2%' }}>
+                    <Text style={styles.selectorText}>{state || 'Departamento'}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    onPress={() => {
+                        if (!state) {
+                            Alert.alert('Error', 'Por favor, elige un departamento primero.');
+                        } else {
+                            setModalCityVisible(true);
+                        }
+                    }} 
+                    style={{ width: '48%' }}
+                >
+                    <Text style={styles.selectorText}>{city || 'Municipio'}</Text>
+                </TouchableOpacity>
+              </View>
               <ImagePickerButton onPress={async () => {
                 const url = await pickImage(setIdFrontPhoto);
                 if (url) {
@@ -478,14 +495,8 @@ const RegisterFreelancer = () => {
                 }
               }} iconName="id-card-o" buttonText="Cedula Atras" />
               <PreviewImage uri={idBackPhoto} />
-              <TouchableOpacity onPress={() => setModalStateVisible(true)}>
-                <Text style={styles.selectorText}>{state || 'Departamento'}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setModalCityVisible(true)}>
-                <Text style={styles.selectorText}>{city || 'Municipio'}</Text>
-              </TouchableOpacity>
               <TouchableOpacity onPress={registerFreelancer} style={styles.buttonRegister}>
-                <Text style={styles.buttonTextRegister}>Register</Text>
+                <Text style={styles.buttonTextRegister}>Registrar</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -590,16 +601,26 @@ const styles = StyleSheet.create({
   },
   textError: {
     color: '#8b0000',
+    textAlign: 'left'
   },
   textSuccess: {
     color: 'green',
   },
   selectorText: {
     padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    color: 'white',
+    backgroundColor: '#15297C',
     marginBottom: 10,
     textAlign: 'center',
+    borderRadius: 50,
+    width: '100%', // Mantener el ancho al 100%
+    height: 40,
+    fontWeight: 'bold',
+  },
+  selectorContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
 });
 

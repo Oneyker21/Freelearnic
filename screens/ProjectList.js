@@ -29,7 +29,7 @@ const ProjectList = ({ route, showProposalButton }) => {
   ];
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'Proyecto'), (querySnapshot) => {
+    const unsubscribe = onSnapshot(collection(db, 'Projects'), (querySnapshot) => {
       const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setProjects(projectsData);
       setLoading(false);
@@ -44,9 +44,9 @@ const ProjectList = ({ route, showProposalButton }) => {
   useEffect(() => {
     const filtered = projects.filter(project => {
       // Filtrar por categoría
-      const categoryMatch = categoryFilter ? project.tipo_proyecto === categoryFilter : true;
+      const categoryMatch = categoryFilter ? project.projectType === categoryFilter : true;
       // Filtrar por rango de precios
-      const priceMatch = project.precio_minimo >= priceFilter.min && project.precio_maximo <= priceFilter.max;
+      const priceMatch = project.minPrice >= priceFilter.min && project.maxPrice <= priceFilter.max;
       return categoryMatch && priceMatch;
     });
     setFilteredProjects(filtered);
@@ -54,16 +54,16 @@ const ProjectList = ({ route, showProposalButton }) => {
 
   const enviarPropuesta = async (projectId, proposalData) => {
     try {
-      const propuesta = {
-        id_freelancer: freelancerId,
-        id_proyecto: projectId,
-        precio_propuesta: proposalData.precio_propuesta,
-        mensaje_propuesta: proposalData.mensaje_propuesta,
-        estado_propuesta: 'pendiente',
-        fecha_propuesta: new Date().toISOString(),
-        id_cliente: proposalData.id_cliente
+      const Proposal = {
+        freelancerID: freelancerId,
+        projectID: projectId,
+        proposedPrice: proposalData.proposedPrice,
+        proposalMessage: proposalData.proposalMessage,
+        proposalStatus: 'pendiente',
+        proposalDate: new Date().toISOString(),
+        clientID: proposalData.clientID
       };
-      await addDoc(collection(db, 'Propuestas'), propuesta);
+      await addDoc(collection(db, 'Proposals'), Proposal);
       Alert.alert('Propuesta enviada');
     } catch (error) {
       console.error("Error al enviar la propuesta: ", error);
@@ -83,28 +83,28 @@ const ProjectList = ({ route, showProposalButton }) => {
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.projectTitle}>{item.titulo}</Text>
-            <Text style={styles.projectTipo}>{item.tipo_proyecto}</Text>
-            <Text style={styles.projectUser}>{item.id_cliente}</Text>
+            <Text style={styles.projectTitle}>{item.title}</Text>
+            <Text style={styles.projectTipo}>{item.projectType}</Text>
+            <Text style={styles.projectUser}>{item.clientID}</Text>
             <View style={styles.priceContainer}>
               <Text style={styles.projectPrecio}>
-                Rango precio: {item.precio_minimo ? `\$${item.precio_minimo}` : 'No especificado'} - {item.precio_maximo ? `\$${item.precio_maximo}` : 'No especificado'}
+                Rango precio: {item.minPrice ? `\$${item.minPrice}` : 'No especificado'} - {item.maxPrice ? `\$${item.maxPrice}` : 'No especificado'}
               </Text>
             </View>
-            <Text style={styles.projectDescription}>{item.descripcion_proyecto}</Text>
+            <Text style={styles.projectDescription}>{item.description}</Text>
             <Text style={styles.projectPropuestas}>
               Propuestas: {item.Propuestas ? item.Propuestas.length : 0}
             </Text>
             <Text style={styles.projectFechaInicio}>
-              Fecha de Inicio: {item.fecha_inicio ? item.fecha_inicio : 'No especificada'}
+              Fecha de Inicio: {item.startDate ? item.startDate : 'No especificada'}
             </Text>
             <Text style={styles.projectFechaEntrega}>
-              Fecha Estimada de Entrega: {item.fecha_estimada_entrega ? item.fecha_estimada_entrega : 'No especificada'}
+              Fecha Estimada de Entrega: {item.estimatedDeliveryDate ? item.estimatedDeliveryDate : 'No especificada'}
             </Text>
             {showProposalButton && (
               <TouchableOpacity onPress={() => {
                 setSelectedProjectId(item.id);
-                setSelectedClientId(item.id_cliente);
+                setSelectedClientId(item.clientID);
                 setModalVisible(true);
               }} style={styles.button}>
                 <Text style={styles.buttonText}>Enviar Propuesta</Text>
@@ -162,7 +162,7 @@ const ProjectList = ({ route, showProposalButton }) => {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onSubmit={(proposalData) => {
-          proposalData.id_cliente = selectedClientId;
+          proposalData.clientID = selectedClientId;
           enviarPropuesta(selectedProjectId, proposalData);
           setModalVisible(false);
         }}

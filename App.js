@@ -52,7 +52,7 @@ const App = () => {
   /*   <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="SelectProposal" component={SelectProposal} options={{headerShow: false}}/>
-        <Stack.Screen name="HomeScreenCliente" component={HomeScreenClient} options={{headerShow: false}} />
+        <Stack.Screen name="HomeScreenClient" component={HomeScreenClient} options={{headerShow: false}} />
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ScreenTypeUser" component={ScreenTypeUser} options={{ headerShown: false }} />

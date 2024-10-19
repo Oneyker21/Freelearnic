@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f3f3f3',
+    backgroundColor: '#f5f5f5',
+    marginTop: 40,
   },
   buttonContainer: {
     position: 'absolute',

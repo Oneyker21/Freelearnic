@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { collection, getDocs} from 'firebase/firestore';
 import ProposalModal from '../screens/freelancer/ProposalModal'; // Asegúrate de que la ruta sea correcta
 
-const ProjectList = ({ route, showProposalButton }) => {
-  const { freelancerId } = route.params; // Obtener el ID del freelancer
+const SearchProjects = ({showProposalButton}) => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -16,7 +15,7 @@ const ProjectList = ({ route, showProposalButton }) => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'Proyecto'));
+        const querySnapshot = await getDocs(collection(db, 'Projects'));
         const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setProjects(projectsData);
       } catch (error) {
@@ -29,25 +28,7 @@ const ProjectList = ({ route, showProposalButton }) => {
     fetchProjects();
   }, []);
 
-  const enviarPropuesta = async (projectId, proposalData) => {
-    try {
-      const propuesta = {
-        id_freelancer: freelancerId,
-        id_proyecto: projectId,
-        precio_propuesta: proposalData.precio_propuesta,
-        mensaje_propuesta: proposalData.mensaje_propuesta,
-        estado_propuesta: 'pendiente',
-        fecha_propuesta: new Date().toISOString(),
-        id_cliente: proposalData.id_cliente // Asegúrate de incluir el id_cliente aquí
-      };
-      await addDoc(collection(db, 'Propuestas'), propuesta);
-      Alert.alert('Propuesta enviada');
-    } catch (error) {
-      console.error("Error al enviar la propuesta: ", error);
-    }
-  };
-
-  // Filtrar proyectos según la búsqueda
+ // Filtrar proyectos según la búsqueda
   const filteredProjects = projects.filter(project =>
     project.titulo.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -69,28 +50,28 @@ const ProjectList = ({ route, showProposalButton }) => {
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.projectTitle}>{item.titulo}</Text>
-            <Text style={styles.projectTipo}>{item.tipo_proyecto}</Text>
-            <Text style={styles.projectUser}>{item.id_cliente}</Text>
+            <Text style={styles.projectTitle}>{item.title}</Text>
+            <Text style={styles.projectTipo}>{item.projectType}</Text>
+            <Text style={styles.projectUser}>{item.clientID}</Text>
             <View style={styles.priceContainer}>
               <Text style={styles.projectPrecio}>
-                Rango precio: {item.precio_minimo ? `\$${item.precio_minimo}` : 'No especificado'} - {item.precio_maximo ? `\$${item.precio_maximo}` : 'No especificado'}
+                Rango precio: {item.minPrice ? `\$${item.minPrice}` : 'No especificado'} - {item.maxPrice ? `\$${item.maxPrice}` : 'No especificado'}
               </Text>
             </View>
-            <Text style={styles.projectDescription}>{item.descripcion_proyecto}</Text>
+            <Text style={styles.projectDescription}>{item.description}</Text>
             <Text style={styles.projectPropuestas}>
-              Propuestas: {item.Propuestas ? item.Propuestas.length : 0}
+              Propuestas: {item.Proposal ? item.Propuestas.length : 0}
             </Text>
             <Text style={styles.projectFechaInicio}>
-              Fecha de Inicio: {item.fecha_inicio ? item.fecha_inicio : 'No especificada'}
+              Fecha de Inicio: {item.startDate ? item.startDate : 'No especificada'}
             </Text>
             <Text style={styles.projectFechaEntrega}>
-              Fecha Estimada de Entrega: {item.fecha_estimada_entrega ? item.fecha_estimada_entrega : 'No especificada'}
+              Fecha Estimada de Entrega: {item.estimatedDeliveryDate ? item.estimatedDeliveryDate : 'No especificada'}
             </Text>
             {showProposalButton && (
               <TouchableOpacity onPress={() => {
                 setSelectedProjectId(item.id);
-                setSelectedClientId(item.id_cliente); // Establece el id_cliente
+                setSelectedClientId(item.clientID); // Establece el id_cliente
                 setModalVisible(true);
               }} style={styles.button}>
                 <Text style={styles.buttonText}>Enviar Propuesta</Text>
@@ -104,7 +85,7 @@ const ProjectList = ({ route, showProposalButton }) => {
         onClose={() => setModalVisible(false)}
         onSubmit={(proposalData) => {
           // Agrega el id_cliente a proposalData antes de enviarlo
-          proposalData.id_cliente = selectedClientId; // Incluye el id_cliente
+          proposalData.clientID = selectedClientId; // Incluye el id_cliente
           enviarPropuesta(selectedProjectId, proposalData); // Envía la propuesta
           setModalVisible(false);
         }}
@@ -181,4 +162,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProjectList;
+export default SearchProjects;
