@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ProjectListSB from './ProjectListSB'; // Asegúrate de que la ruta sea correcta
 
@@ -8,13 +8,9 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/superior.png')} style={styles.image} />
+      <Image source={require('../assets/superior.png')} style={styles.imageSuperior} />
       <View style={styles.buttonContainer}>
-        <View style={styles.welcomeContainer}> 
-          <Image source={require('../assets/tap.png')} style={styles.logo} />
-          <Text style={styles.welcomeText}>¡En Freelearnic, tu próximo proyecto o 
-          freelancer está a un clic de distancia!</Text>
-        </View>
+
 
         <TouchableOpacity
           style={styles.button}
@@ -22,31 +18,35 @@ const HomeScreen = () => {
         >
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={styles.buttonRegister}
-          onPress={() => navigation.navigate('RegisterClient')}
+          onPress={() => navigation.navigate('TypeUser')}
         >
           <Text style={styles.buttonTextRegister}>Registrarse</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.buttonVendedor}
-          onPress={() => navigation.navigate('RegisterFreelancer')}
-        >
-          <Text style={styles.buttonTextVendedor}>Iniciar como vendedor</Text>
-        </TouchableOpacity>
       </View>
-      <View style={styles.projectListContainer}>
-        <ProjectListSB  />
-      </View>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.welcomeContainer}>
+          <View style={styles.tap}>
+            <Image source={require('../assets/tap.png')} style={styles.logo} />
+          </View>
+          <Text style={styles.welcomeText}>¡En Freelearnic, tu próximo proyecto o
+            freelancer está a un clic de distancia!</Text>
+          <View style={styles.welcomeImageContainer}>
+            <Image source={require('../assets/Welcome.png')} style={styles.welcomeImage} />
+          </View>
+        </View>
+        <View style={styles.projectListContainer}>
+          <ProjectListSB />
+        </View>
+      </ScrollView>
     </View>
   );
-};
+}; // Asegúrate de que este paréntesis cierre correctamente la función del componente
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 30,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -57,10 +57,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    marginBottom: 4,
-    paddingBottom: 4,
-    
     flexDirection: 'row',
+    zIndex: 1, // Asegura que los botones estén sobre otros elementos
   },
   button: {
     backgroundColor: '#007AFF',
@@ -87,7 +85,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonVendedor: {
-    backgroundColor: '#4CAF50', // Color verde para distinguirlo
+    backgroundColor: '#4CAF50',
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 5,
@@ -97,34 +95,24 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-  },
   projectListContainer: {
-    paddingTop: 54, // Ajusta el margen superior según sea necesario
-    width: '100%', // Asegúrate de que ocupe el ancho completo
+    width: '100%',
+    marginTop:150,
   },
-  image: {
+  imageSuperior: {
     position: 'absolute',
     top: 0,
     width: "100%",
     height: 160,
+    zIndex: 1, // Asegura que la imagen esté sobre otros elementos
   },
   welcomeContainer: {
-    position: 'absolute',
-    top: 100,
+    height: '16%',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: 100,
     marginBottom: 4,
-    paddingBottom: 4,
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   welcomeText: {
     fontSize: 14,
@@ -134,11 +122,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'rgba(0, 0, 0, 0.61)',
   },
-  logo: {
-    width: 20,
-    height: 20,
-    flexShrink: 0,
+  tap: {
+    width: 50,
+    height: 40,
+    marginBottom: 10,
   },
+  logo: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  welcomeImageContainer: {
+    width: "100%",
+    marginTop: 10,
+    height: 200,
+  },
+  welcomeImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+
 });
 
 export default HomeScreen;

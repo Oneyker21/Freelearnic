@@ -19,6 +19,7 @@ import RegisterClient from '../screens/client/RegisterClient';
 import RegisterFreelancer from '../screens/freelancer/RegisterFreelancer';
 import ScreenTypeUser from '../screens/ScreenTypeUser';
 import ProjectList from '../screens/ProjectList';
+import Messaging from '../screens/Messaging';
 
 
 const Tab = createBottomTabNavigator();
@@ -28,7 +29,7 @@ function Mystack({ clientId }) {
   useEffect(() => {
     const fetchClientData = async () => {
       try {
-        const docRef = doc(db, 'Clientes', clientId);
+        const docRef = doc(db, 'Clients', clientId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -54,11 +55,15 @@ function Mystack({ clientId }) {
 
       <HomeStackNavigator.Screen name="HomeCliente" component={HomeScreenClient} initialParams={{ clientId }} options={{ headerShown: false }} />
 
+      <HomeStackNavigator.Screen name="HomeFreelancer" component={HomeScreenFreelancer} initialParams={{ clientId }} options={{ headerShown: false }} />
+
       <HomeStackNavigator.Screen name="RegisterFreelancer" component={RegisterFreelancer} initialParams={{ clientId }} options={{ headerShown: false }} />
 
       <HomeStackNavigator.Screen name="CreateProject" component={CreateProject} initialParams={{ clientId }} options={{ headerShown: false }} />
 
       <HomeStackNavigator.Screen name="GraficoProyecto" component={Grafico} initialParams={{ clientId }} options={{ headerShown: false }} />
+
+      <HomeStackNavigator.Screen name="Messaging" component={Messaging} initialParams={{ clientId }} options={{ headerShown: false }} />
 
       <HomeStackNavigator.Screen name="VerificationStatus" component={VerificationScreen} options={{ headerShown: 
       false }} />
@@ -81,9 +86,12 @@ function MyTabs({ clientId, components }) {
     <Tab.Navigator>
       <Tab.Screen name="HomeCliente" component={() => <Mystack clientId={clientId} {...components} />} options={{ headerShown: false }} />
 
+      <Tab.Screen name="HomeFreelancer" component={() => <Mystack FreelancerId={FreelancerId} {...components} />} options={{ headerShown: false }} />
+
       <Tab.Screen name="SelectProposal" component={SelectProposal} initialParams={{ clientId }} />
       <Tab.Screen name="CreateProject" component={components.CreateProject} initialParams={{ clientId }} />
       <Tab.Screen name="GraficoProyecto" component={Grafico} initialParams={{ clientId }} />
+      <Tab.Screen name="Messaging" component={Messaging} initialParams={{ clientId }} />
     </Tab.Navigator>
   );
 }
@@ -91,11 +99,13 @@ function MyTabs({ clientId, components }) {
 
 export default function MainNavigator({ components = {
   HomeScreenCliente: HomeScreenClient,
+  HomeScreenFreelancer: HomeScreenFreelancer,
   VerificationScreen: VerificationScreen,
   CreateProject: CreateProject,
   SelectProposal: SelectProposal,
   RegisterClient: RegisterClient,
   RegisterFreelancer: RegisterFreelancer,
+  Messaging: Messaging,
   // otros componentes necesarios
 } }) {
   const clientId = {clientId}; // Asegúrate de obtener este valor correctamente

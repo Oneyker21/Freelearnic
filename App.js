@@ -68,8 +68,7 @@ const App = () => {
         <Stack.Screen name="VerificationStatus" component={VerificationStatus} />
         <Stack.Screen name="GraficoProyecto" component={Grafico} />
         <Stack.Screen name="Messaging" component={Messaging} />
-        <Stack.Screen name="RegisterFreelancer2" component={RegisterFreelancer2}options={{ headerShown: false }} />
-        <Stack.Screen name="RegisterClient2" component={RegisterClient2}options={{ headerShown: false }} />
+        <Stack.Screen name="TypeUser" component={ScreenTypeUser} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer> */
       <ClienteNavigator />

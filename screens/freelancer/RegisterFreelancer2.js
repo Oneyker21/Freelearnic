@@ -316,6 +316,12 @@ const handleRegister = async () => {
   }
 };
 
+// Manejar el cambio en el campo de correo electrónico
+const handleEmailChange = (text) => {
+  // Eliminar todos los espacios y convertir el texto a minúsculas
+  const noSpacesEmail = text.replace(/\s+/g, '').toLowerCase();
+  setEmail(noSpacesEmail);
+};
 
 return (
   <View style={styles.container}>

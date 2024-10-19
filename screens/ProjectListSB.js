@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button } from 'react-native';
 import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs,onSnapshot } from 'firebase/firestore';
 import CustomText from '../utils/CustomText';
 
 //prueba
@@ -11,19 +11,16 @@ export const ProjectList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'Projects'));
-        const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setProjects(projectsData);
-      } catch (error) {
-        console.error('Error fetching projects: ', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const unsubscribe = onSnapshot(collection(db, 'Projects'), (querySnapshot) => {
+      const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setProjects(projectsData);
+      setLoading(false);
+    }, (error) => {
+      console.error('Error fetching projects: ', error);
+      setLoading(false);
+    });
 
-    fetchProjects();
+    return () => unsubscribe();
   }, []);
 
   if (loading) {
