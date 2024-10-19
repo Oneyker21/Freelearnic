@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
-    marginTop: 40,
+    marginTop: 10,
   },
   backButton: {
     position: 'absolute',

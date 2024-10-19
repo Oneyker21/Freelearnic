@@ -70,7 +70,7 @@ const App = () => {
   );
 };
 
-export default ClienteNavigator;
+export default App;
 
 
 

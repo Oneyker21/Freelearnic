@@ -12,20 +12,19 @@ export const ProjectList = () => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'Projects'), (querySnapshot) => {
-      const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const projectsData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return { id: doc.id, ...data, clientID: data.username }; // Cambio clientID por username
+      });
       setProjects(projectsData);
       setLoading(false);
     }, (error) => {
       console.error('Error fetching projects: ', error);
       setLoading(false);
     });
-
+  
     return () => unsubscribe();
   }, []);
-
-  if (loading) {
-    return <ActivityIndicator size="large" color="#007AFF" />;
-  }
 
   return (
     <FlatList
@@ -36,7 +35,6 @@ export const ProjectList = () => {
           <CustomText style={styles.projectTitle} fontFamily="Roboto">{item.title}</CustomText>
           <CustomText style={styles.projectStatus} fontFamily="Roboto">{item.projectStatus}</CustomText>
           <CustomText style={styles.projectType} fontFamily="OpenSans">{item.projectType}</CustomText>
-          <CustomText style={styles.projectUser} fontFamily="OpenSans">{item.clientID}</CustomText> 
           <View style={styles.priceContainer}>
             <CustomText style={styles.projectPrice} fontFamily="Roboto">
               Rango precio: 

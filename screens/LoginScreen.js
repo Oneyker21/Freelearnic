@@ -124,7 +124,8 @@ export default function LoginScreen() {
               showPassword={showPassword}
               toggleShowPassword={() => setShowPassword(!showPassword)}
             />
-           <CustomTextInput onChangeText={setConfirmPassword} value={confirmPassword} placeholder="Confirmar contraseña" secureTextEntry={true} />
+           <CustomTextInput onChangeText={setConfirmPassword} showPassword={showPassword}
+              toggleShowPassword={() => setShowPassword(!showPassword)} value={confirmPassword} placeholder="Confirmar contraseña" secureTextEntry={true} />
               <View style={styles.errorContainer}>
                 {error ? <Text style={styles.errorText}>{error}</Text> : null}
               </View>
