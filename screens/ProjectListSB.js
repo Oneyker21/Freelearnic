@@ -13,7 +13,7 @@ export const ProjectList = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'Proyecto'));
+        const querySnapshot = await getDocs(collection(db, 'Projects'));
         const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setProjects(projectsData);
       } catch (error) {
@@ -36,32 +36,24 @@ export const ProjectList = () => {
       keyExtractor={item => item.id}
       renderItem={({ item }) => (
         <View style={styles.card}>
-          <CustomText style={styles.projectTitle} fontFamily="Roboto">{item.titulo}</CustomText>
-          <CustomText style={styles.projectTipo} fontFamily="OpenSans">{item.tipo_proyecto}</CustomText>
-          <CustomText style={styles.projectUser} fontFamily="OpenSans">{item.id_cliente}</CustomText> 
+          <CustomText style={styles.projectTitle} fontFamily="Roboto">{item.title}</CustomText>
+          <CustomText style={styles.projectStatus} fontFamily="Roboto">{item.projectStatus}</CustomText>
+          <CustomText style={styles.projectType} fontFamily="OpenSans">{item.projectType}</CustomText>
+          <CustomText style={styles.projectUser} fontFamily="OpenSans">{item.clientID}</CustomText> 
           <View style={styles.priceContainer}>
-            <CustomText style={styles.projectPrecio} fontFamily="Roboto">
+            <CustomText style={styles.projectPrice} fontFamily="Roboto">
               Rango precio: 
               <CustomText fontFamily="OpenSans">
-                {item.precio_minimo ? `\$${item.precio_minimo}` : 'No especificado'}
+                {item.minPrice ? `\$${item.minPrice}` : 'No especificado'}
                 {' - '}
-                {item.precio_maximo ? `\$${item.precio_maximo}` : 'No especificado'}
+                {item.maxPrice ? `\$${item.maxPrice}` : 'No especificado'}
               </CustomText>
             </CustomText>
           </View>
           
-          <CustomText style={styles.projectDescription} fontFamily="OpenSans">{item.descripcion_proyecto}</CustomText>
-          
-          {/* Manejo de propuestas para evitar valores null o undefined */}
-          <Text style={styles.projectPropuestas}>
-            Propuestas: {item.propuestas ? item.propuestas : 0}
-          </Text>
-          
-          <CustomText style={styles.projectFechaInicio} fontFamily="OpenSans">
-            Fecha de Inicio: {item.fecha_inicio ? item.fecha_inicio : 'No especificada'}
-          </CustomText>
+          <CustomText style={styles.projectDescription} fontFamily="OpenSans">{item.description}</CustomText>
           <CustomText style={styles.projectFechaEntrega} fontFamily="OpenSans">
-            Fecha Estimada de Entrega: {item.fecha_estimada_entrega ? item.fecha_estimada_entrega : 'No especificada'}
+            Fecha Estimada de Entrega: {item.estimatedDeliveryDate ? item.estimatedDeliveryDate : 'No especificada'}
           </CustomText>
           
         </View>
@@ -103,7 +95,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: 5,
   },
-  projectPrecio: {
+  projectPrice: {
     fontWeight: 'bold',
     color: '#007AFF',
   },

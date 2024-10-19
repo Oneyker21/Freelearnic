@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ProjectListSB from './ProjectListSB'; // Asegúrate de que la ruta sea correcta
 
@@ -8,18 +8,9 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/superior.png')} style={styles.image} />
+      <Image source={require('../assets/superior.png')} style={styles.imageSuperior} />
       <View style={styles.buttonContainer}>
-        <View style={styles.welcomeContainer}>
-          <View style={styles.tap}>
-            <Image source={require('../assets/tap.png')} style={styles.logo} />
-          </View>
-          <Text style={styles.welcomeText}>¡En Freelearnic, tu próximo proyecto o 
-          freelancer está a un clic de distancia!</Text>
-          <View style={styles.welcomeImageContainer}>
-          <Image source={require('../assets/Welcome.png')} style={styles.welcomeImage} />
-          </View>
-        </View>
+
 
         <TouchableOpacity
           style={styles.button}
@@ -27,7 +18,7 @@ const HomeScreen = () => {
         >
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={styles.buttonRegister}
           onPress={() => navigation.navigate('RegisterClient')}
@@ -42,16 +33,27 @@ const HomeScreen = () => {
           <Text style={styles.buttonTextVendedor}>Iniciar como vendedor</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.projectListContainer}>
-        <ProjectListSB />
-      </View>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.welcomeContainer}>
+          <View style={styles.tap}>
+            <Image source={require('../assets/tap.png')} style={styles.logo} />
+          </View>
+          <Text style={styles.welcomeText}>¡En Freelearnic, tu próximo proyecto o
+            freelancer está a un clic de distancia!</Text>
+          <View style={styles.welcomeImageContainer}>
+            <Image source={require('../assets/Welcome.png')} style={styles.welcomeImage} />
+          </View>
+        </View>
+        <View style={styles.projectListContainer}>
+          <ProjectListSB />
+        </View>
+      </ScrollView>
     </View>
   );
-};
+}; // Asegúrate de que este paréntesis cierre correctamente la función del componente
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 30,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -62,9 +64,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    marginBottom: 4,
-    paddingBottom: 4,
     flexDirection: 'row',
+    zIndex: 1, // Asegura que los botones estén sobre otros elementos
   },
   button: {
     backgroundColor: '#007AFF',
@@ -102,23 +103,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   projectListContainer: {
-    paddingTop: 54,
     width: '100%',
   },
-  image: {
+  imageSuperior: {
     position: 'absolute',
     top: 0,
     width: "100%",
     height: 160,
+    zIndex: 1, // Asegura que la imagen esté sobre otros elementos
   },
   welcomeContainer: {
-    position: 'absolute',
-    top: 100,
+    height: '16%',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: 100,
     marginBottom: 4,
-    paddingBottom: 4,
     flexDirection: 'column',
   },
   welcomeText: {
@@ -132,7 +131,6 @@ const styles = StyleSheet.create({
   tap: {
     width: 50,
     height: 40,
-    marginTop: 50,
     marginBottom: 10,
   },
   logo: {
@@ -141,15 +139,16 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   welcomeImageContainer: {
+    width: "100%",
     marginTop: 10,
-    marginLeft: 10,
-    width: "80%",
-    height: "100%",
+    height: 200,
   },
   welcomeImage: {
     width: '100%',
     height: '100%',
+    resizeMode: 'contain',
   },
+
 });
 
 export default HomeScreen;
