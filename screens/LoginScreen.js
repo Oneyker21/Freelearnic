@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
@@ -11,7 +11,17 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (password && confirmPassword && password !== confirmPassword) {
+      setError('Las contraseñas no coinciden');
+    } else {
+      setError('');
+    }
+  }, [password, confirmPassword]);
 
   const auth = getAuth();
   const navigation = useNavigation();
@@ -90,18 +100,15 @@ export default function LoginScreen() {
         <View style={styles.containerView}>
           <View style={styles.login}>
             <Text style={styles.title}>
-              Iniciar Sesión en <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text>
+              Inicia sesion en tu cuenta de <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text>
             </Text>
 
-            {/* Usar CustomTextInput para el campo de email */}
             <CustomTextInput 
               value={email} 
               onChangeText={setEmail} 
               placeholder="Correo Electrónico" 
             />
-
-            {/* Usar CustomTextInput para el campo de contraseña con opción de mostrar/ocultar */}
-            <CustomTextInput 
+            <CustomTextInput   
               value={password} 
               onChangeText={setPassword} 
               placeholder="Contraseña" 
@@ -109,13 +116,17 @@ export default function LoginScreen() {
               showPassword={showPassword}
               toggleShowPassword={() => setShowPassword(!showPassword)}
             />
+           <CustomTextInput onChangeText={setConfirmPassword} value={confirmPassword} placeholder="Confirmar contraseña" secureTextEntry={true} />
+              <View style={styles.errorContainer}>
+                {error ? <Text style={styles.errorText}>{error}</Text> : null}
+              </View>
 
             <TouchableOpacity onPress={handleSignIn} style={styles.buttonLogin}>
               <Text style={styles.buttonTextLogin}>Iniciar Sesión</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { handleCreateAccount(); limpiarCampos(); }} style={styles.buttonRegister}>
-              <Text style={styles.buttonTextRegister}>Registrarse</Text>
-            </TouchableOpacity>
+            <Text onPress={() => navigation.navigate('ScreenTypeUser')} style={styles.linkText}>
+            <Text style={{ color: '#fff', marginStart:2}}>¿No tienes cuenta? </Text><Text style={{ fontWeight: 'bold', color: '#15297C' }}>Regístrate</Text>
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -128,6 +139,18 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     position: 'relative',
+  },
+  errorContainer: {
+    width: '100%',
+    alignItems: 'flex-end',
+  },
+  errorText: {
+    color: '#ffff',
+    fontSize: 12,
+    marginTop: 5,
+    fontWeight: 'bold',
+    top: -25,
+    backgroundColor: null, // Ensure the text is visible
   },
   scrollViewContent: {
     zIndex: 0,
@@ -164,7 +187,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'none',
-    marginBottom: 20,
+    marginBottom: 70,
+    marginTop: 15,
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowRadius: 1,
@@ -176,11 +200,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 30,
+    marginTop: 25,
   },
   buttonRegister: {
     width: '100%',
     height: 40,
+    marginBottom: 30,
     backgroundColor: '#E6F3FF',
     borderRadius: 50,
     borderColor: '#007AFF',
@@ -191,6 +217,7 @@ const styles = StyleSheet.create({
   buttonTextLogin: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 20,
   },
   buttonTextRegister: {
     color: '#007AFF',
@@ -204,5 +231,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '100%',
     height: 40,
+  },
+  linkText: {
+    color: '#007AFF',
+    fontWeight: 'bold',
   },
 });
