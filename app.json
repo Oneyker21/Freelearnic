@@ -22,9 +22,6 @@
     },
     "web": {
       "favicon": "./assets/Freelearnic.png"
-    },
-    "plugins": [
-      "expo-font"
-    ]
+    }
   }
 }

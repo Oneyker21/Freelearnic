@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, Text, View } from 'react-native';
-import * as Font from 'expo-font';
 import { Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
 import { OpenSans_400Regular, OpenSans_700Bold } from '@expo-google-fonts/open-sans'; // Importar Open Sans
 import LoginScreen from './screens/LoginScreen';
@@ -22,33 +21,28 @@ import ScreenTypeUser from './screens/ScreenTypeUser';
 import RegisterFreelancer2 from './screens/freelancer/RegisterFreelancer2';
 import RegisterClient2 from './screens/client/RegisterClient2';
 import ClienteNavigator from './navigation/ClienteNavigator';
+import * as Font from 'expo-font';
+
 const Stack = createNativeStackNavigator();
-
-
-const loadFonts = async () => {
-  await Font.loadAsync({
-    'Roboto-regular': Roboto_400Regular,
-    'Roboto-bold': Roboto_700Bold,
-    'OpenSans-regular': OpenSans_400Regular, // Cargar Open Sans Regular
-    'OpenSans-bold': OpenSans_700Bold,       // Cargar Open Sans Bold
-  });
-};
 
 
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
-    const loadResources = async () => {
-      await loadFonts();
+    async function loadFonts() {
+      await Font.loadAsync({
+        'Roboto-regular': require('./fonts/Roboto-Regular.ttf'),
+        'OpenSans-regular': require('./fonts/OpenSans-Regular.ttf'),
+      });
       setFontsLoaded(true);
-    };
+    }
 
-    loadResources();
+    loadFonts();
   }, []);
 
   if (!fontsLoaded) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return null; // O muestra algún tipo de pantalla de carga
   }
 
   return (
