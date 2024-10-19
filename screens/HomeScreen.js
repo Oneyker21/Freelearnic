@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ProjectListSB from './ProjectListSB'; // Asegúrate de que la ruta sea correcta
 
@@ -8,7 +8,9 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Image source={require('../assets/superior.png')} style={styles.image} />
       <View style={styles.buttonContainer}>
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('Login')}
@@ -101,6 +103,12 @@ const styles = StyleSheet.create({
   projectListContainer: {
     paddingTop: 54, // Ajusta el margen superior según sea necesario
     width: '100%', // Asegúrate de que ocupe el ancho completo
+  },
+  image: {
+    position: 'absolute',
+    top: 0,
+    width: "100%",
+    height: 160,
   },
 });
 

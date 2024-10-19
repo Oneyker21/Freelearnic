@@ -8,8 +8,8 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/Inicio.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#0047AB"
+      "resizeMode": "cover",
+      "backgroundColor": "#107ACC"
     },
     "ios": {
       "supportsTablet": true
