@@ -22,7 +22,7 @@ const HomeScreen = () => {
 
         <TouchableOpacity
           style={styles.buttonRegister}
-          onPress={() => navigation.navigate('TypeUser')}
+          onPress={() => navigation.navigate('Login')}
         >
           <Text style={styles.buttonTextRegister}>Iniciar sesión</Text>
         </TouchableOpacity>
