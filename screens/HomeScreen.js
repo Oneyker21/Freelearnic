@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
   },
   welcomeImageContainer: {
     marginTop: 10,
+    marginLeft: 10,
     width: "80%",
     height: "100%",
   },

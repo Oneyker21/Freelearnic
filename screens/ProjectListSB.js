@@ -13,11 +13,11 @@ export const ProjectList = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'Projects'));
+        const querySnapshot = await getDocs(collection(db, 'Proyecto'));
         const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setProjects(projectsData);
       } catch (error) {
-        console.error('Error fetching projects: ', error);
+        console.error('Error fetching projezcts: ', error);
       } finally {
         setLoading(false);
       }
