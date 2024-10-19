@@ -51,7 +51,7 @@ const CreateProject = ({ route }) => {
         clientID: clientId, // ID del cliente asociado
         title,
         description: description,
-        projectStatus: "active",
+        projectStatus: "Disponible",
         startDate: new Date().toISOString().split('T')[0], // Fecha de inicio generada automáticamente
         estimatedDeliveryDate: endDate, // Fecha estimada de entrega
         completionDate: null, // Inicialmente nulo
