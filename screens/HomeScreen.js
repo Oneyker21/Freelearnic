@@ -5,6 +5,7 @@ import ProjectListSB from './ProjectListSB'; // Asegúrate de que la ruta sea co
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  
 
   return (
     <View style={styles.container}>
@@ -14,16 +15,16 @@ const HomeScreen = () => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => navigation.navigate('TypeUser')}
         >
-          <Text style={styles.buttonText}>Entrar</Text>
+          <Text style={styles.buttonText}>Registrarse</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.buttonRegister}
-          onPress={() => navigation.navigate('RegisterClient')}
+          onPress={() => navigation.navigate('Login')}
         >
-          <Text style={styles.buttonTextRegister}>Registrarse</Text>
+          <Text style={styles.buttonTextRegister}>Iniciar sesión</Text>
         </TouchableOpacity>
       </View>
       <ScrollView style={styles.scrollView}>
@@ -55,17 +56,15 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 0,
+    right: 0,
     flexDirection: 'row',
     zIndex: 1, // Asegura que los botones estén sobre otros elementos
   },
   button: {
-    backgroundColor: '#007AFF',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    borderRadius: 5,
-    marginLeft: 10,
+    marginLeft: 8,
   },
   buttonText: {
     color: 'white',
@@ -73,28 +72,16 @@ const styles = StyleSheet.create({
   },
   buttonRegister: {
     backgroundColor: null,
-    borderWidth: 1,
-    borderColor: '#007AFF',
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 5,
-    marginLeft: 10,
+    marginLeft: 6,
   },
   buttonTextRegister: {
-    color: '#007AFF',
-    fontWeight: 'bold',
-  },
-  buttonVendedor: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  buttonTextVendedor: {
     color: 'white',
     fontWeight: 'bold',
   },
+
   projectListContainer: {
     width: '100%',
     marginTop:150,
