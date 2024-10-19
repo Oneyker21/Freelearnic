@@ -22,7 +22,7 @@ const HomeScreen = () => {
 
         <TouchableOpacity
           style={styles.buttonRegister}
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => navigation.navigate('TypeUser')}
         >
           <Text style={styles.buttonTextRegister}>Iniciar sesión</Text>
         </TouchableOpacity>
@@ -53,6 +53,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
     marginTop: 40,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 20,
+    zIndex: 1,
   },
   buttonContainer: {
     position: 'absolute',

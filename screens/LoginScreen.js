@@ -55,7 +55,7 @@ export default function LoginScreen() {
         if (freelancerData.verified === false) {
           navigation.navigate('VerificationStatus');
         } else {
-          navigation.navigate('HomeScreenFreelancer', { freelancerId: freelancersSnapshot.docs[0].id });
+          navigation.navigate('HomeFreelancer', { freelancerId: freelancersSnapshot.docs[0].id });
         }
       } else {
         // Buscar en la colección de Clientes
