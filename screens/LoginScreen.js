@@ -8,6 +8,8 @@ import { CustomTextInput } from '../utils/inputs'; // Importar los inputs reutil
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
+
+
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,7 +19,7 @@ export default function LoginScreen() {
   const navigation = useNavigation();
 
   const handleCreateAccount = () => {
-    navigation.navigate('ScreenTypeUser');
+    navigation.navigate('TypeUser');
   };
 
   const handleSignIn = async () => {
@@ -49,7 +51,7 @@ export default function LoginScreen() {
           if (clientData.verified === false) {
             navigation.navigate('VerificationStatus');
           } else {
-            navigation.navigate('HomeScreenClient', { clientId: clientsSnapshot.docs[0].id });
+            navigation.navigate('HomeCliente', { clientId: clientsSnapshot.docs[0].id });
           }
         } else {
           // Manejo de error si no se encuentra ni freelancer ni cliente

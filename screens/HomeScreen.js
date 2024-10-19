@@ -25,13 +25,6 @@ const HomeScreen = () => {
         >
           <Text style={styles.buttonTextRegister}>Registrarse</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.buttonVendedor}
-          onPress={() => navigation.navigate('RegisterFreelancer')}
-        >
-          <Text style={styles.buttonTextVendedor}>Iniciar como vendedor</Text>
-        </TouchableOpacity>
       </View>
       <ScrollView style={styles.scrollView}>
         <View style={styles.welcomeContainer}>
