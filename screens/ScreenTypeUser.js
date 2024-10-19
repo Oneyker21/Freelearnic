@@ -12,17 +12,17 @@ const ScreenTypeUser = () => {
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
-                    style={styles.button}
+                    style={styles.buttonFreelancer}
                     onPress={() => navigation.navigate('RegisterFreelancer')} // Make sure to pass freelancerId here
                 >
-                    <Text style={styles.buttonText}>Iniciar como vendedor</Text>
+                    <Text style={styles.buttonTextFree}>Iniciar como vendedor</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={styles.button}
+                    style={styles.buttonClient}
                     onPress={() => navigation.navigate('RegisterClient')} // Make sure to pass freelancerId here
                 >
-                    <Text style={styles.buttonText}>Contratar freelancer</Text>
+                    <Text style={styles.buttonTextClient}>Contratar freelancer</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -39,15 +39,33 @@ const styles = StyleSheet.create({
     buttonContainer: {
       marginBottom: 20,
     },
-    button: {
-      backgroundColor: '#4CAF50',
-      padding: 10,
-      borderRadius: 5,
-      marginVertical: 5, // Spacing between buttons
+    buttonFreelancer: {
+      width: '100%',
+      height: 50,
+      backgroundColor: '#15297C',
+      borderRadius: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 30,
+      marginTop: 25,
     },
-    buttonText: {
+    buttonClient: {
+      backgroundColor: null,
+      padding: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 30,
+      marginTop: 25,
+    },
+    buttonTextFree: {
       color: '#fff',
-      fontSize: 16,
+      fontWeight: 'bold',
+      fontSize: 20,
+    },
+    buttonTextClient: {
+      color: '#4FA5DA',
+      fontWeight: 'bold',
+      fontSize: 20,
     },
   });
 
