@@ -21,6 +21,7 @@ import RegisterClient from './screens/client/RegisterClient';
 import ScreenTypeUser from './screens/ScreenTypeUser';
 import RegisterFreelancer2 from './screens/freelancer/RegisterFreelancer2';
 import RegisterClient2 from './screens/client/RegisterClient2';
+import ClienteNavigator from './navigation/ClienteNavigator';
 const Stack = createNativeStackNavigator();
 
 

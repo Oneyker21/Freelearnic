@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
   },
   projectListContainer: {
     width: '100%',
+    marginTop:150,
   },
   imageSuperior: {
     position: 'absolute',
