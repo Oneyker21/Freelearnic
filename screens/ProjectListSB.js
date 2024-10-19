@@ -69,11 +69,18 @@ const styles = StyleSheet.create({
   projectTitle: {
     fontWeight: 'bold',
     fontSize: 15,
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 15,
+    borderColor: '#107ACC',
+    backgroundColor: '#107ACC',
+    color: 'white',
+    textAlign: 'center',
+    margin:0
   },
   card: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    padding: 15,
     marginVertical: 10,
     shadowColor: '#000',
     shadowOffset: {
@@ -101,6 +108,15 @@ const styles = StyleSheet.create({
   },
   projectFechaInicio: {
     color: '#666',
+  },
+  projectStatus: {
+    borderWidth: 1,
+    borderRadius: 12,
+    borderColor: '#00FF00',
+    backgroundColor: '#00FF00',
+    color: 'white',
+    padding: 3,
+    alignSelf: 'flex-start',
   },
   projectFechaEntrega: {
     color: '#666',

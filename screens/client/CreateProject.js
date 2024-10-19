@@ -1,11 +1,14 @@
 import React, {useState } from 'react';
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert ,Image} from 'react-native';
 import { BlurView } from 'expo-blur';
 import { doc, setDoc, collection } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 import { db } from '../../config/firebaseConfig';
 import DateTimePickerModal from 'react-native-modal-datetime-picker'; // Import the date picker
 import { Picker } from '@react-native-picker/picker'; // Import the Picker
+import { CustomTextInput } from '../../utils/inputs';
+
 
 const CreateProject = ({ route }) => {
   const { clientId } = route.params; // Get the client ID from route parameters
@@ -16,6 +19,7 @@ const CreateProject = ({ route }) => {
   const [endDate, setEndDate] = useState('');
   const [projectType, setProjectType] = useState(''); // State for the project type
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   const showDatePicker = () => {
@@ -73,36 +77,26 @@ const CreateProject = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <BlurView intensity={90} tint="light" style={styles.blurContainer}>
-          <View style={styles.login}>
-            <Text style={styles.title}>Crear un proyecto</Text>
-            <TextInput style={styles.input} onChangeText={setTitle} value={title} placeholder="Titulo" />
-            <TextInput 
-              style={[styles.input, styles.descriptionInput]} 
-              onChangeText={setDescription} 
-              value={description} 
-              placeholder="Descripción" 
-              multiline 
-              numberOfLines={4} // Number of visible lines
-              textAlignVertical="top" // Align text at the top
-            />
-            <TextInput 
-              style={styles.input} 
-              onChangeText={handleMinPriceChange} 
-              value={minPrice} 
-              placeholder="Precio minimo" 
-              keyboardType="numeric" 
-            />
-            <TextInput 
-              style={styles.input} 
-              onChangeText={handleMaxPriceChange} 
-              value={maxPrice} 
-              placeholder="Precio maximo" 
-              keyboardType="numeric" 
-            />
-            
-            <TouchableOpacity onPress={showDatePicker} style={styles.input}>
+    {isLoading ? (
+      <View style={styles.loadingContainer}>
+        <Text>Loading...</Text>
+      </View>
+    ) : (
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Ionicons name="arrow-back" size={30} color="#15297C" />
+      </TouchableOpacity>
+      <Image source={require('../../assets/Freelearnic.png')} style={styles.logo} />
+      <View style={styles.containerView}>
+        <View style={styles.login}>
+          <Text style={styles.title}>
+           <Text>Continuación</Text> 
+          </Text>
+          <CustomTextInput onChangeText={setTitle} value={title} placeholder="Titulo" />
+          <CustomTextInput onChangeText={setDescription} value={description} placeholder="Descripción" />
+          <CustomTextInput onChangeText={setMinPrice} value={minPrice} placeholder="Precio minimo" />
+          <CustomTextInput onChangeText={setMaxPrice} value={maxPrice} placeholder="Precio maximo" />
+          <TouchableOpacity onPress={showDatePicker} style={styles.input}>
               <Text>{endDate ? endDate : "Tiempo estimado de entrega"}</Text>
             </TouchableOpacity>
 
@@ -127,76 +121,109 @@ const CreateProject = ({ route }) => {
               <Picker.Item label="Desarrollo de software" value="Desarrollo de software" />
               <Picker.Item label="Base de datos" value="Base de datos" />
             </Picker>
-
-            <TouchableOpacity onPress={createProject} style={styles.buttonRegister}>
-              <Text style={styles.buttonTextRegister}>Crear proyecto</Text>
-            </TouchableOpacity>
-          </View>
-        </BlurView>
-      </ScrollView>
-    </View>
-  );
+          <TouchableOpacity onPress={createProject} style={styles.buttonRegister}>
+            <Text style={styles.buttonTextRegister}>Publicar</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
+  )}
+</View>
+);
 };
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 50,
+    position: 'relative',
+    
+  },
+  scrollView: {
+    zIndex: 0,
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   scrollViewContent: {
+    paddingTop: 60,
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 20,
   },
-  blurContainer: {
-    width: '80%',
+  buttonRegister: {
+    width: '100%',
+    height: 50,
+    marginTop: 30,
+    backgroundColor: '#15297C',
+    borderRadius: 50,
+    marginBottom: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  containerView: {
+    backgroundColor: '#107acc',
+    width: '100%',
     padding: 20,
-    borderRadius: 10,
+    borderTopLeftRadius: 130,
     overflow: 'hidden',
+ 
   },
   login: {
     width: '100%',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  logo: {
+    width: 120,
+    height: 130,
+    borderRadius: 4,
     marginBottom: 20,
-    color: '#000',
   },
-  input: {
-    width: '100%',
-    height: 40,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderRadius: 5,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+  title: {
+    fontSize: 16,
+    fontWeight: 'none',
+    marginBottom: 20,
+    color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowRadius: 1,
   },
-  descriptionInput: {
-    height: 100, // Increased height for the description field
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  buttonRegister: {
-    width: '100%',
-    height: 40,
-    backgroundColor: '#E6F3FF',
-    borderRadius: 5,
-    borderColor: '#007AFF',
-    borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
   buttonTextRegister: {
-    color: '#007AFF',
+    color: '#fff',
     fontWeight: 'bold',
+    fontSize: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    zIndex: 1,
+  },
+  errorContainer: {
+    width: '100%',
+    alignItems: 'flex-end',
+    
+  },
+  errorText: {
+    color: '#ffff',
+    fontSize: 12,
+    marginTop: 5,
+    textAlign: 'justify',
+    fontWeight: 'bold',
+    top:-25,
+    backgroundColor: null, // Ensure the text is visible
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  textError: {
+    color: '#8b0000',
+    textAlign: 'left'
   },
 });
 

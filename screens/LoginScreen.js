@@ -33,6 +33,12 @@ export default function LoginScreen() {
   };
 
   const handleSignIn = async () => {
+    // Validar que las contraseñas coincidan
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Las contraseñas no coinciden. Por favor, verifícalas.');
+      return; // No continuar con el inicio de sesión
+    }
+
     try {
       // Eliminar espacios en blanco al principio y al final del correo
       const trimmedEmail = email.trim();
