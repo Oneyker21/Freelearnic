@@ -10,7 +10,7 @@ import { CustomTextInput, ImagePickerButton, PreviewImage } from '../../utils/in
 import SelectModal from '../freelancer/SelectDeparMuni'; // Make sure to import the modal component
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-const RegisterFreelancer2 = () => {
+const RegisterClient2 = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { email, password, firstName, lastName, username, idNumber } = route.params;
@@ -287,10 +287,10 @@ const handleRegister = async () => {
     const user = userCredential.user;
 
     // Guardar los datos del freelancer en Firestore
-    const idFreelancer = `FreelancerId_${user.uid}`;
-    await setDoc(doc(db, 'Freelancers', idFreelancer), {
+    const idClient = `ClientId_${user.uid}`;
+    await setDoc(doc(db, 'Clients', idClient), {
       uid: user.uid,
-      id: idFreelancer,
+      id: idClient,
       firstName,
       lastName,
       username,
@@ -300,7 +300,7 @@ const handleRegister = async () => {
       idBackPhoto,  // Aquí se guarda la URL de la foto trasera
       city,
       state,
-      userType: 'freelancer',
+      userType: 'client',
       verified: false,
       regDate: new Date().toISOString(),
     });
@@ -310,7 +310,6 @@ const handleRegister = async () => {
     ]);
   } catch (error) {
     Alert.alert('Error', 'No se pudo registrar: ' + error.message);
-    console.error('Error', 'No se pudo registrar: ' + error.message);
   } finally {
     setIsLoading(false);
   }
@@ -495,4 +494,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegisterFreelancer2;
+export default RegisterClient2;

@@ -83,6 +83,7 @@ const ProjectList = ({ route, showProposalButton }) => {
           <View style={styles.card}>
             <Text style={styles.projectTitle}>{item.title}</Text>
             <Text style={styles.projectTipo}>{item.projectType}</Text>
+            <Text style={styles.projectTipo}>{item.projectStatus}</Text>
             <Text style={styles.projectUser}>{item.clientID}</Text>
             <View style={styles.priceContainer}>
               <Text style={styles.projectPrecio}>
