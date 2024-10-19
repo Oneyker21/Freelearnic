@@ -86,7 +86,7 @@ function MyTabs({ clientId, components }) {
     <Tab.Navigator>
       <Tab.Screen name="HomeCliente" component={() => <Mystack clientId={clientId} {...components} />} options={{ headerShown: false }} />
 
-      <Tab.Screen name="HomeFreelancer" component={() => <Mystack FreelancerId={FreelancerId} {...components} />} options={{ headerShown: false }} />
+      <Tab.Screen name="HomeFreelancer" component={HomeScreenFreelancer} initialParams={{ clientId }} />
 
       <Tab.Screen name="SelectProposal" component={SelectProposal} initialParams={{ clientId }} />
       <Tab.Screen name="CreateProject" component={components.CreateProject} initialParams={{ clientId }} />
