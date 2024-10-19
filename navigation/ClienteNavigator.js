@@ -26,7 +26,7 @@ function Mystack({ clientId }) {
   useEffect(() => {
     const fetchClientData = async () => {
       try {
-        const docRef = doc(db, 'Clientes', clientId);
+        const docRef = doc(db, 'Clients', clientId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {

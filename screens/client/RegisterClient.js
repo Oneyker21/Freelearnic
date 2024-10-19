@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
     borderRadius: 50,
-    width: '100%', // Mantener el ancho al 100%
+    width: '100%',
     height: 40,
     fontWeight: 'bold',
   },

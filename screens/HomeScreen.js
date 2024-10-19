@@ -10,10 +10,15 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Image source={require('../assets/superior.png')} style={styles.image} />
       <View style={styles.buttonContainer}>
-        <View style={styles.welcomeContainer}> 
-          <Image source={require('../assets/tap.png')} style={styles.logo} />
+        <View style={styles.welcomeContainer}>
+          <View style={styles.tap}>
+            <Image source={require('../assets/tap.png')} style={styles.logo} />
+          </View>
           <Text style={styles.welcomeText}>¡En Freelearnic, tu próximo proyecto o 
           freelancer está a un clic de distancia!</Text>
+          <View style={styles.welcomeImageContainer}>
+          <Image source={require('../assets/Welcome.png')} style={styles.welcomeImage} />
+          </View>
         </View>
 
         <TouchableOpacity
@@ -38,7 +43,7 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.projectListContainer}>
-        <ProjectListSB  />
+        <ProjectListSB />
       </View>
     </View>
   );
@@ -59,7 +64,6 @@ const styles = StyleSheet.create({
     right: 10,
     marginBottom: 4,
     paddingBottom: 4,
-    
     flexDirection: 'row',
   },
   button: {
@@ -87,7 +91,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonVendedor: {
-    backgroundColor: '#4CAF50', // Color verde para distinguirlo
+    backgroundColor: '#4CAF50',
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 5,
@@ -97,18 +101,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-  },
   projectListContainer: {
-    paddingTop: 54, // Ajusta el margen superior según sea necesario
-    width: '100%', // Asegúrate de que ocupe el ancho completo
+    paddingTop: 54,
+    width: '100%',
   },
   image: {
     position: 'absolute',
@@ -124,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 4,
     paddingBottom: 4,
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   welcomeText: {
     fontSize: 14,
@@ -134,10 +129,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'rgba(0, 0, 0, 0.61)',
   },
+  tap: {
+    width: 50,
+    height: 40,
+    marginTop: 50,
+    marginBottom: 10,
+  },
   logo: {
-    width: 20,
-    height: 20,
-    flexShrink: 0,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  welcomeImageContainer: {
+    marginTop: 10,
+    width: "80%",
+    height: "100%",
+  },
+  welcomeImage: {
+    width: '100%',
+    height: '100%',
   },
 });
 

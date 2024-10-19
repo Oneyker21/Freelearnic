@@ -13,7 +13,7 @@ export const ProjectList = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'Proyecto'));
+        const querySnapshot = await getDocs(collection(db, 'Projects'));
         const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setProjects(projectsData);
       } catch (error) {
