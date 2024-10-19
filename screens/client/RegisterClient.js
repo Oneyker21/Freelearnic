@@ -257,12 +257,15 @@ const styles = StyleSheet.create({
   errorContainer: {
     width: '100%',
     alignItems: 'flex-end',
+    
   },
   errorText: {
     color: '#ffff',
-    fontSize: 14,
+    fontSize: 12,
     marginTop: 5,
+    textAlign: 'justify',
     fontWeight: 'bold',
+    top:-25,
     backgroundColor: null, // Ensure the text is visible
   },
   loadingContainer: {
