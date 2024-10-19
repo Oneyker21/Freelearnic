@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import React, {useState } from 'react';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, collection } from 'firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
 import { db } from '../../config/firebaseConfig';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import DateTimePickerModal from 'react-native-modal-datetime-picker'; // Import the date picker
 import { Picker } from '@react-native-picker/picker'; // Import the Picker
 
 const CreateProject = ({ route }) => {
   const { clientId } = route.params; // Get the client ID from route parameters
-  console.log('Client id in createproject:', clientId); // Check that the ID is collected correctly
   const [title, setTitle] = React.useState('');
-  const [description, setDescription] = React.useState('');
-  const [minPrice, setMinPrice] = React.useState('');
-  const [maxPrice, setMaxPrice] = React.useState('');
-  const [endDate, setEndDate] = React.useState('');
-  const [projectType, setProjectType] = React.useState(''); // State for the project type
-  const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+  const [description, setDescription] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [projectType, setProjectType] = useState(''); // State for the project type
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const navigation = useNavigation();
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -43,36 +43,32 @@ const CreateProject = ({ route }) => {
 
   const createProject = async () => {
     try {
-      const newProject = {
-        clientID: clientId, // Change according to the client
+      const projectRef = doc(collection(db, 'Projects')); // Crea una referencia a un nuevo documento en la colección 'Projects'
+      const ProjectId = `ProjectId_${projectRef.id}`; // Genera un ID personalizado
+
+      await setDoc(projectRef, { // Usa la referencia para establecer el documento
+        id: ProjectId, // Usa el ID personalizado
+        clientID: clientId, // ID del cliente asociado
         title,
         description: description,
-        project_status: "active",
-        startDate: new Date().toISOString().split('T')[0], // Automatically generated date
-        estimatedDeliveryDate: endDate, // Change to estimated delivery date
-        completionDate: null, // Initially null
-        projectType: projectType, // Selected project type
-        minPrice: parseFloat(minPrice), // Minimum price
-        maxPrice: parseFloat(maxPrice), // Maximum price
-        finalPrice: parseFloat(minPrice), // Final price
-      };
+        projectStatus: "active",
+        startDate: new Date().toISOString().split('T')[0], // Fecha de inicio generada automáticamente
+        estimatedDeliveryDate: endDate, // Fecha estimada de entrega
+        completionDate: null, // Inicialmente nulo
+        projectType: projectType, // Tipo de proyecto seleccionado
+        minPrice: parseFloat(minPrice), // Precio mínimo
+        maxPrice: parseFloat(maxPrice), // Precio máximo
+        finalPrice: parseFloat(minPrice), // Precio final
+      });
 
-      await setDoc(doc(db, 'Projects', `project_id_${Date.now()}`), newProject);
-      Alert.alert('Success', 'Project created successfully');
-      clearFields();
+      // Cambiar el Alert para que el segundo argumento sea un string
+      Alert.alert('Proyecto registrado', 'El proyecto se ha creado correctamente.', [
+        { text: 'OK', onPress: () => navigation.replace('HomeScreenClient',{ clientId })}
+      ]);
     } catch (error) {
       console.error('Error creating project: ', error);
-      Alert.alert('Error', 'Could not create the project: ' + error.message);
+      Alert.alert('Error', 'No se pudo crear el proyecto: ' + error.message);
     }
-  };
-
-  const clearFields = () => {
-    setTitle('');
-    setDescription('');
-    setMinPrice('');
-    setMaxPrice('');
-    setEndDate('');
-    setProjectType(''); // Clear the project type
   };
 
   return (
@@ -80,8 +76,8 @@ const CreateProject = ({ route }) => {
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <BlurView intensity={90} tint="light" style={styles.blurContainer}>
           <View style={styles.login}>
-            <Text style={styles.title}>Create Project</Text>
-            <TextInput style={styles.input} onChangeText={setTitle} value={title} placeholder="Title" />
+            <Text style={styles.title}>Crear un proyecto</Text>
+            <TextInput style={styles.input} onChangeText={setTitle} value={title} placeholder="Titulo" />
             <TextInput 
               style={[styles.input, styles.descriptionInput]} 
               onChangeText={setDescription} 

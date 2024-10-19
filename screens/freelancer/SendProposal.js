@@ -8,22 +8,22 @@ const SendProposal = ({ route }) => {
   const { projectId } = route.params; // Obtener el ID del proyecto desde la navegación
   const { freelancerId } = route.params; // Obtener el ID del freelancer de los parámetros de la ruta
   console.log('Freelancer ID en HomeScreenFreelancer:', freelancerId); // Verifica que el ID se recolecte correctamente
-  const [mensajePropuesta, setMensajePropuesta] = React.useState('');
-  const [precioPropuesta, setPrecioPropuesta] = React.useState('');
+  const [proposalMessage, setProposalMessage] = React.useState('');
+  const [proposedPrice, setProposedPrice] = React.useState('');
 
 
 
-  const enviarPropuesta = async () => {
+  const SendProposal = async () => {
     try {
       const propuesta = {
-        id_proyecto: projectId,
-        id_freelancer: freelancerId,
-        mensaje_propuesta: mensajePropuesta,
-        precio_propuesta: parseFloat(precioPropuesta),
-        estado_propuesta: 'pendiente',
-        fecha_propuesta: new Date().toISOString(),
+        projectID: projectId,
+        freelancerID: freelancerId,
+        proposalMessage: proposalMessage,
+        proposedPrice: parseFloat(proposedPrice),
+        proposalStatus: 'pendiente',
+        proposalDate: new Date().toISOString(),
       };
-      await addDoc(collection(db, 'Propuestas'), propuesta);
+      await addDoc(collection(db, 'Proposals'), propuesta);
       Alert.alert('Propuesta enviada');
     } catch (error) {
       console.error("Error al enviar la propuesta: ", error);
@@ -36,16 +36,16 @@ const SendProposal = ({ route }) => {
       <Text>Enviar Propuesta</Text>
       <TextInput
         placeholder="Mensaje de Propuesta"
-        value={mensajePropuesta}
-        onChangeText={setMensajePropuesta}
+        value={proposalMessage}
+        onChangeText={setProposalMessage}
       />
       <TextInput
         placeholder="Precio de Propuesta"
-        value={precioPropuesta}
-        onChangeText={setPrecioPropuesta}
+        value={proposedPrice}
+        onChangeText={setProposedPrice}
         keyboardType="numeric"
       />
-      <TouchableOpacity onPress={enviarPropuesta}>
+      <TouchableOpacity onPress={SendProposal}>
         <Text>Enviar Propuesta</Text>
       </TouchableOpacity>
     </View>
