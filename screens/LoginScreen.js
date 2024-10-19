@@ -133,7 +133,7 @@ export default function LoginScreen() {
             <TouchableOpacity onPress={handleSignIn} style={styles.buttonLogin}>
               <Text style={styles.buttonTextLogin}>Iniciar Sesión</Text>
             </TouchableOpacity>
-            <Text onPress={() => navigation.navigate('ScreenTypeUser')} style={styles.linkText}>
+            <Text onPress={() => navigation.navigate('TypeUser')} style={styles.linkText}>
             <Text style={{ color: '#fff', marginStart:2}}>¿No tienes cuenta? </Text><Text style={{ fontWeight: 'bold', color: '#15297C' }}>Regístrate</Text>
             </Text>
           </View>

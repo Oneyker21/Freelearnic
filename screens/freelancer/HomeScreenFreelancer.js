@@ -42,19 +42,7 @@ const HomeScreenFreelancer = ({ route }) => {
       <ProjectList route={{ params: { freelancerId } }} showProposalButton={true} />
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('ProfileFreelancer', { freelancerId })} // Make sure to pass freelancerId here
-        >
-          <Text style={styles.buttonText}>Profile</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('Messaging', { freelancerId })} // Make sure to pass freelancerId here
-        >
-          <Text style={styles.buttonText}>Chats</Text>
-        </TouchableOpacity>
+  
       </View>
     </View>
   );

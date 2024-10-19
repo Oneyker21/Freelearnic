@@ -39,8 +39,12 @@ const ProposalModal = ({ visible, onClose, onSubmit, clientId }) => { // Accepts
           value={proposalMessage}
           onChangeText={setProposalMessage}
         />
-        <Button title="Enviar" onPress={handleSubmit} />
-        <Button title="Cancelar" onPress={onClose} color="red" />
+        <View style={styles.buttonContainer}>
+          <Button title="Enviar" onPress={handleSubmit} color='#15297C' />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button title="Cancelar" onPress={onClose} color="red" />
+        </View>
       </View>
     </Modal>
   );
@@ -55,6 +59,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginBottom: 20,
+    textAlign: 'center'
   },
   input: {
     borderWidth: 1,
@@ -62,6 +67,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+  },
+  buttonContainer: {
+    marginVertical: 10, // Ajusta el margen vertical para separar los botones
+    // Puedes agregar más estilos aquí según necesites
   },
 });
 
