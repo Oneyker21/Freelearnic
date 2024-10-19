@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   containerView: {
-    backgroundColor: '#388ABD',
+    backgroundColor: '#107acc',
     width: '100%',
     height: '100%',
     padding: 30,

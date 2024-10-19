@@ -19,7 +19,10 @@ import Grafico from './screens/client/Graficos';
 import Messaging from './screens/Messaging';
 import RegisterClient from './screens/client/RegisterClient';
 import ScreenTypeUser from './screens/ScreenTypeUser';
+import RegisterFreelancer2 from './screens/freelancer/RegisterFreelancer2';
+import RegisterClient2 from './screens/client/RegisterClient2';
 import ClienteNavigator from './navigation/ClienteNavigator';
+const Stack = createNativeStackNavigator();
 
 
 const loadFonts = async () => {
@@ -65,7 +68,8 @@ const App = () => {
         <Stack.Screen name="VerificationStatus" component={VerificationStatus} />
         <Stack.Screen name="GraficoProyecto" component={Grafico} />
         <Stack.Screen name="Messaging" component={Messaging} />
-        <Stack.Screen name="TypeUser" component={ScreenTypeUser} options={{ headerShown: false }} />
+        <Stack.Screen name="RegisterFreelancer2" component={RegisterFreelancer2}options={{ headerShown: false }} />
+        <Stack.Screen name="RegisterClient2" component={RegisterClient2}options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer> */
       <ClienteNavigator />
