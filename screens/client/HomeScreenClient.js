@@ -8,14 +8,12 @@ import ProjectList from '../ProjectList'; // Asegúrate de que la ruta sea corre
 const HomeScreenSb = ({route}) => {
   const navigation = useNavigation();
   const { clientId } = route.params; // Obtener el ID del freelancer de los parámetros de la ruta
-  console.log('Client ID en HomeScreenClient:', clientId); // Verifica que el ID se recolecte correctamente
   const [loading, setLoading] = useState(true);
-
 
   useEffect(() => {
     const fetchClientData = async () => {
       try {
-        const docRef = doc(db, 'Clientes', clientId); // Cambia 'Freelancers' por el nombre de tu colección
+        const docRef = doc(db, 'Clients', clientId); 
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -43,7 +41,7 @@ const HomeScreenSb = ({route}) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Crear Proyecto', { clientId })} // Pasar el clientId al componente Crear Proyecto
+          onPress={() => navigation.navigate('CreateProject', { clientId })} // Pasar el clientId al componente Crear Proyecto
         >
           <Text style={styles.buttonText}>Crear Proyecto</Text>
         </TouchableOpacity>

@@ -12,7 +12,7 @@ const SelectProposals = ({ route }) => {
     const fetchProposals = async () => {
       try {
         // Obtener propuestas directamente de la colección 'Propuestas'
-        const proposalsQuery = query(collection(db, 'Propuestas'), where('id_cliente', '==', clientId));
+        const proposalsQuery = query(collection(db, 'Proposals'), where('clientID', '==', clientId));
         const querySnapshot = await getDocs(proposalsQuery);
         const proposalsData = [];
 
@@ -34,20 +34,20 @@ const SelectProposals = ({ route }) => {
 
   const acceptProposal = async (proposal) => {
     try {
-      const allProposalsQuery = query(collection(db, 'Propuestas'), where('id_proyecto', '==', proposal.id_proyecto));
+      const allProposalsQuery = query(collection(db, 'Proposals'), where('projectID', '==', proposal.projectID));
       const allProposalsSnapshot = await getDocs(allProposalsQuery);
       const batch = writeBatch(db);
 
       allProposalsSnapshot.forEach((docSnapshot) => {
-        const proposalRef = doc(db, 'Propuestas', docSnapshot.id); // Corrección aquí
+        const proposalRef = doc(db, 'Proposals', docSnapshot.id); // Corrección aquí
         if (docSnapshot.id === proposal.id) {
           batch.update(proposalRef, {
-            estado_propuesta: "aceptada",
-            id_cliente: proposal.id_cliente
+            proposalStatus: "aceptada",
+            clientID: proposal.clientID
           });
         } else {
           batch.update(proposalRef, {
-            estado_propuesta: "rechazada"
+            proposalStatus: "rechazada"
           });
         }
       });
@@ -57,7 +57,7 @@ const SelectProposals = ({ route }) => {
       Alert.alert('Éxito', 'Propuesta aceptada correctamente y las demás han sido rechazadas');
       setProposals(prevProposals => 
         prevProposals.map(p => 
-          p.id === proposal.id ? { ...p, estado_propuesta: "aceptada" } : { ...p, estado_propuesta: "rechazada" }
+          p.id === proposal.id ? { ...p, proposalStatus: "aceptada" } : { ...p, proposalStatus: "rechazada" }
         )
       );
     } catch (error) {
@@ -78,11 +78,11 @@ const SelectProposals = ({ route }) => {
       renderItem={({ item }) => (
         <View style={styles.card}>
           <Text style={styles.title}>
-            {`Propuesta de ${item.id_freelancer || 'Desconocido'}`}
+            {`Propuesta de ${item.freelancerID || 'Desconocido'}`}
           </Text>
           <Text>{`Precio: $${item.precio_propuesta || 'N/A'}`}</Text>
-          <Text>{`Mensaje: ${item.mensaje_propuesta || 'Sin mensaje'}`}</Text>
-          <Text>{`Estado: ${item.estado_propuesta || 'Desconocido'}`}</Text>
+          <Text>{`Mensaje: ${item.proposedPrice || 'Sin mensaje'}`}</Text>
+          <Text>{`Estado: ${item.proposalStatus || 'Desconocido'}`}</Text>
           <TouchableOpacity onPress={() => acceptProposal(item)} style={styles.button}>
             <Text style={styles.buttonText}>Aceptar Propuesta</Text>
           </TouchableOpacity>
