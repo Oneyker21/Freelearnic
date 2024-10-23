@@ -11,8 +11,6 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Image source={require('../assets/superior.png')} style={styles.imageSuperior} />
       <View style={styles.buttonContainer}>
-
-
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('TypeUser')}
@@ -52,7 +50,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
-    marginTop: 10,
+    marginTop: 30,
   },
   backButton: {
     position: 'absolute',

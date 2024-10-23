@@ -20,6 +20,8 @@ import RegisterFreelancer from '../screens/freelancer/RegisterFreelancer';
 import ScreenTypeUser from '../screens/ScreenTypeUser';
 import ProjectList from '../screens/ProjectList';
 import Messaging from '../screens/Messaging';
+import FreelancerProfile from '../screens/freelancer/FreelancerProfile';
+import ClientProfile from '../screens/client/ClientProfile';
 
 
 const Tab = createBottomTabNavigator();
@@ -55,6 +57,8 @@ function Mystack({ clientId }) {
 
       <HomeStackNavigator.Screen name="HomeCliente" component={HomeScreenClient} initialParams={{ clientId }} options={{ headerShown: false }} />
 
+      <HomeStackNavigator.Screen name="ClientProfile" component={ClientProfile} initialParams={{ clientId }} options={{ headerShown: false }} />
+
       <HomeStackNavigator.Screen name="HomeFreelancer" component={HomeScreenFreelancer} initialParams={{ clientId }} options={{ headerShown: false }} />
 
       <HomeStackNavigator.Screen name="RegisterFreelancer" component={RegisterFreelancer} initialParams={{ clientId }} options={{ headerShown: false }} />
@@ -85,6 +89,7 @@ function MyTabs({ clientId, components }) {
   return (
     <Tab.Navigator>
       <Tab.Screen name="HomeCliente" component={() => <Mystack clientId={clientId} {...components} />} options={{ headerShown: false }} />
+      <Tab.Screen name="FreelancerProfile" component={FreelancerProfile} initialParams={{ clientId }} options={{ headerShown: false }} />
 
       <Tab.Screen name="HomeFreelancer" component={HomeScreenFreelancer} initialParams={{ clientId }} />
 
@@ -106,6 +111,7 @@ export default function MainNavigator({ components = {
   RegisterClient: RegisterClient,
   RegisterFreelancer: RegisterFreelancer,
   Messaging: Messaging,
+  FreelancerProfile: FreelancerProfile,
   // otros componentes necesarios
 } }) {
   const clientId = {clientId}; // Asegúrate de obtener este valor correctamente

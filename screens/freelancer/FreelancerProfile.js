@@ -1,227 +1,100 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TextInput, Button, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, Button, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { CustomTextInputEdit } from '../../utils/inputs'; // Asegúrate de que la ruta sea correcta
 
 const FreelancerProfile = ({ route }) => {
-  const { freelancerId } = route.params; // Asegúrate de obtener el freelancerId de los parámetros de la ruta
+  const { freelancerId } = route.params; // Obtener el ID del freelancer desde la navegación
   const [freelancerData, setFreelancerData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [editableData, setEditableData] = useState({
-    portafolio: [],
-    certificaciones: [],
-    idiomas_hablados: [],
-    habilidades: [],
-    // otros campos...
-  });
-
-  // Estados para nuevos elementos de cada lista
-  const [newPortfolioItem, setNewPortfolioItem] = useState('');
-  const [newCertification, setNewCertification] = useState('');
-  const [newLanguage, setNewLanguage] = useState('');
-  const [newSkill, setNewSkill] = useState('');
+  const [editableData, setEditableData] = useState({}); // Para almacenar los datos editables
 
   useEffect(() => {
     const fetchFreelancerData = async () => {
-      try {
-        const docRef = doc(db, 'Freelancer', freelancerId); // Cambia 'Freelancer' por el nombre de tu colección
-        const docSnap = await getDoc(docRef);
+      const docRef = doc(db, 'Freelancers', freelancerId);
+      const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setFreelancerData(data);
-          setEditableData(data); // Inicializa editableData con los datos del freelancer
-        } else {
-          console.log('No such document!');
-        }
-      } catch (error) {
-        console.error('Error fetching freelancer data: ', error);
-      } finally {
-        setLoading(false);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setFreelancerData(data);
+        setEditableData(data); // Inicializa los datos editables
+      } else {
+        console.log("No such document!");
       }
+      setLoading(false);
     };
 
     fetchFreelancerData();
   }, [freelancerId]);
 
-  const addItemToList = (listName, item) => {
-    setEditableData((prevData) => ({
-      ...prevData,
-      [listName]: [...prevData[listName], item],
-    }));
-  };
-
-  const removeItemFromList = (listName, index) => {
-    setEditableData((prevData) => ({
-      ...prevData,
-      [listName]: prevData[listName].filter((_, i) => i !== index),
-    }));
+  const handleInputChange = (field, value) => {
+    setEditableData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
     try {
-      const docRef = doc(db, 'Freelancer', freelancerId);
-      await updateDoc(docRef, editableData); // Actualiza los datos en Firestore
-      setFreelancerData(editableData); // Actualiza freelancerData con los nuevos datos
+      const docRef = doc(db, 'Freelancers', freelancerId);
+      await updateDoc(docRef, editableData);
+      Alert.alert('Perfil actualizado con éxito');
+      setFreelancerData(editableData); // Actualiza los datos del freelancer
     } catch (error) {
-      console.error('Error updating freelancer data: ', error);
+      console.error("Error al actualizar el perfil: ", error);
+      Alert.alert('Error al actualizar el perfil');
     }
   };
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#007AFF" />;
+    return <Text>Cargando...</Text>;
   }
 
   if (!freelancerData) {
-    return <Text>No se encontraron datos del freelancer.</Text>;
+    return <Text>No se encontró información del freelancer.</Text>;
   }
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>{`${freelancerData.nombres} ${freelancerData.apellidos}`}</Text>
-      {/* Campos editables */}
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre de Usuario"
-        value={editableData.nombre_usuario}
-        onChangeText={(value) => handleInputChange('nombre_usuario', value)}
+      <Image source={{ uri: freelancerData.profilePic }} style={styles.profilePic} />
+      <Text style={styles.name}>{freelancerData.firstName} {freelancerData.lastName}</Text>
+      <Text style={styles.username}>@{freelancerData.username}</Text>
+      <Text style={styles.email}>{freelancerData.email}</Text>
+      <Text style={styles.description}>{freelancerData.description}</Text>
+
+      <Text style={styles.sectionTitle}>Información Personal</Text>
+      <TouchableOpacity
+        value={editableData.city}
+        onChangeText={(value) => handleInputChange('city', value)}
+        placeholder="Ciudad"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Descripción"
-        value={editableData.descripcion}
-        onChangeText={(value) => handleInputChange('descripcion', value)}
+      <TouchableOpacity
+        value={editableData.state}
+        onChangeText={(value) => handleInputChange('state', value)}
+        placeholder="Estado"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Correo Electrónico"
-        value={editableData.email}
-        onChangeText={(value) => handleInputChange('email', value)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Número de Cédula"
-        value={editableData.num_cedula}
-        onChangeText={(value) => handleInputChange('num_cedula', value)}
-      />
-      <TextInput
-        style={styles.input}
+      <TouchableOpacity
+        value={editableData.level}
+        onChangeText={(value) => handleInputChange('level', value)}
         placeholder="Nivel"
-        value={editableData.nivel}
-        onChangeText={(value) => handleInputChange('nivel', value)}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Municipio"
-        value={editableData.municipio}
-        onChangeText={(value) => handleInputChange('municipio', value)}
+      <TouchableOpacity
+        value={editableData.profession}
+        onChangeText={(value) => handleInputChange('profession', value)}
+        placeholder="Profesión"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Departamento"
-        value={editableData.departamento}
-        onChangeText={(value) => handleInputChange('departamento', value)}
+      <TouchableOpacity
+        value={editableData.professionalExp}
+        onChangeText={(value) => handleInputChange('professionalExp', value)}
+        placeholder="Experiencia Profesional"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Calificación Promedio"
-        value={editableData.calificacion_promedio?.toString()} // Convertir a string para el input
-        onChangeText={(value) => handleInputChange('calificacion_promedio', parseFloat(value))}
+      <TouchableOpacity
+        value={editableData.availability}
+        onChangeText={(value) => handleInputChange('availability', value)}
+        placeholder="Disponibilidad"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Número de Trabajos Completados"
-        value={editableData.num_trabajos_completados?.toString()} // Convertir a string para el input
-        onChangeText={(value) => handleInputChange('num_trabajos_completados', parseInt(value))}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Estado de Disponibilidad"
-        value={editableData.estado_disponibilidad}
-        onChangeText={(value) => handleInputChange('estado_disponibilidad', value)}
-      />
-      {/* Agrega más campos según sea necesario */}
-      {/* Manejo de Portafolio */}
-      <TextInput
-        style={styles.input}
-        placeholder="Agregar URL al Portafolio"
-        value={newPortfolioItem}
-        onChangeText={setNewPortfolioItem}
-      />
-      <Button
-        title="Agregar al Portafolio"
-        onPress={() => {
-          addItemToList('portafolio', newPortfolioItem);
-          setNewPortfolioItem('');
-        }}
-      />
-      {editableData.portafolio.map((item, index) => (
-        <View key={index} style={styles.listItem}>
-          <Text>{item}</Text>
-          <Button title="Eliminar" onPress={() => removeItemFromList('portafolio', index)} />
-        </View>
-      ))}
-      {/* Manejo de Certificaciones */}
-      <TextInput
-        style={styles.input}
-        placeholder="Agregar Certificación"
-        value={newCertification}
-        onChangeText={setNewCertification}
-      />
-      <Button
-        title="Agregar Certificación"
-        onPress={() => {
-          addItemToList('certificaciones', newCertification);
-          setNewCertification('');
-        }}
-      />
-      {editableData.certificaciones.map((item, index) => (
-        <View key={index} style={styles.listItem}>
-          <Text>{item}</Text>
-          <Button title="Eliminar" onPress={() => removeItemFromList('certificaciones', index)} />
-        </View>
-      ))}
-      {/* Manejo de Idiomas Hablados */}
-      <TextInput
-        style={styles.input}
-        placeholder="Agregar Idioma"
-        value={newLanguage}
-        onChangeText={setNewLanguage}
-      />
-      <Button
-        title="Agregar Idioma"
-        onPress={() => {
-          addItemToList('idiomas_hablados', newLanguage);
-          setNewLanguage('');
-        }}
-      />
-      {editableData.idiomas_hablados.map((item, index) => (
-        <View key={index} style={styles.listItem}>
-          <Text>{item}</Text>
-          <Button title="Eliminar" onPress={() => removeItemFromList('idiomas_hablados', index)} />
-        </View>
-      ))}
-      {/* Manejo de Habilidades */}
-      <TextInput
-        style={styles.input}
-        placeholder="Agregar Habilidad"
-        value={newSkill}
-        onChangeText={setNewSkill}
-      />
-      <Button
-        title="Agregar Habilidad"
-        onPress={() => {
-          addItemToList('habilidades', newSkill);
-          setNewSkill('');
-        }}
-      />
-      {editableData.habilidades.map((item, index) => (
-        <View key={index} style={styles.listItem}>
-          <Text>{item}</Text>
-          <Button title="Eliminar" onPress={() => removeItemFromList('habilidades', index)} />
-        </View>
-      ))}
-      <Button title="Guardar Cambios" onPress={handleSave} />
+
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -232,22 +105,50 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
-  title: {
+  profilePic: {
+    marginTop: 20,
+    width: 100,
+    height: 100,
+    backgroundColor: 'blue',
+    borderRadius: 50,
+    borderColor: 'white',
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  name: {
     fontSize: 24,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+  username: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
+  },
+  email: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+  },
+  description: {
+    fontSize: 16,
     marginVertical: 10,
-    paddingHorizontal: 10,
   },
-  listItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 5,
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 20,
+  },
+  saveButton: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  saveButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 

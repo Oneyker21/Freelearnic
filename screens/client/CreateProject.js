@@ -1,18 +1,15 @@
-import React, {useState } from 'react';
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert ,Image} from 'react-native';
-import { BlurView } from 'expo-blur';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { doc, setDoc, collection } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
 import { db } from '../../config/firebaseConfig';
 import DateTimePickerModal from 'react-native-modal-datetime-picker'; // Import the date picker
-import { Picker } from '@react-native-picker/picker'; // Import the Picker
-import { CustomTextInput } from '../../utils/inputs';
-
+import { CustomTextInput, CustomPickerInput,CustomPicker } from '../../utils/inputs'; // Importa el nuevo componente
 
 const CreateProject = ({ route }) => {
   const { clientId } = route.params; // Get the client ID from route parameters
-  const [title, setTitle] = React.useState('');
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
@@ -46,12 +43,19 @@ const CreateProject = ({ route }) => {
   };
 
   const createProject = async () => {
-    try {
-      const projectRef = doc(collection(db, 'Projects')); // Crea una referencia a un nuevo documento en la colección 'Projects'
-      const ProjectId = `ProjectId_${projectRef.id}`; // Genera un ID personalizado
+    // Validar que todos los campos estén llenos
+    if (!title || !description || !minPrice || !maxPrice || !endDate || !projectType) {
+      Alert.alert('Error', 'Por favor, completa todos los campos antes de registrar el proyecto.');
+      return; // Salir de la función si hay campos vacíos
+    }
 
-      await setDoc(projectRef, { // Usa la referencia para establecer el documento
-        id: ProjectId, // Usa el ID personalizado
+    setIsLoading(true); // Establecer isLoading en true al inicio
+    try {
+      const projectRef = doc(collection(db, 'Projects')); // Crear una referencia a un nuevo documento en la colección 'Projects'
+      const ProjectId = `ProjectId_${projectRef.id}`; // Generar un ID personalizado
+
+      await setDoc(projectRef, { // Usar la referencia para establecer el documento
+        id: ProjectId, // Usar el ID personalizado
         clientID: clientId, // ID del cliente asociado
         title,
         description: description,
@@ -65,13 +69,24 @@ const CreateProject = ({ route }) => {
         finalPrice: parseFloat(minPrice), // Precio final
       });
 
-      // Cambiar el Alert para que el segundo argumento sea un string
       Alert.alert('Proyecto registrado', 'El proyecto se ha creado correctamente.', [
-        { text: 'OK', onPress: () => navigation.replace('HomeScreenClient',{ clientId })}
+        { text: 'OK', onPress: () => {
+            // Limpiar los campos después de registrar
+            setTitle('');
+            setDescription('');
+            setMinPrice('');
+            setMaxPrice('');
+            setEndDate('');
+            setProjectType('');
+            navigation.replace('HomeScreenClient', { clientId });
+          }
+        }
       ]);
     } catch (error) {
       console.error('Error creating project: ', error);
       Alert.alert('Error', 'No se pudo crear el proyecto: ' + error.message);
+    } finally {
+      setIsLoading(false); // Establecer isLoading en false al final
     }
   };
 
@@ -79,66 +94,74 @@ const CreateProject = ({ route }) => {
     <View style={styles.container}>
     {isLoading ? (
       <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
+        <Image 
+          source={require('../../assets/loading.png')} // Asegúrate de que la ruta sea correcta
+          style={styles.loadingImage}
+          resizeMode="contain" // Ajusta la imagen para que se contenga dentro del área
+        />
       </View>
     ) : (
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={30} color="#15297C" />
-      </TouchableOpacity>
-      <Image source={require('../../assets/Freelearnic.png')} style={styles.logo} />
-      <View style={styles.containerView}>
-        <View style={styles.login}>
-          <Text style={styles.title}>
-           <Text>Continuación</Text> 
-          </Text>
-          <CustomTextInput onChangeText={setTitle} value={title} placeholder="Titulo" />
-          <CustomTextInput onChangeText={setDescription} value={description} placeholder="Descripción" />
-          <CustomTextInput onChangeText={setMinPrice} value={minPrice} placeholder="Precio minimo" />
-          <CustomTextInput onChangeText={setMaxPrice} value={maxPrice} placeholder="Precio maximo" />
-          <TouchableOpacity onPress={showDatePicker} style={styles.input}>
-              <Text>{endDate ? endDate : "Tiempo estimado de entrega"}</Text>
-            </TouchableOpacity>
-
-            <DateTimePickerModal
-              isVisible={isDatePickerVisible}
-              mode="date"
-              onConfirm={handleConfirm}
-              onCancel={hideDatePicker}
-              minimumDate={new Date()} // Only allow future dates
-            />
-
-            {/* Project type selector */}
-            <Picker
-              selectedValue={projectType}
-              style={styles.picker}
-              onValueChange={(itemValue) => setProjectType(itemValue)}
-            >
-              <Picker.Item label="Seleccione el tipo de proyecto" value="" />
-              <Picker.Item label="Programación" value="Programación" />
-              <Picker.Item label="Diseño gráfico" value="Diseño gráfico" />
-              <Picker.Item label="Marketing digital" value="Marketing digital" />
-              <Picker.Item label="Desarrollo de software" value="Desarrollo de software" />
-              <Picker.Item label="Base de datos" value="Base de datos" />
-            </Picker>
-          <TouchableOpacity onPress={createProject} style={styles.buttonRegister}>
-            <Text style={styles.buttonTextRegister}>Publicar</Text>
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={30} color="#15297C" />
           </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
-  )}
-</View>
-);
-};
+          <Image source={require('../../assets/Freelearnic.png')} style={styles.logo} />
+          <View style={styles.containerView}>
+            <View style={styles.login}>
+              <Text style={styles.title}>
+                <Text>Crea un proyecto</Text>
+              </Text>
+              <CustomTextInput onChangeText={setTitle} value={title} placeholder="Titulo" />
+              <CustomTextInput onChangeText={setDescription} value={description} placeholder="Descripción" />
+              <CustomTextInput onChangeText={handleMinPriceChange} value={minPrice} placeholder="Precio mínimo" />
+              <CustomTextInput onChangeText={handleMaxPriceChange} value={maxPrice} placeholder="Precio máximo" />
 
+              {/* Usar el nuevo CustomPicker */}
+              <CustomPicker 
+                selectedValue={projectType} 
+                onValueChange={setProjectType} 
+                items={[
+                  { label: "Seleccione el tipo de proyecto", value: "" },
+                  { label: "Programación", value: "Programación" },
+                  { label: "Diseño gráfico", value: "Diseño gráfico" },
+                  { label: "Marketing digital", value: "Marketing digital" },
+                  { label: "Desarrollo de software", value: "Desarrollo de software" },
+                  { label: "Base de datos", value: "Base de datos" },
+                ]}
+                placeholder="Seleccione el tipo de proyecto"
+              />
+
+              {/* Usar el nuevo CustomPickerInput */}
+              <CustomPickerInput 
+                value={endDate} 
+                onPress={showDatePicker} 
+                placeholder="Tiempo estimado de entrega" 
+              />
+
+              <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode="date"
+                onConfirm={handleConfirm}
+                onCancel={hideDatePicker}
+                minimumDate={new Date()} // Only allow future dates
+              />
+
+              <TouchableOpacity onPress={createProject} style={styles.buttonRegister}>
+                <Text style={styles.buttonTextRegister}>Publicar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 50,
     position: 'relative',
-    
   },
   scrollView: {
     zIndex: 0,
@@ -170,7 +193,6 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopLeftRadius: 130,
     overflow: 'hidden',
- 
   },
   login: {
     width: '100%',
@@ -190,7 +212,6 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowRadius: 1,
   },
-
   buttonTextRegister: {
     color: '#fff',
     fontWeight: 'bold',
@@ -202,28 +223,16 @@ const styles = StyleSheet.create({
     left: 20,
     zIndex: 1,
   },
-  errorContainer: {
-    width: '100%',
-    alignItems: 'flex-end',
-    
-  },
-  errorText: {
-    color: '#ffff',
-    fontSize: 12,
-    marginTop: 5,
-    textAlign: 'justify',
-    fontWeight: 'bold',
-    top:-25,
-    backgroundColor: null, // Ensure the text is visible
-  },
   loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
+    backgroundColor:'#107acc' 
   },
-  textError: {
-    color: '#8b0000',
-    textAlign: 'left'
+  loadingImage: {
+    width: 160, // Ajusta el tamaño según sea necesario
+    height: 160, // Ajusta el tamaño según sea necesario
+    marginBottom: 10, // Espacio entre la imagen y el texto
   },
 });
 

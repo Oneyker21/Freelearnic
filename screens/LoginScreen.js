@@ -55,7 +55,7 @@ export default function LoginScreen() {
         if (freelancerData.verified === false) {
           navigation.navigate('VerificationStatus');
         } else {
-          navigation.navigate('HomeFreelancer', { freelancerId: freelancersSnapshot.docs[0].id });
+          navigation.navigate('HomeScreenFreelancer', { freelancerId: freelancersSnapshot.docs[0].id });
         }
       } else {
         // Buscar en la colección de Clientes
@@ -67,7 +67,7 @@ export default function LoginScreen() {
           if (clientData.verified === false) {
             navigation.navigate('VerificationStatus');
           } else {
-            navigation.navigate('HomeCliente', { clientId: clientsSnapshot.docs[0].id });
+            navigation.navigate('HomeScreenClient', { clientId: clientsSnapshot.docs[0].id });
           }
         } else {
           // Manejo de error si no se encuentra ni freelancer ni cliente
@@ -79,6 +79,7 @@ export default function LoginScreen() {
       // Limpiar los campos
       setEmail('');
       setPassword('');
+      setConfirmPassword('');
     } catch (error) {
 
       // Mensaje específico para errores de autenticación
@@ -95,6 +96,7 @@ export default function LoginScreen() {
   const limpiarCampos = () => {
     setEmail('');
     setPassword('');
+    setConfirmPassword('');
   };
 
   return (
@@ -119,7 +121,7 @@ export default function LoginScreen() {
             <CustomTextInput   
               value={password} 
               onChangeText={setPassword} 
-              placeholder="Contraseña" 
+              placeholder="Contraseña"
               secureTextEntry={true}
               showPassword={showPassword}
               toggleShowPassword={() => setShowPassword(!showPassword)}

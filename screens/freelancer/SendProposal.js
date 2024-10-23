@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
+import CustomTextInput from '../../utils/CustomText';
 
 const SendProposal = ({ route }) => {
   
@@ -34,12 +35,12 @@ const SendProposal = ({ route }) => {
   return (
     <View>
       <Text>Enviar Propuesta</Text>
-      <TextInput
+      <CustomTextInput
         placeholder="Mensaje de Propuesta"
         value={proposalMessage}
         onChangeText={setProposalMessage}
       />
-      <TextInput
+      <CustomTextInput
         placeholder="Precio de Propuesta"
         value={proposedPrice}
         onChangeText={setProposedPrice}

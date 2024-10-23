@@ -42,6 +42,12 @@ const HomeScreenFreelancer = ({ route }) => {
       <ProjectList route={{ params: { freelancerId } }} showProposalButton={true} />
 
       <View style={styles.buttonContainer}>
+      <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('FreelancerProfile', { freelancerId })} // Navegar al componente CreateProject
+        >
+          <Text style={styles.buttonText}>Perfil</Text>
+        </TouchableOpacity>
   
       </View>
     </View>
@@ -51,6 +57,7 @@ const HomeScreenFreelancer = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 50,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',

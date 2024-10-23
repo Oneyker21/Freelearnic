@@ -10,6 +10,7 @@ import HomeScreenCliente from '../screens/cliente/HomeScreenClient';
 import HomeScreenFreelancer from '../screens/freelancer/HomeScreenFreelancer';
 import VerificationScreen from '../screens/VerificationScreen';
 import ScreenTypeUser from '../screens/ScreenTypeUser';
+import FreelancerProfile from '../screens/freelancer/FreelancerProfile';
 
 const Tab = createBottomTabNavigator();
 const HomeStackNavigator = createNativeStackNavigator();

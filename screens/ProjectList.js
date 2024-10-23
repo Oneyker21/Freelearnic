@@ -1,37 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert, Modal, Button,TextInput } from 'react-native';
-import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert, TextInput } from 'react-native';
+import { db } from '../config/firebaseConfig';
 import { collection, addDoc, onSnapshot } from 'firebase/firestore';
-import ProposalModal from '../screens/freelancer/ProposalModal'; // Asegúrate de que la ruta sea correcta
-import { Picker } from '@react-native-picker/picker'; // Importación correcta
+import ProposalModal from '../screens/freelancer/ProposalModal';
+import { CustomPicker } from '../utils/inputs';
 
 const ProjectList = ({ route, showProposalButton }) => {
   const { freelancerId } = route.params;
 
-  
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedClientId, setSelectedClientId] = useState(null);
-  const [categoryFilter, setCategoryFilter] = useState(''); // Inicializa con un valor vacío
-  const [priceFilter, setPriceFilter] = useState({ min: 0, max: 1000 }); // Rango de precios inicial
+  const [categoryFilter, setCategoryFilter] = useState('');
   const [filteredProjects, setFilteredProjects] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Definir las categorías preestablecidas
-  const categories = [
+  const projectType = [
     { label: 'Todos', value: '' },
-    { label: 'Desarrollo de Aplicaciones', value: 'desarrollo_aplicaciones' },
-    { label: 'Diseño Gráfico', value: 'diseno_grafico' },
-    { label: 'Marketing Digital', value: 'marketing_digital' },
-    { label: 'Escritura', value: 'escritura' },
+    { label: 'Desarrollo de Aplicaciones', value: 'Desarrollo de Aplicaciones' },
+    { label: 'Programación', value: 'Programación' },
+    { label: 'Diseño Gráfico', value: 'Diseño Gráfico' },
+    { label: 'Marketing Digital', value: 'Marketing Digital' },
+    { label: 'Escritura', value: 'Escritura' },
   ];
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'Projects'), (querySnapshot) => {
       const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setProjects(projectsData);
+      filterProjects(searchQuery, categoryFilter, projectsData);
       setLoading(false);
     }, (error) => {
       console.error('Error fetching projects: ', error);
@@ -39,18 +39,35 @@ const ProjectList = ({ route, showProposalButton }) => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [searchQuery, categoryFilter]);
 
-  useEffect(() => {
-    const filtered = projects.filter(project => {
-      // Filtrar por categoría
-      const categoryMatch = categoryFilter ? project.projectType === categoryFilter : true;
-      // Filtrar por rango de precios
-      const priceMatch = project.minPrice >= priceFilter.min && project.maxPrice <= priceFilter.max;
-      return categoryMatch && priceMatch;
-    });
+  // Filtrar proyectos por búsqueda y categoría
+  const filterProjects = (text, type, projectsData) => {
+    let filtered = projectsData;
+
+    // Filtrar por categoría
+    if (type !== '') {
+      filtered = filtered.filter(project => project.projectType === type);
+    }
+
+    // Filtrar por búsqueda de texto
+    if (text !== '') {
+      filtered = filtered.filter(project => project.title.toLowerCase().includes(text.toLowerCase()));
+    }
+
     setFilteredProjects(filtered);
-  }, [categoryFilter, priceFilter, projects]);
+  };
+
+  // Filtrar proyectos por título en tiempo real
+  const handleSearch = (text) => {
+    setSearchQuery(text);
+    if (text === '') {
+      setFilteredProjects(projects);
+    } else {
+      const filtered = projects.filter(project => project.title.toLowerCase().includes(text.toLowerCase()));
+      setFilteredProjects(filtered);
+    }
+  };
 
   const enviarPropuesta = async (projectId, proposalData) => {
     try {
@@ -76,8 +93,22 @@ const ProjectList = ({ route, showProposalButton }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Button title="Filtrar Proyectos" onPress={() => setFilterModalVisible(true)} />
+      {/* Barra de búsqueda */}
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Buscar por título"
+        value={searchQuery}
+        onChangeText={handleSearch}
+      />
       
+      {/* Filtro por categoría */}
+      <CustomPicker
+        selectedValue={categoryFilter}
+        onValueChange={setCategoryFilter}
+        items={projectType}
+        placeholder="Seleccionar categoría"
+      />
+
       <FlatList
         data={filteredProjects}
         keyExtractor={item => item.id}
@@ -114,51 +145,6 @@ const ProjectList = ({ route, showProposalButton }) => {
           </View>
         )}
       />
-
-      {/* Modal de Filtrado */}
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={filterModalVisible}
-        onRequestClose={() => setFilterModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Filtrar Proyectos</Text>
-          
-          <Text>Seleccionar Tipo de Proyecto:</Text>
-          <Picker
-            selectedValue={categoryFilter}
-            style={styles.picker}
-            onValueChange={(itemValue) => setCategoryFilter(itemValue)}
-          >
-            {categories.map((category) => (
-              <Picker.Item key={category.value} label={category.label} value={category.value} />
-            ))}
-          </Picker>
-
-          <Text>Rango de Precios:</Text>
-          <View style={styles.priceRangeContainer}>
-            <Text>Precio Mínimo:</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={String(priceFilter.min)}
-              onChangeText={(text) => setPriceFilter({ ...priceFilter, min: Number(text) })}
-            />
-            <Text>Precio Máximo:</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={String(priceFilter.max)}
-              onChangeText={(text) => setPriceFilter({ ...priceFilter, max: Number(text) })}
-            />
-          </View>
-
-          <Button title="Aplicar Filtros" onPress={() => setFilterModalVisible(false)} />
-          <Button title="Cerrar" onPress={() => setFilterModalVisible(false)} />
-        </View>
-      </Modal>
-
       <ProposalModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -173,6 +159,14 @@ const ProjectList = ({ route, showProposalButton }) => {
 };
 
 const styles = StyleSheet.create({
+  searchBar: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 10,
+    margin: 10,
+  },
   picker: {
     height: 50,
     width: '100%',
@@ -234,28 +228,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  modalContainer: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  priceRangeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    width: '45%',
   },
 });
 
