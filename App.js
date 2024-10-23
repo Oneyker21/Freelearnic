@@ -20,7 +20,7 @@ import RegisterClient from './screens/client/RegisterClient';
 import ScreenTypeUser from './screens/ScreenTypeUser';
 import RegisterFreelancer2 from './screens/freelancer/RegisterFreelancer2';
 import RegisterClient2 from './screens/client/RegisterClient2';
-import ClienteNavigator from './navigation/ClienteNavigator';
+import MainNavigator from './navigation/MainNavigator';
 import * as Font from 'expo-font';
 
 const Stack = createNativeStackNavigator();
@@ -65,12 +65,12 @@ const App = () => {
         <Stack.Screen name="TypeUser" component={ScreenTypeUser} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer> */
-      <ClienteNavigator />
+      <MainNavigator />
 
   );
 };
 
-export default ClienteNavigator;
+export default App;
 
 
 

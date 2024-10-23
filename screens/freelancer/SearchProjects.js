@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput, Alert } from 'react-native';
-import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
+import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { collection, getDocs} from 'firebase/firestore';
-import ProposalModal from '../screens/freelancer/ProposalModal'; // Asegúrate de que la ruta sea correcta
+import ProposalModal from '../../screens/freelancer/ProposalModal'; // Asegúrate de que la ruta sea correcta
 
 const SearchProjects = ({showProposalButton}) => {
   const [projects, setProjects] = useState([]);
