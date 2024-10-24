@@ -6,6 +6,7 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 import { CustomTextInput } from '../utils/inputs'; // Importar los inputs reutilizables
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -33,59 +34,59 @@ export default function LoginScreen() {
   };
 
   const handleSignIn = async () => {
-    // Validar que las contraseñas coincidan
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Las contraseñas no coinciden. Por favor, verifícalas.');
       return; // No continuar con el inicio de sesión
     }
 
     try {
-      // Eliminar espacios en blanco al principio y al final del correo
       const trimmedEmail = email.trim();
-
       const userCredential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
       const user = userCredential.user;
 
-      // Buscar en la colección de Freelancers
+      // Usuario autenticado, guardar sesión
+      await AsyncStorage.setItem('userSession', 'active');
+
       const freelancersQuery = query(collection(db, 'Freelancers'), where('uid', '==', user.uid));
       const freelancersSnapshot = await getDocs(freelancersQuery);
 
       if (!freelancersSnapshot.empty) {
         const freelancerData = freelancersSnapshot.docs[0].data();
         if (freelancerData.verified === false) {
-          navigation.navigate('VerificationStatus');
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'VerificationStatus' }],
+          });
         } else {
-          navigation.navigate('HomeScreenFreelancer', { freelancerId: freelancersSnapshot.docs[0].id });
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'TabsFreelancer', params: { freelancerId: freelancersSnapshot.docs[0].id } }],
+          });
         }
       } else {
-        // Buscar en la colección de Clientes
         const clientsQuery = query(collection(db, 'Clients'), where('uid', '==', user.uid));
         const clientsSnapshot = await getDocs(clientsQuery);
 
         if (!clientsSnapshot.empty) {
           const clientData = clientsSnapshot.docs[0].data();
           if (clientData.verified === false) {
-            navigation.navigate('VerificationStatus');
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'VerificationStatus' }],
+            });
           } else {
-            navigation.navigate('HomeScreenClient', { clientId: clientsSnapshot.docs[0].id });
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'TabsClient', params: { clientId: clientsSnapshot.docs[0].id } }],
+            });
           }
         } else {
-          // Manejo de error si no se encuentra ni freelancer ni cliente
           console.log('No se encontró información del freelancer o cliente');
           Alert.alert('Error', 'No se encontró información del freelancer o cliente');
         }
       }
-
-      // Limpiar los campos
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
     } catch (error) {
-
-      // Mensaje específico para errores de autenticación
       if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
-        Alert.alert('Error de inicio de sesión', 'El correo o la contraseña son incorrectos');
-      } else if (error.code === 'auth/invalid-credential') {
         Alert.alert('Error de inicio de sesión', 'El correo o la contraseña son incorrectos');
       } else {
         Alert.alert('Error de inicio de sesión', error.message);
@@ -126,8 +127,12 @@ export default function LoginScreen() {
               showPassword={showPassword}
               toggleShowPassword={() => setShowPassword(!showPassword)}
             />
-           <CustomTextInput onChangeText={setConfirmPassword} showPassword={showPassword}
-              toggleShowPassword={() => setShowPassword(!showPassword)} value={confirmPassword} placeholder="Confirmar contraseña" secureTextEntry={true} />
+           <CustomTextInput 
+           onChangeText={setConfirmPassword} showPassword={showPassword}
+              toggleShowPassword={() => setShowPassword(!showPassword)} 
+           value={confirmPassword} 
+           placeholder="Confirmar contraseña" 
+           secureTextEntry={true} />
               <View style={styles.errorContainer}>
                 {error ? <Text style={styles.errorText}>{error}</Text> : null}
               </View>

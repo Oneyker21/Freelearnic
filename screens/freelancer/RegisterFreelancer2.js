@@ -7,7 +7,7 @@ import { db } from '../../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { CustomTextInput, ImagePickerButton, PreviewImage } from '../../utils/inputs';
-import SelectModal from '../freelancer/SelectDeparMuni'; // Make sure to import the modal component
+import SelectModal from '../SelectDeparMuni'; // Make sure to import the modal component
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const RegisterFreelancer2 = () => {

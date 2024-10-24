@@ -92,28 +92,26 @@ const RegisterFreelancer = () => {
       return;
     }
 
-    setIsLoading(true);
+    // Limpiar el correo electrónico y convertirlo a minúsculas
+    const trimmedEmail = email.trim().toLowerCase();
 
     // Validación de la contraseña
     const regexPassword = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/; // Al menos 8 caracteres, una mayúscula, un número y un carácter especial
     if (!regexPassword.test(password)) {
       Alert.alert('Error', 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.');
-      setIsLoading(false);
-      return;
-    }
-    // Check if the username already exists in Firestore
-    const existEmailExists = await checkEmailExists(email);
-    if (existEmailExists) {
-      Alert.alert('Error', 'El correo ya esta en uso.');
-      setIsLoading(false);
       return;
     }
 
+    // Check if the username already exists in Firestore
+    const existEmailExists = await checkEmailExists(trimmedEmail);
+    if (existEmailExists) {
+      Alert.alert('Error', 'El correo ya está en uso.');
+      return;
+    }
 
     const existingUsername = await checkUsernameExists(username);
     if (existingUsername) {
       Alert.alert('Error', 'El nombre de usuario ya existe.');
-      setIsLoading(false);
       return;
     }
 
@@ -121,7 +119,6 @@ const RegisterFreelancer = () => {
     const regexEmail = /^[a-z0-9._%+-]+@gmail\.com$/; // Solo acepta correos electrónicos de Gmail en minúsculas
     if (!regexEmail.test(trimmedEmail)) {
       Alert.alert('Error', 'Por favor digite un correo electrónico correcto.');
-      setIsLoading(false);
       return;
     }
 
@@ -129,7 +126,6 @@ const RegisterFreelancer = () => {
     const regexIdNumber = /^[0-9A-Za-z]{14}$/; // 14 characters that can be numbers or letters
     if (!regexIdNumber.test(idNumber)) {
       Alert.alert('Error', 'Debe de contener 14 caracteres sin guiones.');
-      setIsLoading(false);
       return;
     }
 
@@ -137,13 +133,12 @@ const RegisterFreelancer = () => {
     const existingIdNumber = await checkIdNumberExists(idNumber);
     if (existingIdNumber) {
       Alert.alert('Error', 'El número de cédula ya existe.');
-      setIsLoading(false);
       return;
     }
 
     // Navegar al siguiente componente y pasar los datos
     navigation.navigate('RegisterFreelancer2', {
-      email,
+      email: trimmedEmail, // Asegúrate de pasar el correo limpio
       password,
       firstName,
       lastName,
@@ -154,11 +149,15 @@ const RegisterFreelancer = () => {
 
   return (
     <View style={styles.container}>
-      {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <Text>Loading...</Text>
-        </View>
-      ) : (
+    {isLoading ? (
+      <View style={styles.loadingContainer}>
+        <Image 
+          source={require('../../assets/loading.png')} // Asegúrate de que la ruta sea correcta
+          style={styles.loadingImage}
+          resizeMode="contain" // Ajusta la imagen para que se contenga dentro del área
+        />
+      </View>
+    ) : (
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={30} color="#15297C" />
@@ -279,6 +278,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
+    backgroundColor:'#107acc' 
+  },
+  loadingImage: {
+    width: 160, // Ajusta el tamaño según sea necesario
+    height: 160, // Ajusta el tamaño según sea necesario
+    marginBottom: 10, // Espacio entre la imagen y el texto
   },
   textError: {
     color: '#8b0000',

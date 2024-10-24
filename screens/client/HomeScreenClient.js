@@ -41,40 +41,10 @@ const HomeScreenSb = ({route}) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('CreateProject', { clientId })} // Pasar el clientId al componente Crear Proyecto
-        >
-          <Text style={styles.buttonText}>Crear Proyecto</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('SelectProposal', { clientId })} // Navegar al componente CreateProject
+          onPress={() => navigation.navigate('SelectProposal', { clientId })} 
         >
           <Text style={styles.buttonText}>Propuestas</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('GraficoProyecto')} // Navegar al componente CreateProject
-        >
-          <Text style={styles.buttonText}>Grafico</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('Messaging', { clientId })} // Asegúrate de pasar freelancerId aquí
-        >
-          <Text style={styles.buttonText}>Chats</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('FreelancerProfile', { clientId })} // Asegúrate de pasar freelancerId aquí
-        >
-          <Text style={styles.buttonText}>Perfil</Text>
-        </TouchableOpacity>
-        
-  
       </View>
     </View>
   );

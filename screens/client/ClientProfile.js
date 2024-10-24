@@ -251,4 +251,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FreelancerProfile;
+export default ClientProfile;

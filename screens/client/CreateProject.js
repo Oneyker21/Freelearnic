@@ -78,7 +78,7 @@ const CreateProject = ({ route }) => {
             setMaxPrice('');
             setEndDate('');
             setProjectType('');
-            navigation.replace('HomeScreenClient', { clientId });
+            navigation.navigate('HomeScreenClient', { clientId });
           }
         }
       ]);

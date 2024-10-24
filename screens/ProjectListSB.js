@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button } from 'react-native';
+import { View, Text,StyleSheet, FlatList, ActivityIndicator, Button } from 'react-native';
 import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { collection, getDocs,onSnapshot } from 'firebase/firestore';
 import CustomText from '../utils/CustomText';
@@ -35,6 +35,7 @@ export const ProjectList = () => {
           <CustomText style={styles.projectTitle} fontFamily="Roboto">{item.title}</CustomText>
           <CustomText style={styles.projectStatus} fontFamily="Roboto">{item.projectStatus}</CustomText>
           <CustomText style={styles.projectType} fontFamily="OpenSans">{item.projectType}</CustomText>
+          <CustomText style={styles.projectUser} fontFamily="OpenSans">{item.clientID}</CustomText> 
           <View style={styles.priceContainer}>
             <CustomText style={styles.projectPrice} fontFamily="Roboto">
               Rango precio: 
