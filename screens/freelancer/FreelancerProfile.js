@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, Button, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, Button, ScrollView, TouchableOpacity, Alert, TextInput, ActivityIndicator } from 'react-native';
 import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { CustomTextInputEdit } from '../../utils/inputs'; // Asegúrate de que la ruta sea correcta
+import { AntDesign } from '@expo/vector-icons';
 
 const FreelancerProfile = ({ route }) => {
   const { freelancerId } = route.params; // Obtener el ID del freelancer desde la navegación
   const [freelancerData, setFreelancerData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editableData, setEditableData] = useState({}); // Para almacenar los datos editables
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     const fetchFreelancerData = async () => {
@@ -45,7 +47,7 @@ const FreelancerProfile = ({ route }) => {
   };
 
   if (loading) {
-    return <Text>Cargando...</Text>;
+    return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
   if (!freelancerData) {

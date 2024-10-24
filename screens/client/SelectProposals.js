@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { collection, getDocs, query, where, updateDoc, doc, writeBatch } from 'firebase/firestore';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const SelectProposals = ({ route }) => {
   const { clientId } = route.params; // Obtener el ID del cliente
   const [proposals, setProposals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchProposals = async () => {
@@ -72,6 +75,9 @@ const SelectProposals = ({ route }) => {
 
   return (
     <View style={styles.container}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={30} color="#15297C" />
+          </TouchableOpacity>
     <FlatList
       data={proposals}
       keyExtractor={(item) => item.id}
@@ -80,8 +86,8 @@ const SelectProposals = ({ route }) => {
           <Text style={styles.title}>
             {`Propuesta de ${item.freelancerID || 'Desconocido'}`}
           </Text>
-          <Text>{`Precio: $${item.precio_propuesta || 'N/A'}`}</Text>
-          <Text>{`Mensaje: ${item.proposedPrice || 'Sin mensaje'}`}</Text>
+          <Text>{`Precion minimo: $${item.proposedPrice || 'N/A'}`}</Text>
+          <Text>{`Mensaje: ${item.proposalMessage || 'Sin mensaje'}`}</Text>
           <Text>{`Estado: ${item.proposalStatus || 'Desconocido'}`}</Text>
           <TouchableOpacity onPress={() => acceptProposal(item)} style={styles.button}>
             <Text style={styles.buttonText}>Aceptar Propuesta</Text>

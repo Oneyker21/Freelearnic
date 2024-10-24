@@ -123,10 +123,11 @@ const CreateProject = ({ route }) => {
                 items={[
                   { label: "Seleccione el tipo de proyecto", value: "" },
                   { label: "Programación", value: "Programación" },
-                  { label: "Diseño gráfico", value: "Diseño gráfico" },
-                  { label: "Marketing digital", value: "Marketing digital" },
-                  { label: "Desarrollo de software", value: "Desarrollo de software" },
+                  { label: "Diseño Gráfico", value: "Diseño Gráfico" },
+                  { label: "Marketing Digital", value: "Marketing Digital" },
+                  { label: "Desarrollo de Software", value: "Desarrollo de Software" },
                   { label: "Base de datos", value: "Base de datos" },
+                  { label: "Desarrollo Web", value: "Desarrollo Web" },
                 ]}
                 placeholder="Seleccione el tipo de proyecto"
               />

@@ -20,11 +20,12 @@ const ProjectList = ({ route, showProposalButton }) => {
   // Definir las categorías preestablecidas
   const projectType = [
     { label: 'Todos', value: '' },
-    { label: 'Desarrollo de Aplicaciones', value: 'Desarrollo de Aplicaciones' },
+    { label: 'Desarrollo de Software', value: 'Desarrollo de Software' },
     { label: 'Programación', value: 'Programación' },
     { label: 'Diseño Gráfico', value: 'Diseño Gráfico' },
     { label: 'Marketing Digital', value: 'Marketing Digital' },
-    { label: 'Escritura', value: 'Escritura' },
+    { label: 'Base de datos', value: 'Base de datos' },
+    { label: 'Desarrollo Web', value: 'Desarrollo Web' },
   ];
 
   useEffect(() => {

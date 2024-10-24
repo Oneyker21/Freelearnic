@@ -61,6 +61,12 @@ function StackHomeMain() {
           headerShown: false,
         }}
       />
+
+      <HomeMainNavigator.Screen
+        name="SelectProposal"
+        component={SelectProposals}
+        options={{ headerShown: false, title: 'SelectProposal' }} // Opciones para la pantalla de registro
+      />
       <HomeMainNavigator.Screen
         name="TypeUser"
         component={ScreenTypeUser}
@@ -180,12 +186,6 @@ function TabsClient({ route }) {
         options={{
           tabBarLabel: 'Perfil',
           tabBarIcon: ({ color, size }) => (
-            profileImageUrl ? 
-              <Image
-                source={{ uri: profileImageUrl }}
-                style={{ width: 30, height: 30, borderRadius: 15 }}
-              />
-            :
               <AntDesign name="message1" size={30} color={color} />
           ),
           headerShown: false,

@@ -29,15 +29,9 @@ export default function LoginScreen() {
   const auth = getAuth();
   const navigation = useNavigation();
 
-  const handleCreateAccount = () => {
-    navigation.navigate('TypeUser');
-  };
+
 
   const handleSignIn = async () => {
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Las contraseñas no coinciden. Por favor, verifícalas.');
-      return; // No continuar con el inicio de sesión
-    }
 
     try {
       const trimmedEmail = email.trim();
@@ -127,7 +121,8 @@ export default function LoginScreen() {
               showPassword={showPassword}
               toggleShowPassword={() => setShowPassword(!showPassword)}
             />
-           <CustomTextInput 
+
+          {/*     <CustomTextInput 
            onChangeText={setConfirmPassword} showPassword={showPassword}
               toggleShowPassword={() => setShowPassword(!showPassword)} 
            value={confirmPassword} 
@@ -135,7 +130,7 @@ export default function LoginScreen() {
            secureTextEntry={true} />
               <View style={styles.errorContainer}>
                 {error ? <Text style={styles.errorText}>{error}</Text> : null}
-              </View>
+              </View> */}
 
             <TouchableOpacity onPress={handleSignIn} style={styles.buttonLogin}>
               <Text style={styles.buttonTextLogin}>Iniciar Sesión</Text>
