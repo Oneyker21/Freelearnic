@@ -132,12 +132,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#107ACC',
     color: 'white',
     textAlign: 'center',
-    margin: 0
   },
   card: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    marginVertical: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
