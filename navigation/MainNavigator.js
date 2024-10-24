@@ -98,6 +98,12 @@ function StackHomeMain() {
       />
    
          <HomeMainNavigator.Screen
+        name="VerificationScreen"
+        component={VerificationScreen}
+        options={{ headerShown: false, title: 'StateVerification' }} // Opciones para la pantalla de inicio de sesión
+      />
+
+<HomeMainNavigator.Screen
         name="Login"
         component={LoginScreen}
         options={{ headerShown: false, title: 'Login' }} // Opciones para la pantalla de inicio de sesión

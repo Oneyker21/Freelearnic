@@ -22,26 +22,7 @@ const App = () => {
   }
 
   return (
-     /*<NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="SelectProposal" component={SelectProposal} options={{headerShow: false}}/>
-        <Stack.Screen name="HomeScreenClient" component={HomeScreenClient} options={{headerShow: false}} />
-        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ScreenTypeUser" component={ScreenTypeUser} options={{ headerShown: false }} />
-        <Stack.Screen name="RegisterClient" component={RegisterClient} options={{ headerShown: false }} />
-        <Stack.Screen name="HomeScreenSb" component={HomeScreenSb} />
-        <Stack.Screen name="FreelancerProfile" component={FreelancerProfile}/>
-        <Stack.Screen name="HomeScreenFreelancer" component={HomeScreenFreelancer}options={{headerShow: false}}  />
-        <Stack.Screen name="RegisterFreelancer" component={RegisterFreelancer} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateProject" component={CreateProject}  options={{headerShow: false}} />
-        <Stack.Screen name="VerificationStatus" component={VerificationStatus} />
-        <Stack.Screen name="GraficoProyecto" component={Grafico} />
-        <Stack.Screen name="Messaging" component={Messaging} />
-        <Stack.Screen name="TypeUser" component={ScreenTypeUser} options={{ headerShown: false }} />
-      </Stack.Navigator> */
       <MainNavigator></MainNavigator>
-
   );
 };
 

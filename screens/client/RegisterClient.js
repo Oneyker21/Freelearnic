@@ -11,6 +11,7 @@ const RegisterClient = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPassword2, setConfirmPassword2] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
@@ -18,6 +19,8 @@ const RegisterClient = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [idErrorMessage, setIdErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
 
   const auth = getAuth();
   const navigation = useNavigation();
@@ -82,6 +85,11 @@ const RegisterClient = () => {
 
     // Validar que las contraseñas coincidan
     if (password !== confirmPassword) {
+      Alert.alert('Error', 'Las contraseñas no coinciden.');
+      return;
+    }
+
+    if (password !== confirmPassword2) {
       Alert.alert('Error', 'Las contraseñas no coinciden.');
       return;
     }
@@ -167,8 +175,20 @@ const RegisterClient = () => {
               <CustomTextInput onChangeText={setLastName} value={lastName} placeholder="Apellidos" />
               <CustomTextInput onChangeText={setUsername} value={username} placeholder="Nombre Usuario" />
               <CustomTextInput onChangeText={handleEmailChange} value={email} placeholder="Correo Electrónico" />
-              <CustomTextInput onChangeText={setPassword} value={password} placeholder="Contraseña" secureTextEntry={true} />
-              <CustomTextInput onChangeText={setConfirmPassword} value={confirmPassword} placeholder="Confirmar contraseña" secureTextEntry={true} />
+              <CustomTextInput
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Contraseña"
+                secureTextEntry={true}
+                showPassword={showPassword}
+                toggleShowPassword={() => setShowPassword(!showPassword)}
+              />
+                <CustomTextInput
+                  onChangeText={setConfirmPassword2} showPassword={showPassword2}
+                  toggleShowPassword={() => setShowPassword2(!showPassword2)}
+                  value={confirmPassword2}
+                  placeholder="Confirmar contraseña"
+                  secureTextEntry={true} />
               <View style={styles.errorContainer}>
                 {error ? <Text style={styles.errorText}>{error}</Text> : null}
               </View>

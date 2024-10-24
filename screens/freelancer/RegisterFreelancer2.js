@@ -325,11 +325,15 @@ const handleEmailChange = (text) => {
 
 return (
   <View style={styles.container}>
-    {isLoading ? (
-      <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
-      </View>
-    ) : (
+  {isLoading ? (
+    <View style={styles.loadingContainer}>
+      <Image 
+        source={require('../../assets/loading.png')} // Asegúrate de que la ruta sea correcta
+        style={styles.loadingImage}
+        resizeMode="contain" // Ajusta la imagen para que se contenga dentro del área
+      />
+    </View>
+  ) : (
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="#15297C" />
@@ -498,6 +502,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
+  },
+  loadingImage: {
+    width: 160, // Ajusta el tamaño según sea necesario
+    height: 160, // Ajusta el tamaño según sea necesario
+    marginBottom: 10, // Espacio entre la imagen y el texto
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    backgroundColor:'#107acc' 
   },
 });
 
