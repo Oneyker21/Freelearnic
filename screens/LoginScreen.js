@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
@@ -106,43 +106,48 @@ export default function LoginScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="#15297C" />
         </TouchableOpacity>
-        <Image source={require('../assets/Freelearnic.png')} style={styles.logo} />
 
-        <View style={styles.containerView}>
-          <View style={styles.login}>
-            <Text style={styles.title}>
-              Inicia sesion en tu cuenta de <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text>
-            </Text>
 
-            <CustomTextInput 
-              value={email} 
-              onChangeText={setEmail} 
-              placeholder="Correo Electrónico" 
-            />
-            <CustomTextInput   
-              value={password} 
-              onChangeText={setPassword} 
-              placeholder="Contraseña"
-              secureTextEntry={true}
-              showPassword={showPassword}
-              toggleShowPassword={() => setShowPassword(!showPassword)}
-            />
-           <CustomTextInput 
-           onChangeText={setConfirmPassword} showPassword={showPassword}
-              toggleShowPassword={() => setShowPassword(!showPassword)} 
-           value={confirmPassword} 
-           placeholder="Confirmar contraseña" 
-           secureTextEntry={true} />
+        <View style={styles.loginContainer}>
+          <Image source={require('../assets/Freelearnic.png')} style={styles.logo} />
+
+
+          <View style={styles.containerView}>
+            <View style={styles.login}>
+              <Text style={styles.title}>
+                Inicia sesion en tu cuenta de <Text style={{ fontWeight: 'bold' }}>Freelearnic</Text>
+              </Text>
+
+              <CustomTextInput
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Correo Electrónico"
+              />
+              <CustomTextInput
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Contraseña"
+                secureTextEntry={true}
+                showPassword={showPassword}
+                toggleShowPassword={() => setShowPassword(!showPassword)}
+              />
+              <CustomTextInput
+                onChangeText={setConfirmPassword} showPassword={showPassword}
+                toggleShowPassword={() => setShowPassword(!showPassword)}
+                value={confirmPassword}
+                placeholder="Confirmar contraseña"
+                secureTextEntry={true} />
               <View style={styles.errorContainer}>
                 {error ? <Text style={styles.errorText}>{error}</Text> : null}
               </View>
 
-            <TouchableOpacity onPress={handleSignIn} style={styles.buttonLogin}>
-              <Text style={styles.buttonTextLogin}>Iniciar Sesión</Text>
-            </TouchableOpacity>
-            <Text onPress={() => navigation.navigate('TypeUser')} style={styles.linkText}>
-            <Text style={{ color: '#fff', marginStart:2}}>¿No tienes cuenta? </Text><Text style={{ fontWeight: 'bold', color: '#15297C' }}>Regístrate</Text>
-            </Text>
+              <TouchableOpacity onPress={handleSignIn} style={styles.buttonLogin}>
+                <Text style={styles.buttonTextLogin}>Iniciar Sesión</Text>
+              </TouchableOpacity>
+              <Text onPress={() => navigation.navigate('TypeUser')} style={styles.linkText}>
+                <Text style={{ color: '#fff', marginStart: 2 }}>¿No tienes cuenta? </Text><Text style={{ fontWeight: 'bold', color: '#15297C' }}>Regístrate</Text>
+              </Text>
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -153,7 +158,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
+    paddingTop: 0,
     position: 'relative',
   },
   errorContainer: {
@@ -178,8 +183,10 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
+    top: 10,
+    marginTop: 30,
     left: 20,
-    zIndex: 1,
+    zIndex: 1
   },
   logo: {
     width: 120,
@@ -251,5 +258,10 @@ const styles = StyleSheet.create({
   linkText: {
     color: '#007AFF',
     fontWeight: 'bold',
+  },
+  loginContainer: {
+    width: '100%',
+    height: '100%',
+    paddingTop: 60,
   },
 });

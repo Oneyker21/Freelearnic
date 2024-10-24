@@ -50,6 +50,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     marginTop: 35,
   },
   backButton: {
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     flexDirection: 'row',
-    zIndex: 1, // Asegura que los botones estén sobre otros elementos
+    zIndex: 1,
   },
   button: {
     paddingHorizontal: 15,
@@ -87,21 +89,19 @@ const styles = StyleSheet.create({
 
   projectListContainer: {
     width: '100%',
-    marginTop:150,
   },
   imageSuperior: {
     position: 'absolute',
     top: 0,
     width: "100%",
-    height: 160,
-    zIndex: 1, // Asegura que la imagen esté sobre otros elementos
+    height: 170,
+    zIndex: 1,
   },
   welcomeContainer: {
     height: '16%',
     width: '100%',
     alignItems: 'center',
     marginTop: 100,
-    marginBottom: 4,
     flexDirection: 'column',
   },
   welcomeText: {
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'contain',
   },
+  
 
 });
 

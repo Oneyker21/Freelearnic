@@ -51,9 +51,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingLeft: 15,
-    paddingRight: 10,
+    paddingRight: 15,
     marginBottom: 10,
-    marginTop: 25,
   },
 
   buttonClient: {
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
     position: 'absolute', 
     top: 10,              
     marginTop: 30,
-    left: 10,       
+    left: 20,       
     zIndex: 1
   },
 });
