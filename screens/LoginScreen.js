@@ -115,7 +115,7 @@ export default function LoginScreen() {
 
 
         <View style={styles.loginContainer}>
-          <Image source={require('../assets/Freelearnic.png')} style={styles.logo} />
+          <Image source={require('../assets/img/Freelearnic.png')} style={styles.logo} />
 
 
           <View style={styles.containerView}>

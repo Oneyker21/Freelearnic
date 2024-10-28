@@ -95,7 +95,7 @@ const CreateProject = ({ route }) => {
     {isLoading ? (
       <View style={styles.loadingContainer}>
         <Image 
-          source={require('../../assets/loading.png')} // Asegúrate de que la ruta sea correcta
+          source={require('../../assets/img/loading.png')} // Asegúrate de que la ruta sea correcta
           style={styles.loadingImage}
           resizeMode="contain" // Ajusta la imagen para que se contenga dentro del área
         />
@@ -105,7 +105,7 @@ const CreateProject = ({ route }) => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={30} color="#15297C" />
           </TouchableOpacity>
-          <Image source={require('../../assets/Freelearnic.png')} style={styles.logo} />
+          <Image source={require('../../assets/img/Freelearnic.png')} style={styles.logo} />
           <View style={styles.containerView}>
             <View style={styles.login}>
               <Text style={styles.title}>

@@ -11,7 +11,7 @@ const VerificationStatus = () => {
       <TouchableOpacity onPress={() => navigation.replace('Login')} style={styles.backButton}>
         <Ionicons name="arrow-back" size={30} color="#15297C" />
       </TouchableOpacity>
-        <Image source={require('../assets/Freelearnic.png')} style={styles.logo} />
+        <Image source={require('../assets/img/Freelearnic.png')} style={styles.logo} />
       <Text style={styles.text}>Usuario en estado de verificación</Text>
     </View>
   );

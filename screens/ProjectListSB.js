@@ -32,7 +32,7 @@ export const ProjectList = () => {
       keyExtractor={item => item.id}
       renderItem={({ item }) => (
         <View style={styles.card}>
-          <Image source={require('../assets/IconoCards.png')} style={styles.logo} />
+          <Image source={require('../assets/img/IconoCards.png')} style={styles.logo} />
           <CustomText style={styles.projectTitle} fontFamily="Roboto">{item.title}</CustomText>
           <CustomText style={styles.projectStatus} fontFamily="Roboto">{item.projectStatus}</CustomText>
 

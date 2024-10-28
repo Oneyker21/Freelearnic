@@ -8,8 +8,8 @@ const App = () => {
   useEffect(() => {
     async function loadFonts() {
       await Font.loadAsync({
-        'Roboto-regular': require('./fonts/Roboto-Regular.ttf'),
-        'OpenSans-regular': require('./fonts/OpenSans-Regular.ttf'),
+        'Roboto-regular': require('./assets/fonts/Roboto-Regular.ttf'),
+        'OpenSans-regular': require('./assets/fonts/OpenSans-Regular.ttf'),
       });
       setFontsLoaded(true);
     }

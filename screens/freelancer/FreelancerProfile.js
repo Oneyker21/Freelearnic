@@ -4,7 +4,6 @@ import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta s
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Asegúrate de importar estos módulos
 import * as ImagePicker from 'expo-image-picker'; // Importa ImagePicker
-import staticImage from '../../assets/Freelearnic.png'; // Ruta a la imagen estática
 
 const FreelancerProfile = ({ route }) => {
   const { freelancerId } = route.params; // Obtener el ID del freelancer desde la navegación
@@ -12,7 +11,7 @@ const FreelancerProfile = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const [editableData, setEditableData] = useState({}); // Para almacenar los datos editables
   const [imageUri, setImageUri] = useState(null); // Para almacenar la URI de la imagen seleccionada
-  const staticImage = require('../../assets/Freelearnic.png');
+  const staticImage = require('../../assets/img/Freelearnic.png');
 
   useEffect(() => {
     const fetchFreelancerData = async () => {
