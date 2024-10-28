@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 import { collection, getDocs, query } from 'firebase/firestore';
-import { db } from '../../config/firebaseConfig';
+import { db } from '../../connection/firebaseConfig';
 
 export default function Estadisticas() {
   const [dataProyectos, setDataProyectos] = useState({

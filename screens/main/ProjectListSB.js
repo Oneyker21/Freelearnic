@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text, StyleSheet, FlatList, ActivityIndicator, Button } from 'react-native';
-import { db } from '../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
+import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { collection, getDocs, onSnapshot } from 'firebase/firestore';
-import CustomText from '../utils/CustomText';
+import CustomText from '../../utils/CustomText';
 
 //prueba
 
@@ -32,7 +32,7 @@ export const ProjectList = () => {
       keyExtractor={item => item.id}
       renderItem={({ item }) => (
         <View style={styles.card}>
-          <Image source={require('../assets/img/IconoCards.png')} style={styles.logo} />
+          <Image source={require('../../assets/img/IconoCards.png')} style={styles.logo} />
           <CustomText style={styles.projectTitle} fontFamily="Roboto">{item.title}</CustomText>
           <CustomText style={styles.projectStatus} fontFamily="Roboto">{item.projectStatus}</CustomText>
 

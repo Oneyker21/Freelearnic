@@ -3,11 +3,11 @@ import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } fr
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import {useRoute, useNavigation } from '@react-navigation/native';
 import { doc, setDoc, getDocs, query, where, collection } from 'firebase/firestore';
-import { db } from '../../config/firebaseConfig';
+import { db } from '../../connection/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { CustomTextInput, ImagePickerButton, PreviewImage } from '../../utils/inputs';
-import SelectModal from '../SelectDeparMuni'; // Make sure to import the modal component
+import SelectModal from '../main/SelectDeparMuni'; // Make sure to import the modal component
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const RegisterClient2 = () => {

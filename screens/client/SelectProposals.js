@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
+import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { collection, getDocs, query, where, updateDoc, doc, writeBatch } from 'firebase/firestore';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';

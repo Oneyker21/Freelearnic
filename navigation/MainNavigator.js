@@ -38,16 +38,16 @@ import SearchProject from '../screens/freelancer/SearchProjects';
 
 
 // Importaciones universales
-import LoginScreen from '../screens/LoginScreen';
-import EscrowPayment from '../screens/EscrowPayments';
-import HomeScreen from '../screens/HomeScreen';
-import VerificationScreen from '../screens/VerificationScreen';
-import Messaging from '../screens/Messaging';
-import SelectDeparMuni from '../screens/SelectDeparMuni';
-import ProjectListSB from '../screens/ProjectListSB';
-import ProjectList from '../screens/ProjectList';
-import Notifications from '../screens/Notifications';
-import ScreenTypeUser from '../screens/ScreenTypeUser';
+import LoginScreen from '../screens/main/LoginScreen';
+import EscrowPayment from '../screens/main/EscrowPayments';
+import HomeScreen from '../screens/main/HomeScreen';
+import VerificationScreen from '../screens/main/VerificationScreen';
+import Messaging from '../screens/main/Messaging';
+import SelectDeparMuni from '../screens/main/SelectDeparMuni';
+import ProjectListSB from '../screens/main/ProjectListSB';
+import ProjectList from '../screens/main/ProjectList';
+import Notifications from '../screens/main/Notifications';
+import ScreenTypeUser from '../screens/main/ScreenTypeUser';
 
 // Importaciones de todas las pantallas a usar en la navegación Admininstrador
 import Reports from '../screens/admin/Reports'

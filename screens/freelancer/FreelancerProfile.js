@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, Button, ScrollView, TouchableOpacity, Alert, TextInput, ActivityIndicator } from 'react-native';
-import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
+import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Asegúrate de importar estos módulos
 import * as ImagePicker from 'expo-image-picker'; // Importa ImagePicker

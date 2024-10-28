@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput } from 'react-native';
-import { db } from '../../config/firebaseConfig';
+import { db } from '../../connection/firebaseConfig';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { CustomPicker } from '../../utils/inputs';
 

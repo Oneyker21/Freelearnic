@@ -10,7 +10,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/img/superior.png')} style={styles.imageSuperior} />
+      <Image source={require('../../assets/img/superior.png')} style={styles.imageSuperior} />
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
@@ -33,13 +33,13 @@ const HomeScreen = () => {
         ListHeaderComponent={
           <View style={styles.welcomeContainer}>
             <View style={styles.tap}>
-              <Image source={require('../assets/img/tap.png')} style={styles.logo} />
+              <Image source={require('../../assets/img/tap.png')} style={styles.logo} />
             </View>
             <Text style={styles.welcomeText}>
               ¡En Freelearnic, tu próximo proyecto o freelancer está a un clic de distancia!
             </Text>
             <View style={styles.welcomeImageContainer}>
-              <Image source={require('../assets/img/Welcome.png')} style={styles.welcomeImage} />
+              <Image source={require('../../assets/img/Welcome.png')} style={styles.welcomeImage} />
             </View>
           </View>
         }

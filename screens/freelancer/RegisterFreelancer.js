@@ -3,7 +3,7 @@ import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } fr
 import { getAuth, fetchSignInMethodsForEmail } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import {getDocs, query, where, collection } from 'firebase/firestore';
-import { db } from '../../config/firebaseConfig';
+import { db } from '../../connection/firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
 import { CustomTextInput } from '../../utils/inputs';
 

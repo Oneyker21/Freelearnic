@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, Image } fr
 import { Ionicons } from '@expo/vector-icons';
 import { doc, setDoc, collection } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
-import { db } from '../../config/firebaseConfig';
+import { db } from '../../connection/firebaseConfig';
 import DateTimePickerModal from 'react-native-modal-datetime-picker'; // Import the date picker
 import { CustomTextInput, CustomPickerInput,CustomPicker } from '../../utils/inputs'; // Importa el nuevo componente
 

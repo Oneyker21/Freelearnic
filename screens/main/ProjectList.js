@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert, TextInput } from 'react-native';
-import { db } from '../config/firebaseConfig';
+import { db } from '../../connection/firebaseConfig';
 import { collection, addDoc, onSnapshot } from 'firebase/firestore';
-import ProposalModal from '../screens/freelancer/ProposalModal';
-import { CustomPicker } from '../utils/inputs';
+import ProposalModal from '../freelancer/ProposalModal';
+import { CustomPicker } from '../../utils/inputs';
 
 const ProjectList = ({ route, showProposalButton }) => {
   const { freelancerId } = route.params;

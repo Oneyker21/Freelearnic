@@ -16,7 +16,7 @@ import React, {
     serverTimestamp
   } from 'firebase/firestore';
   import { signOut } from 'firebase/auth';
-  import { auth, db } from '../config/firebaseConfig';
+  import { auth, db } from '../../connection/firebaseConfig';
   import { useNavigation } from '@react-navigation/native';
   import { AntDesign } from '@expo/vector-icons';
 

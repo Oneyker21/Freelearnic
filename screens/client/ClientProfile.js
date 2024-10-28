@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TextInput, Button, ScrollView } from 'react-native';
-import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
+import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 const ClientProfile = ({ route }) => {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { db } from '../../config/firebaseConfig'; // Asegúrate de que la ruta sea correcta
+import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { getDoc,doc } from 'firebase/firestore';
-import ProjectList from '../ProjectList'; // Asegúrate de que la ruta sea correcta
+import ProjectList from '../main/ProjectList'; // Asegúrate de que la ruta sea correcta
 
 const HomeScreenSb = ({route}) => {
   const navigation = useNavigation();

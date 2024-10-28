@@ -3,8 +3,8 @@ import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } fr
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../config/firebaseConfig';
-import { CustomTextInput } from '../utils/inputs'; // Importar los inputs reutilizables
+import { db } from '../../connection/firebaseConfig';
+import { CustomTextInput } from '../../utils/inputs'; // Importar los inputs reutilizables
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -115,7 +115,7 @@ export default function LoginScreen() {
 
 
         <View style={styles.loginContainer}>
-          <Image source={require('../assets/img/Freelearnic.png')} style={styles.logo} />
+          <Image source={require('../../assets/img/Freelearnic.png')} style={styles.logo} />
 
 
           <View style={styles.containerView}>

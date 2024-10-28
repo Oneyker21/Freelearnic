@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, TouchableOpacity, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import ProjectList from '../ProjectList'; // Ensure the path is correct
-import { db } from '../../config/firebaseConfig'; // Ensure the path is correct
+import ProjectList from '../main/ProjectList'; // Ensure the path is correct
+import { db } from '../../connection/firebaseConfig'; // Ensure the path is correct
 import { doc, getDoc } from 'firebase/firestore';
 
 const HomeScreenFreelancer = ({ route }) => {
