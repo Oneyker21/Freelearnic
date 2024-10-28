@@ -60,7 +60,6 @@ export const PreviewImage = ({ uri }) => (
   uri ? <Image source={{ uri }} style={styles.previewImage} /> : null
 );
 
-
 // Componente personalizado para el selector de tipo de proyecto
 export const CustomPicker = ({ selectedValue, onValueChange, items, placeholder }) => {
   const [modalVisible, setModalVisible] = React.useState(false);

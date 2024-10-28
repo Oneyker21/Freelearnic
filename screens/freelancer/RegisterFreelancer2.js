@@ -303,8 +303,34 @@ const handleRegister = async () => {
       userType: 'freelancer',
       verified: false,
       regDate: new Date().toISOString(),
+      profilePic: "", // Cadena vacía
+      userStatus: "active", // Estado activo
+      suspDate: null,
+      suspType: null,
+      level: "", // Cadena vacía
+      profession: "", // Cadena vacía
+      description: "", // Cadena vacía
+      avgRating: 0, // Cero
+      jobsCompleted: 0, // Cero
+      portfolio: [], // Inicializa como array vacío
+      certifications: [], // Inicializa como array vacío
+      languages: [], // Inicializa como array vacío
+      professionalExp: "", // Cadena vacía
+      skills: [], // Inicializa como array vacío
+      subscriptions: {
+        subscriptionCollection: {
+          subscription_1: {
+            subscriptionType: "", // Cadena vacía
+            startDate: "", // Cadena vacía
+            endDate: "", // Cadena vacía
+            subscriptionStatus: "", // Cadena vacía
+            attemptsLeft: 0, // Cero
+            amount: 0.00 // Cero
+          }
+        }
+      }
     });
-
+    
     Alert.alert('Éxito', 'Registrado correctamente', [
       { text: 'OK', onPress: () => navigation.replace('Login') }
     ]);

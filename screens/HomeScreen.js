@@ -1,11 +1,12 @@
 import React from 'react';
-import { Image, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, View, Text, StyleSheet, TouchableOpacity, ScrollView,FlatList} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ProjectListSB from './ProjectListSB'; // Asegúrate de que la ruta sea correcta
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  
+   // Lista de datos vacía para simular la estructura de FlatList
+   const data = [];
 
   return (
     <View style={styles.container}>
@@ -25,24 +26,32 @@ const HomeScreen = () => {
           <Text style={styles.buttonTextRegister}>Iniciar sesión</Text>
         </TouchableOpacity>
       </View>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.welcomeContainer}>
-          <View style={styles.tap}>
-            <Image source={require('../assets/tap.png')} style={styles.logo} />
+      <FlatList
+        data={data}
+        renderItem={null}
+        keyExtractor={() => 'dummy'} // Llave única para evitar errores
+        ListHeaderComponent={
+          <View style={styles.welcomeContainer}>
+            <View style={styles.tap}>
+              <Image source={require('../assets/tap.png')} style={styles.logo} />
+            </View>
+            <Text style={styles.welcomeText}>
+              ¡En Freelearnic, tu próximo proyecto o freelancer está a un clic de distancia!
+            </Text>
+            <View style={styles.welcomeImageContainer}>
+              <Image source={require('../assets/Welcome.png')} style={styles.welcomeImage} />
+            </View>
           </View>
-          <Text style={styles.welcomeText}>¡En Freelearnic, tu próximo proyecto o
-            freelancer está a un clic de distancia!</Text>
-          <View style={styles.welcomeImageContainer}>
-            <Image source={require('../assets/Welcome.png')} style={styles.welcomeImage} />
+        }
+        ListFooterComponent={
+          <View style={styles.projectListContainer}>
+            <ProjectListSB />
           </View>
-        </View>
-        <View style={styles.projectListContainer}>
-          <ProjectListSB />
-        </View>
-      </ScrollView>
+        }
+      />
     </View>
   );
-}; // Asegúrate de que este paréntesis cierre correctamente la función del componente
+};
 
 const styles = StyleSheet.create({
   container: {

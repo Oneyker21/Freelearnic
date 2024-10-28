@@ -280,7 +280,6 @@ const handleRegister = async () => {
   const auth = getAuth();
 
   try {
-
     const trimmedEmail = email.trim();
     // Crear el usuario en Firebase
     const userCredential = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
@@ -303,6 +302,17 @@ const handleRegister = async () => {
       userType: 'client',
       verified: false,
       regDate: new Date().toISOString(),
+      suspDate: null,
+      suspType: null,
+      projectInterests: [], // Inicializa como array vacío
+      clientDesc: "", // Cadena vacía
+      detailedLocation: "", // Cadena vacía
+      paymentPolicies: "", // Cadena vacía
+      freelancersHired: 0, // Cero
+      clientRating: 0, // Cero
+      completedProjects: 0, // Cero
+      profilePic: "", // Cadena vacía
+      userStatus: "active" // Estado activo
     });
 
     Alert.alert('Éxito', 'Registrado correctamente', [
@@ -314,6 +324,7 @@ const handleRegister = async () => {
     setIsLoading(false);
   }
 };
+
 
 
 return (

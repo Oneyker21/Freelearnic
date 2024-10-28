@@ -41,9 +41,20 @@ export default function LoginScreen() {
       // Usuario autenticado, guardar sesión
       await AsyncStorage.setItem('userSession', 'active');
 
+      // Verificar si es administrador
+      const adminQuery = query(collection(db, 'Administrator'), where('uid', '==', user.uid));
+      const adminSnapshot = await getDocs(adminQuery);
+      if (!adminSnapshot.empty) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'TabsAdmin', params: { AdminId: adminSnapshot.docs[0].id } }], // Redirige a la pantalla de administración
+        });
+        return;
+      }
+
+      // Verificar si es freelancer
       const freelancersQuery = query(collection(db, 'Freelancers'), where('uid', '==', user.uid));
       const freelancersSnapshot = await getDocs(freelancersQuery);
-
       if (!freelancersSnapshot.empty) {
         const freelancerData = freelancersSnapshot.docs[0].data();
         if (freelancerData.verified === false) {
@@ -57,28 +68,29 @@ export default function LoginScreen() {
             routes: [{ name: 'TabsFreelancer', params: { freelancerId: freelancersSnapshot.docs[0].id } }],
           });
         }
-      } else {
-        const clientsQuery = query(collection(db, 'Clients'), where('uid', '==', user.uid));
-        const clientsSnapshot = await getDocs(clientsQuery);
-
-        if (!clientsSnapshot.empty) {
-          const clientData = clientsSnapshot.docs[0].data();
-          if (clientData.verified === false) {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'VerificationScreen' }],
-            });
-          } else {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'TabsClient', params: { clientId: clientsSnapshot.docs[0].id } }],
-            });
-          }
-        } else {
-          console.log('No se encontró información del freelancer o cliente');
-          Alert.alert('Error', 'No se encontró información del freelancer o cliente');
-        }
+        return;
       }
+
+      // Verificar si es cliente
+      const clientsQuery = query(collection(db, 'Clients'), where('uid', '==', user.uid));
+      const clientsSnapshot = await getDocs(clientsQuery);
+      if (!clientsSnapshot.empty) {
+        const clientData = clientsSnapshot.docs[0].data();
+        if (clientData.verified === false) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'VerificationScreen' }],
+          });
+        } else {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'TabsClient', params: { clientId: clientsSnapshot.docs[0].id } }],
+          });
+        }
+        return;
+      } 
+      // Si no se encontró información
+      Alert.alert('Error', 'No se encontró información del freelancer, cliente o administrador');
     } catch (error) {
       if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
         Alert.alert('Error de inicio de sesión', 'El correo o la contraseña son incorrectos');
@@ -97,7 +109,7 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => navigation.replace('HomeScreen')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="#15297C" />
         </TouchableOpacity>
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { getAuth } from 'firebase/auth';
+import { getAuth, fetchSignInMethodsForEmail } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import { doc, setDoc, getDocs, query, where, collection } from 'firebase/firestore';
+import {getDocs, query, where, collection } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
 import { CustomTextInput } from '../../utils/inputs';
@@ -10,7 +10,6 @@ import { CustomTextInput } from '../../utils/inputs';
 const RegisterFreelancer = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmPassword2, setConfirmPassword2] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -26,12 +25,12 @@ const RegisterFreelancer = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (password && confirmPassword && password !== confirmPassword) {
+    if (password && confirmPassword2 && password !== confirmPassword2) {
       setError('Las contraseñas no coinciden');
     } else {
       setError('');
     }
-  }, [password, confirmPassword]);
+  }, [password, confirmPassword2]);  // Asegúrate de que estás usando confirmPassword2 aquí
 
   // Function to check if the ID number already exists in Firestore
   const checkIdNumberExists = async (idNumber) => {
@@ -47,11 +46,7 @@ const RegisterFreelancer = () => {
     return !querySnapshot.empty; // Returns true if the username already exists, false if not
   };
 
-  const checkEmailExists = async (email) => {
-    const q = query(collection(db, "Freelancers"), where("email", "==", email));
-    const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty; // Returns true if the username already exists, false if not
-  };
+
 
   // Function to handle changes in the ID number field
   const handleIdNumberChange = (text) => {
@@ -60,38 +55,34 @@ const RegisterFreelancer = () => {
       return; // Do nothing if the length is exceeded
     }
 
-    // Convert the text to uppercase
-    const upperCaseText = text.toUpperCase();
-
     // Update the state with the entered text
-    setIdNumber(upperCaseText);
+    setIdNumber(text);
 
-    // Validate that it only contains numbers and letters
-    const regexIdNumber = /^[0-9A-Z]{14}$/; // 14 characters that can be numbers or uppercase letters
-    if (!regexIdNumber.test(upperCaseText)) {
-      setIdErrorMessage('El número de cédula es incorrecto, Ejemplo: 1211111111111K.');
+    // Validate that it contains 13 digits followed by a letter
+    const regexIdNumber = /^[0-9]{13}[A-Za-z]$/; // 13 digits followed by a letter
+    if (!regexIdNumber.test(text)) {
+      setIdErrorMessage('El número de cédula es incorrecto, Ejemplo: 1234567890123K.');
     } else {
       setIdErrorMessage(''); // Clear the error message if it's valid  
     }
   };
-
   // Manejar el cambio en el campo de correo electrónico
   const handleEmailChange = (text) => {
-    // Eliminar espacios en blanco y convertir el texto a minúsculas
-    const trimmedEmail = text.trim().toLowerCase();
-    setEmail(trimmedEmail);
+    // Eliminar espacios del texto ingresado
+    const textWithoutSpaces = text.replace(/\s+/g, '');
+
+    // Actualizar el estado con el texto sin espacios
+    setEmail(textWithoutSpaces);
   };
-
   const handleNext = async () => {
-    // Validar que todos los campos requeridos estén llenos
-    if (!email || !password || !confirmPassword || !firstName || !lastName || !username || !idNumber) {
-      Alert.alert('Error', 'Por favor, rellene todos los campos.');
-      return;
-    }
+    const emailToLower = email.toLowerCase();
 
-    // Validar que las contraseñas coincidan
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Las contraseñas no coinciden.');
+    // Convertir el número de identificación a mayúsculas antes de la validación y enviarlo
+    const idNumberToUpper = idNumber.toUpperCase();
+
+    // Validar que todos los campos requeridos estén llenos
+    if (!emailToLower || !password || !confirmPassword2 || !firstName || !lastName || !username || !idNumberToUpper) {
+      Alert.alert('Error', 'Por favor, rellene todos los campos.');
       return;
     }
 
@@ -100,59 +91,56 @@ const RegisterFreelancer = () => {
       return;
     }
 
+    setIsLoading(true);
 
-    // Limpiar el correo electrónico y convertirlo a minúsculas
-    const trimmedEmail = email.trim().toLowerCase();
+  // Validación de la contraseña
+  const regexPassword = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  if (!regexPassword.test(password)) {
+    Alert.alert('Error', 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.');
+    setIsLoading(false);
+    return;
+  }
 
-    // Validación de la contraseña
-    const regexPassword = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/; // Al menos 8 caracteres, una mayúscula, un número y un carácter especial
-    if (!regexPassword.test(password)) {
-      Alert.alert('Error', 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.');
-      return;
-    }
+  // Validar que el correo electrónico sea de Gmail y solo acepte minúsculas
+  const regexEmail = /^[a-z0-9._%+-]+@gmail\.com$/;
+  if (!regexEmail.test(emailToLower)) {
+    Alert.alert('Error', 'Por favor digite un correo electrónico correcto.');
+    setIsLoading(false);
+    return;
+  }
 
-    // Check if the username already exists in Firestore
-    const existEmailExists = await checkEmailExists(trimmedEmail);
-    if (existEmailExists) {
-      Alert.alert('Error', 'El correo ya está en uso.');
-      return;
-    }
+  // Validar el número de identificación antes de continuar
+  const regexIdNumber = /^[0-9]{13}[A-Za-z]$/;
+  if (!regexIdNumber.test(idNumberToUpper)) {
+    Alert.alert('Error', 'El número de cédula debe contener 13 dígitos seguidos de una letra.');
+    setIsLoading(false);
+    return;
+  }
 
-    const existingUsername = await checkUsernameExists(username);
-    if (existingUsername) {
-      Alert.alert('Error', 'El nombre de usuario ya existe.');
-      return;
-    }
+  // Verificar si el nombre de usuario ya existe en Firestore
+  const existingUsername = await checkUsernameExists(username);
+  if (existingUsername) {
+    Alert.alert('Error', 'El nombre de usuario ya existe.');
+    setIsLoading(false);
+    return;
+  }
 
-    // Validar que el correo electrónico sea de Gmail y solo acepte minúsculas
-    const regexEmail = /^[a-z0-9._%+-]+@gmail\.com$/; // Solo acepta correos electrónicos de Gmail en minúsculas
-    if (!regexEmail.test(trimmedEmail)) {
-      Alert.alert('Error', 'Por favor digite un correo electrónico correcto.');
-      return;
-    }
+  // Verificar si el número de identificación ya existe en Firestore
+  const existingIdNumber = await checkIdNumberExists(idNumberToUpper);
+  if (existingIdNumber) {
+    Alert.alert('Error', 'El número de cédula ya existe.');
+    setIsLoading(false);
+    return;
+  }
 
-    // Validate the ID number before continuing
-    const regexIdNumber = /^[0-9A-Za-z]{14}$/; // 14 characters that can be numbers or letters
-    if (!regexIdNumber.test(idNumber)) {
-      Alert.alert('Error', 'Debe de contener 14 caracteres sin guiones.');
-      return;
-    }
-
-    // Check if the ID number already exists in Firestore
-    const existingIdNumber = await checkIdNumberExists(idNumber);
-    if (existingIdNumber) {
-      Alert.alert('Error', 'El número de cédula ya existe.');
-      return;
-    }
-
-    // Navegar al siguiente componente y pasar los datos
+    // Navegar al siguiente componente y pasar los datos convertidos
     navigation.navigate('RegisterFreelancer2', {
-      email: trimmedEmail, // Asegúrate de pasar el correo limpio
-      password,
-      firstName,
-      lastName,
-      username,
-      idNumber,
+        email: emailToLower,
+        password,
+        firstName,
+        lastName,
+        username,
+        idNumber: idNumberToUpper, // Asegúrate de que se envía en mayúsculas
     });
   };
 
@@ -180,7 +168,13 @@ const RegisterFreelancer = () => {
               <CustomTextInput onChangeText={setFirstName} value={firstName} placeholder="Nombres" />
               <CustomTextInput onChangeText={setLastName} value={lastName} placeholder="Apellidos" />
               <CustomTextInput onChangeText={setUsername} value={username} placeholder="Nombre Usuario" />
-              <CustomTextInput onChangeText={handleEmailChange} value={email} placeholder="Correo Electrónico" />
+              <CustomTextInput
+                onChangeText={handleEmailChange}
+                value={email}
+                placeholder="Correo Electrónico"
+                autoCapitalize="none"  // Asegura que el teclado no auto-capitalize las entradas
+              />
+              
               <CustomTextInput
                 value={password}
                 onChangeText={setPassword}
@@ -201,7 +195,7 @@ const RegisterFreelancer = () => {
               <CustomTextInput 
                 onChangeText={handleIdNumberChange} 
                 value={idNumber} 
-                placeholder="Número cédula" 
+                placeholder="Número de cédula" 
               />
               {idErrorMessage ? <Text style={styles.textError}>{idErrorMessage}</Text> : null}
               <TouchableOpacity onPress={handleNext} style={styles.buttonRegister}>
@@ -307,8 +301,13 @@ const styles = StyleSheet.create({
     marginBottom: 10, // Espacio entre la imagen y el texto
   },
   textError: {
-    color: '#8b0000',
-    textAlign: 'left'
+    color: '#ffff',
+    fontSize: 12,
+    marginTop: 5,
+    textAlign: 'justify',
+    fontWeight: 'bold',
+    top:-25,
+    backgroundColor: null, // Ensure the text is visible
   },
 });
 

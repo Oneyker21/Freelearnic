@@ -104,6 +104,7 @@ const ProjectList = ({ route, showProposalButton }) => {
       
       {/* Filtro por categoría */}
       <CustomPicker
+      style={styles.selectType}
         selectedValue={categoryFilter}
         onValueChange={setCategoryFilter}
         items={projectType}
@@ -161,6 +162,14 @@ const ProjectList = ({ route, showProposalButton }) => {
 
 const styles = StyleSheet.create({
   searchBar: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 10,
+    margin: 10,
+  },
+  selectType:{
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,

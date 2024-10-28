@@ -11,6 +11,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 // Importaciones de iconos para usar en la navegación
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -47,6 +48,10 @@ import ProjectListSB from '../screens/ProjectListSB';
 import ProjectList from '../screens/ProjectList';
 import Notifications from '../screens/Notifications';
 import ScreenTypeUser from '../screens/ScreenTypeUser';
+
+// Importaciones de todas las pantallas a usar en la navegación Admininstrador
+import Reports from '../screens/admin/Reports'
+
 
 
 const HomeMainNavigator = createStackNavigator();
@@ -119,6 +124,14 @@ function StackHomeMain() {
       <HomeMainNavigator.Screen
         name="TabsFreelancer"
         component={TabsFreelancer}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+<HomeMainNavigator.Screen
+        name="TabsAdmin"
+        component={TabsAdmin}
         options={{
           headerShown: false,
         }}
@@ -248,6 +261,28 @@ function TabsFreelancer({ route }) {
         }}
       />
     </Tab2.Navigator>
+  )
+};
+
+const Tab3 = createBottomTabNavigator();
+function TabsAdmin({ route }) {
+  const { AdminId } = route.params;
+
+  return (
+    <Tab3.Navigator initialRouteName='Reports'>
+    <Tab3.Screen
+      name='Reports'
+      component={Reports}
+      initialParams={{ AdminId }}
+      options={{
+        tabBarLabel: 'Reportes',
+        tabBarIcon: ({ color, size }) => (
+          <FontAwesome name="bar-chart-o" size={24}  color={color} />
+        ),
+        headerShown: false,
+      }}
+    />
+    </Tab3.Navigator>
   )
 };
 
