@@ -37,7 +37,13 @@ const ProposalModal = ({ visible, onClose, onSubmit, clientId }) => { // Accepts
           />
           <TextInput
             style={styles.input}
-            placeholder="Mensaje"
+            placeholder="¿Qué incluye tu propuesta?"
+            value={proposalMessage}
+            onChangeText={setProposalMessage}
+          />
+              <TextInput
+            style={styles.input}
+            placeholder="Requesitos adicionales"
             value={proposalMessage}
             onChangeText={setProposalMessage}
           />
@@ -45,7 +51,7 @@ const ProposalModal = ({ visible, onClose, onSubmit, clientId }) => { // Accepts
             <Button title="Enviar" onPress={handleSubmit} color='#15297C' />
           </View>
           <View style={styles.buttonContainer}>
-            <Button title="Cancelar" onPress={onClose} color="red" />
+            <Button title="Cancelar" onPress={onClose} color="green" />
           </View>
         </View>
       </View>

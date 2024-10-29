@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, Button, ScrollView, TouchableOpacity, Alert, TextInput, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Asegúrate de importar estos módulos
 import * as ImagePicker from 'expo-image-picker'; // Importa ImagePicker
+import { CustomTextInput } from '../../utils/inputs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const FreelancerProfile = ({ route }) => {
   const { freelancerId } = route.params; // Obtener el ID del freelancer desde la navegación
   const [freelancerData, setFreelancerData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editableData, setEditableData] = useState({}); // Para almacenar los datos editables
-  const [imageUri, setImageUri] = useState(null); // Para almacenar la URI de la imagen seleccionada
+  const [imageUri, setImageUri] = useState(null); // Para almacenar la URI de la imagen
+  const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigation();
   const staticImage = require('../../assets/img/Freelearnic.png');
 
   useEffect(() => {
@@ -105,116 +110,184 @@ const uploadImageToStorage = async (uri) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.imageContainer}>
-        <TouchableOpacity onPress={handleImagePick} style={styles.profilePicContainer}>
-          <Image
-            source={imageUri ? { uri: imageUri } : staticImage} // Mostrar la imagen de perfil o la imagen estática
-            style={styles.profilePic}
+    <View style={styles.container}>
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <Image 
+            source={require('../../assets/img/loading.png')}
+            style={styles.loadingImage}
+            resizeMode="contain"
           />
+        </View>
+      ) : (
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={30} color="#15297C" />
         </TouchableOpacity>
-      </View>
+        <TouchableOpacity onPress={handleImagePick}>
+          <Image source={imageUri ? { uri: imageUri } : require('../../assets/img/usuario.png')} style={styles.logo} />
+        </TouchableOpacity>
+          <View style={styles.containerView}>
+            <View style={styles.login}>
+              <Text style={styles.title}>
+                Edita tu <Text>cuenta de</Text> <Text style={{ fontWeight: 'bold' }}>Freelancer</Text>
+              </Text>
+          <CustomTextInput
+            style={styles.input}
+            value={editableData.city}
+            onChangeText={(value) => handleInputChange('city', value)}
+            placeholder="Ciudad"
+          />
+          <CustomTextInput
+            style={styles.input}
+            value={editableData.state}
+            onChangeText={(value) => handleInputChange('state', value)}
+            placeholder="Estado"
+          />
+          <CustomTextInput
+            style={styles.input}
+            value={editableData.level}
+            onChangeText={(value) => handleInputChange('level', value)}
+            placeholder="Nivel"
+          />
+          <CustomTextInput
+            style={styles.input}
+            value={editableData.profession}
+            onChangeText={(value) => handleInputChange('profession', value)}
+            placeholder="Profesión"
+          />
+          <CustomTextInput
+            style={styles.input}
+            value={editableData.professionalExp}
+            onChangeText={(value) => handleInputChange('professionalExp', value)}
+            placeholder="Experiencia Profesional"
+          />
+          <CustomTextInput
+            style={styles.input}
+            value={editableData.availability}
+            onChangeText={(value) => handleInputChange('availability', value)}
+            placeholder="Disponibilidad"
+          />
+          <CustomTextInput
+            style={styles.input}
+            value={editableData.description}
+            onChangeText={(value) => handleInputChange('description', value)}
+            placeholder="Descripción"
+          />
+          <CustomTextInput
+            style={styles.input}
+            value={editableData.skills.join(', ')} // Permite la entrada de habilidades como texto
+            onChangeText={(value) => handleInputChange('skills', value.split(',').map(skill => skill.trim()))}
+            placeholder="Habilidades (separadas por comas)"
+          />
+          <CustomTextInput
+            style={styles.input}
+            value={editableData.portfolio.join(', ')} // Permite la entrada de URLs como texto
+            onChangeText={(value) => handleInputChange('portfolio', value.split(',').map(url => url.trim()))}
+            placeholder="Portfolio (separadas por comas)"
+          />
+          <CustomTextInput
+            style={styles.input}
+            value={editableData.certifications.join(', ')} // Permite la entrada de certificaciones como texto
+            onChangeText={(value) => handleInputChange('certifications', value.split(',').map(cert => cert.trim()))}
+            placeholder="Certificaciones (separadas por comas)"
+          />
+          <CustomTextInput
+            style={styles.input}
+            value={editableData.languages.join(', ')} // Permite la entrada de idiomas como texto
+            onChangeText={(value) => handleInputChange('languages', value.split(',').map(lang => lang.trim()))}
+            placeholder="Idiomas (separados por comas)"
+          />
 
-      <Text style={styles.sectionTitle}>Información Personal</Text>
-      
-      <TextInput
-        style={styles.input}
-        value={editableData.city}
-        onChangeText={(value) => handleInputChange('city', value)}
-        placeholder="Ciudad"
-      />
-      <TextInput
-        style={styles.input}
-        value={editableData.state}
-        onChangeText={(value) => handleInputChange('state', value)}
-        placeholder="Estado"
-      />
-      <TextInput
-        style={styles.input}
-        value={editableData.level}
-        onChangeText={(value) => handleInputChange('level', value)}
-        placeholder="Nivel"
-      />
-      <TextInput
-        style={styles.input}
-        value={editableData.profession}
-        onChangeText={(value) => handleInputChange('profession', value)}
-        placeholder="Profesión"
-      />
-      <TextInput
-        style={styles.input}
-        value={editableData.professionalExp}
-        onChangeText={(value) => handleInputChange('professionalExp', value)}
-        placeholder="Experiencia Profesional"
-      />
-      <TextInput
-        style={styles.input}
-        value={editableData.availability}
-        onChangeText={(value) => handleInputChange('availability', value)}
-        placeholder="Disponibilidad"
-      />
-      <TextInput
-        style={styles.input}
-        value={editableData.description}
-        onChangeText={(value) => handleInputChange('description', value)}
-        placeholder="Descripción"
-      />
-      <TextInput
-        style={styles.input}
-        value={editableData.skills.join(', ')} // Permite la entrada de habilidades como texto
-        onChangeText={(value) => handleInputChange('skills', value.split(',').map(skill => skill.trim()))}
-        placeholder="Habilidades (separadas por comas)"
-      />
-      <TextInput
-        style={styles.input}
-        value={editableData.portfolio.join(', ')} // Permite la entrada de URLs como texto
-        onChangeText={(value) => handleInputChange('portfolio', value.split(',').map(url => url.trim()))}
-        placeholder="Portfolio (separadas por comas)"
-      />
-      <TextInput
-        style={styles.input}
-        value={editableData.certifications.join(', ')} // Permite la entrada de certificaciones como texto
-        onChangeText={(value) => handleInputChange('certifications', value.split(',').map(cert => cert.trim()))}
-        placeholder="Certificaciones (separadas por comas)"
-      />
-      <TextInput
-        style={styles.input}
-        value={editableData.languages.join(', ')} // Permite la entrada de idiomas como texto
-        onChangeText={(value) => handleInputChange('languages', value.split(',').map(lang => lang.trim()))}
-        placeholder="Idiomas (separados por comas)"
-      />
-
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
-      </TouchableOpacity>
-    </ScrollView>
+              <TouchableOpacity style={styles.buttonRegister} onPress={handleSave}>
+                <Text style={styles.buttonTextRegister}>Guardar Cambios</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      )}
+    </View>
   );
 };
-
+   
 const styles = StyleSheet.create({
+  buttonRegister: {
+    width: '100%',
+    height: 50,
+    marginTop: 30,
+    backgroundColor: '#15297C',
+    borderRadius: 50,
+    marginBottom: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonTextRegister: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 20,
+  },
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    paddingTop: 50,
+    position: 'relative',
   },
-  imageContainer: {
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  profilePicContainer: {
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  profilePic: {
+  loadingImage: {
     width: 100,
     height: 100,
-    borderRadius: 50,
-    borderColor: 'white',
-    borderWidth: 2,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 20,
+  scrollView: {
+    zIndex: 0,
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  scrollViewContent: {
+    paddingTop: 60,
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    zIndex: 1,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+  containerView: {
+    backgroundColor: '#107acc',
+    width: '100%',
+    padding: 20,
+    borderTopLeftRadius: 130,
+    overflow: 'hidden',
+  },
+  profile: {
+    width: '80%',
+    padding: 20,
+    borderWidth: 2,
+    borderColor: '#15297C',
+    borderRadius: 10,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'none',
+    marginBottom: 20,
+    color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowRadius: 1,
+    textAlign: 'center',
   },
   input: {
     borderWidth: 1,
@@ -224,15 +297,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   saveButton: {
-    backgroundColor: '#007AFF',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
+    width: '100%',
+    height: 50,
+    marginTop: 30,
+    backgroundColor: '#15297C',
+    borderRadius: 50,
+    marginBottom: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   saveButtonText: {
     color: '#fff',
-    textAlign: 'center',
     fontWeight: 'bold',
+    fontSize: 20,
   },
 });
 
