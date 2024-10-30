@@ -10,8 +10,10 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+
       <Image source={require('../../assets/img/superior.png')} style={styles.imageSuperior} />
       <View style={styles.buttonContainer}>
+      <Image source={require('../../assets/img/IconoCards.png')} style={styles.LogoIcon} />
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('TypeUser')}
@@ -63,6 +65,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     marginTop: 35,
   },
+ 
   backButton: {
     position: 'absolute',
     left: 20,
@@ -107,12 +110,12 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   welcomeContainer: {
-    height: '16%',
+    height: '26%',
     width: '100%',
     alignItems: 'center',
     marginTop: 100,
-    flexDirection: 'column',
   },
+  
   welcomeText: {
     fontSize: 14,
     fontWeight: 'bold',
@@ -142,7 +145,13 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   
-
+  LogoIcon: {
+    position: 'absolute',
+    top: 4,
+    right: 325,
+    width: 60,
+    height: 50,
+  },
 });
 
 export default HomeScreen;
