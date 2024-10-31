@@ -42,14 +42,7 @@ const HomeScreenFreelancer = ({ route }) => {
       <ProjectList route={{ params: { freelancerId } }} showProposalButton={true} />
 
       <View style={styles.buttonContainer}>
-      <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('FreelancerProfile', { freelancerId })} // Navegar al componente CreateProject
-        >
-          <Text style={styles.buttonText}>Perfil</Text>
-        </TouchableOpacity>
-  
-      </View>
+        </View>
     </View>
   );
 };

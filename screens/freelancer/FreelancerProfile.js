@@ -5,8 +5,9 @@ import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ru
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Asegúrate de importar estos módulos
 import * as ImagePicker from 'expo-image-picker'; // Importa ImagePicker
-import { CustomTextInput } from '../../utils/inputs';
+import { CustomTextInput, CustomPickerInput,CustomPicker,CustomTextInputLarge, CustomTextInputEditable } from '../../utils/inputs'; // Importa el nuevo componente
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 const FreelancerProfile = ({ route }) => {
   const { freelancerId } = route.params; // Obtener el ID del freelancer desde la navegación
@@ -16,7 +17,7 @@ const FreelancerProfile = ({ route }) => {
   const [imageUri, setImageUri] = useState(null); // Para almacenar la URI de la imagen
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
-  const staticImage = require('../../assets/img/Freelearnic.png');
+  
 
   useEffect(() => {
     const fetchFreelancerData = async () => {
@@ -44,63 +45,86 @@ const FreelancerProfile = ({ route }) => {
   const handleSave = async () => {
     try {
       const docRef = doc(db, 'Freelancers', freelancerId);
-      const updatedData = { ...editableData, profilePic: imageUri }; // Asegúrate de incluir la imagen de perfil
+      const updatedData = { ...editableData, profilePic: imageUri };
       await updateDoc(docRef, updatedData);
       Alert.alert('Perfil actualizado con éxito');
-      setFreelancerData(updatedData); // Actualiza los datos del freelancer
+      setFreelancerData(updatedData);
     } catch (error) {
       console.error("Error al actualizar el perfil: ", error);
       Alert.alert('Error al actualizar el perfil');
     }
   };
 
-  const handleImagePick = async () => {
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso denegado', 'Se requieren permisos para acceder a las fotos.');
+      return;
+    }
+  
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [1, 1],
+      quality: 1,
+    });
+  
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      let imageUri = result.assets[0].uri;
+  
+      // Redimensionar la imagen antes de cargarla
+      const manipulatedImage = await ImageManipulator.manipulateAsync(
+          imageUri,
+          [{ resize: { width: 800 } }], // Cambia el tamaño a 800px de ancho
+          { compress: 0.7 } // Compresión entre 0 y 1
+      );
+    }
+  
+    if (result.assets && result.assets.length > 0) {
+      const imageUri = result.assets[0].uri;
+      console.log("URI de la imagen seleccionada:", imageUri);
+      const imageUrl = await uploadImageToStorage(imageUri);
+      if (imageUrl) {
+        setImageUri(imageUrl); // Actualiza el estado con la nueva URL
+      }
+    } else {
+      console.error("No se pudo obtener el URI de la imagen.");
+    }
+  };
+  
+  
+
+  const uploadImageToStorage = async (uri) => {
+    if (!uri) {
+        Alert.alert("Error", "No se proporcionó URI para la imagen.");
+        return null;
+    }
+
+    const storage = getStorage();
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const filename = uri.substring(uri.lastIndexOf('/') + 1);
+    const storageRef = ref(storage, `images/${filename}`);
+
+    console.log("Cargando la imagen a Firebase...");
+    setIsLoading(true); // Mostrar indicador de carga
+
     try {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (permissionResult.granted === false) {
-            Alert.alert('Se requieren permisos para acceder a la galería');
-            return;
-        }
-
-        const pickerResult = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (pickerResult.cancelled) {
-            return;
-        }
-
-        const downloadURL = await uploadImageToStorage(pickerResult.uri);
-        setImageUri(downloadURL);
+        await uploadBytes(storageRef, blob);
+        const downloadURL = await getDownloadURL(storageRef);
+        console.log("Imagen cargada, URL de descarga: ", downloadURL);
+        return downloadURL; // Retorna la URL de descarga
     } catch (error) {
-        console.error("Error al seleccionar o cargar la imagen: ", error);
-        Alert.alert('Error al seleccionar o cargar la imagen');
+        console.error("Error al cargar la imagen: ", error);
+        Alert.alert("Error al cargar la imagen", error.message);
+        return null;
+    } finally {
+        setIsLoading(false); // Ocultar indicador de carga
     }
 };
+  
 
-
-const uploadImageToStorage = async (uri) => {
-  try {
-    const response = await fetch(uri, { timeout: 60000 }); // Agrega un tiempo de espera de 60 segundos
-    const blob = await response.blob();
-    const filename = `profile_images/${Date.now()}_${uri.substring(uri.lastIndexOf('/') + 1)}`;
-    const storageRef = ref(getStorage(), filename);
-
-    const snapshot = await uploadBytes(storageRef, blob);
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    return downloadURL;
-  } catch (error) {
-    console.error("Error al cargar la imagen:", error);
-    Alert.alert("Error al cargar la imagen", error.message);
-    throw error;
-  }
-};
-
-
-
+  
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
@@ -124,15 +148,30 @@ const uploadImageToStorage = async (uri) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="#15297C" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleImagePick}>
-          <Image source={imageUri ? { uri: imageUri } : require('../../assets/img/usuario.png')} style={styles.logo} />
-        </TouchableOpacity>
+        <TouchableOpacity onPress={async () => {
+              const url = await pickImage(setImageUri);
+              if (url) {
+                setImageUri(url); // Asegúrate de que el estado se actualiza con la nueva URL
+              }
+            }}>
+              {imageUri ? (
+                <Image
+                  source={{ uri: imageUri }}
+                  style={styles.logo}
+                />
+              ) : (
+                <View style={styles.placeholderImage}>
+                  <Text>Seleccionar imagen</Text>
+                </View>
+                
+              )}
+            </TouchableOpacity>
           <View style={styles.containerView}>
             <View style={styles.login}>
               <Text style={styles.title}>
                 Edita tu <Text>cuenta de</Text> <Text style={{ fontWeight: 'bold' }}>Freelancer</Text>
               </Text>
-          <CustomTextInput
+          <CustomTextInputEditable
             style={styles.input}
             value={editableData.city}
             onChangeText={(value) => handleInputChange('city', value)}
@@ -144,43 +183,49 @@ const uploadImageToStorage = async (uri) => {
             onChangeText={(value) => handleInputChange('state', value)}
             placeholder="Estado"
           />
-          <CustomTextInput
-            style={styles.input}
-            value={editableData.level}
-            onChangeText={(value) => handleInputChange('level', value)}
-            placeholder="Nivel"
+          
+          <CustomPicker 
+            selectedValue={editableData.level} 
+            onValueChange={(value) => handleInputChange('level', value)} 
+            items={[
+              { label: "Seleccione el nivel", value: "" },
+              { label: "Senior", value: "Senior" },
+              { label: "Junior", value: "Junior" },
+              { label: "Avanzado", value: "Avanzado" }
+            ]}
+            placeholder="Seleccione el nivel"
           />
-          <CustomTextInput
-            style={styles.input}
-            value={editableData.profession}
-            onChangeText={(value) => handleInputChange('profession', value)}
-            placeholder="Profesión"
-          />
-          <CustomTextInput
-            style={styles.input}
+                <CustomPicker
+                  selectedValue={editableData.profession}
+                  onValueChange={(value) => handleInputChange('profession', value)}
+                  items={[
+                    { label: "Seleccione la profesión", value: "" },
+                    { label: "Programador", value: "Programador" },
+                    { label: "Diseñador Gráfico", value: "Diseñador Gráfico" },
+                    { label: "Especialista en Marketing Digital", value: "Especialista en Marketing Digital" },
+                    { label: "Desarrollador de Software", value: "Desarrollador de Software" },
+                    { label: "Administrador de Bases de Datos", value: "Administrador de Bases de Datos" },
+                    { label: "Desarrollador Web", value: "Desarrollador Web" }
+                  ]}
+                  placeholder="Seleccione la profesión"
+                />
+             <CustomTextInputLarge
             value={editableData.professionalExp}
             onChangeText={(value) => handleInputChange('professionalExp', value)}
-            placeholder="Experiencia Profesional"
+            placeholder="Describe tu experiencia laboral: roles, proyectos y logros relevantes"
           />
-          <CustomTextInput
-            style={styles.input}
-            value={editableData.availability}
-            onChangeText={(value) => handleInputChange('availability', value)}
-            placeholder="Disponibilidad"
-          />
-          <CustomTextInput
-            style={styles.input}
+          <CustomTextInputLarge
             value={editableData.description}
             onChangeText={(value) => handleInputChange('description', value)}
             placeholder="Descripción"
           />
-          <CustomTextInput
+          <CustomTextInputEditable
             style={styles.input}
             value={editableData.skills.join(', ')} // Permite la entrada de habilidades como texto
             onChangeText={(value) => handleInputChange('skills', value.split(',').map(skill => skill.trim()))}
             placeholder="Habilidades (separadas por comas)"
           />
-          <CustomTextInput
+          <CustomTextInputEditable
             style={styles.input}
             value={editableData.portfolio.join(', ')} // Permite la entrada de URLs como texto
             onChangeText={(value) => handleInputChange('portfolio', value.split(',').map(url => url.trim()))}
@@ -235,6 +280,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#15297C'
   },
   loadingImage: {
     width: 100,
@@ -310,6 +356,24 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 20,
+  },
+  largeInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+    height: 100,
+    textAlignVertical: 'top',
+  },
+  placeholderImage: {
+    width: 100,
+    height: 100,
+    borderWidth: 2,
+    borderColor: '#ccc',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import {useRoute, useNavigation } from '@react-navigation/native';
-import { doc, setDoc, getDocs, query, where, collection } from 'firebase/firestore';
+import { doc, setDoc} from 'firebase/firestore';
 import { db } from '../../connection/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
@@ -19,8 +19,6 @@ const RegisterClient2 = () => {
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [idErrorMessage, setIdErrorMessage] = useState('');
   const [modalStateVisible, setModalStateVisible] = useState(false);
   const [modalCityVisible, setModalCityVisible] = useState(false);
   const [filteredCities, setFilteredCities] = useState([]); // State for filtered cities

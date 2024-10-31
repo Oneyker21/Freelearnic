@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextInput, TouchableOpacity, StyleSheet, View, Text, Image, Modal, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -23,7 +23,7 @@ export const CustomTextInput = ({ value, onChangeText, placeholder, secureTextEn
 
 
 export const CustomTextInputEdit = ({ value, onChangeText, placeholder, editable, onEdit }) => (
-  <View style={styles.inputContainer2}>
+  <View style={styles.inputContainer}>
     <TextInput
       style={styles.inputtext}
       onChangeText={onChangeText}
@@ -102,6 +102,42 @@ export const CustomPicker = ({ selectedValue, onValueChange, items, placeholder 
   );
 };
 
+// Componente personalizado para entradas de texto grandes, como descripciones
+export const CustomTextInputLarge = ({ value, onChangeText, placeholder }) => (
+  <View style={styles.inputContainerLarge}>
+    <TextInput
+      style={styles.inputLarge}
+      onChangeText={onChangeText}
+      value={value}
+      placeholder={placeholder}
+      placeholderTextColor="#fff" // Manteniendo el color blanco del placeholder
+      multiline={true} // Permite múltiples líneas
+      numberOfLines={4} // Número inicial de líneas
+    />
+  </View>
+);
+
+// Componente personalizado para entradas de texto editables
+export const CustomTextInputEditable = ({ value, onChangeText, placeholder, style }) => {
+  const [isEditable, setIsEditable] = useState(false);
+
+  return (
+    <View style={[styles.inputContainer2, style]}>
+      <TextInput
+        style={styles.input2}
+        onChangeText={onChangeText}
+        value={value}
+        placeholder={placeholder}
+        editable={isEditable}
+        placeholderTextColor="#ccc"
+      />
+      <TouchableOpacity onPress={() => setIsEditable(!isEditable)} style={styles.editButton2}>
+        <Icon name={isEditable ? "check" : "edit"} size={20} color="white" />
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 // Estilos para los componentes
 const styles = StyleSheet.create({
   editButton:{
@@ -114,10 +150,22 @@ padding: 10,
 
   },
   inputContainer2:{
-    padding: 15,
-    borderWidth: 1,
-    borderColor: '#fff', // Cambiado a blanco para coincidir con otros inputs
-    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    marginBottom: 25,
+    padding: 10,
+  },
+  input2: {
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 10,
+    color: '#fff',
+  },
+  editButton2: {
+    marginLeft: 10,
+    padding: 10,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -210,5 +258,21 @@ padding: 10,
   closeButtonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  inputContainerLarge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: '#fff', // Manteniendo el color blanco para el borde
+    marginBottom: 25,
+    width: '100%',
+    justifyContent: 'center', // Centrar el texto
+  },
+  inputLarge: {
+    flex: 1,
+    height: 100, // Altura mayor para más texto
+    paddingHorizontal: 10,
+    color: '#fff', // Manteniendo el color blanco para el texto
+    textAlignVertical: 'top', // Alinea el texto en la parte superior
   },
 });

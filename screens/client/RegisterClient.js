@@ -32,20 +32,6 @@ const RegisterClient = () => {
     }
   }, [password, confirmPassword2]);  // Asegúrate de que estás usando confirmPassword2 aquí
 
-  // Function to check if the ID number already exists in Firestore
-  const checkIdNumberExists = async (idNumber) => {
-    const q = query(collection(db, "Clients"), where("idNum", "==", idNumber));
-    const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty; // Returns true if the ID number already exists, false if not
-  };
-
-  // Function to check if the username already exists in Firestore
-  const checkUsernameExists = async (username) => {
-    const q = query(collection(db, "Clients"), where("username", "==", username));
-    const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty; // Returns true if the username already exists, false if not
-  };
-
   // Function to handle changes in the ID number field
   const handleIdNumberChange = (text) => {
     // Limit the length to 14 characters
@@ -74,6 +60,70 @@ const RegisterClient = () => {
     setEmail(textWithoutSpaces);
   };
 
+  // Función para verificar si el correo electrónico ya existe en la colección de Freelancers
+const checkEmailExistsInFreelancers = async (email) => {
+  const q = query(collection(db, "Freelancers"), where("email", "==", email));
+  const querySnapshot = await getDocs(q);
+  return !querySnapshot.empty; // Retorna true si el correo ya existe
+};
+
+// Función para verificar si el correo electrónico ya existe en la colección de Clients
+const checkEmailExistsInClients = async (email) => {
+  const q = query(collection(db, "Clients"), where("email", "==", email));
+  const querySnapshot = await getDocs(q);
+  return !querySnapshot.empty; // Retorna true si el correo ya existe
+};
+
+// Función para verificar si el correo existe en alguna de las dos colecciones
+const checkEmailExists = async (email) => {
+  const existsInFreelancers = await checkEmailExistsInFreelancers(email);
+  const existsInClients = await checkEmailExistsInClients(email);
+  return existsInFreelancers || existsInClients; // Retorna true si existe en alguna de las dos
+};
+
+
+  // Función para verificar si el nombre de usuario ya existe en la colección de Freelancers
+  const checkUsernameExistsInFreelancers = async (username) => {
+    const q = query(collection(db, "Freelancers"), where("username", "==", username));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  };
+
+  // Función para verificar si el nombre de usuario ya existe en la colección de Clients
+  const checkUsernameExistsInClients = async (username) => {
+    const q = query(collection(db, "Clients"), where("username", "==", username));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  };
+
+  // Función para verificar si el nombre de usuario existe en alguna de las dos colecciones
+  const checkUsernameExists = async (username) => {
+    const existsInFreelancers = await checkUsernameExistsInFreelancers(username);
+    const existsInClients = await checkUsernameExistsInClients(username);
+    return existsInFreelancers || existsInClients;
+  };
+
+  // Función para verificar si el número de identificación ya existe en la colección de Freelancers
+  const checkIdNumberExistsInFreelancers = async (idNumber) => {
+    const q = query(collection(db, "Freelancers"), where("idNum", "==", idNumber));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  };
+
+  // Función para verificar si el número de identificación ya existe en la colección de Clients
+  const checkIdNumberExistsInClients = async (idNumber) => {
+    const q = query(collection(db, "Clients"), where("idNum", "==", idNumber));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  };
+
+  // Función para verificar si el número de identificación existe en alguna de las dos colecciones
+  const checkIdNumberExists = async (idNumber) => {
+    const existsInFreelancers = await checkIdNumberExistsInFreelancers(idNumber);
+    const existsInClients = await checkIdNumberExistsInClients(idNumber);
+    return existsInFreelancers || existsInClients;
+  };
+
   const handleNext = async () => {
     // Convertir el correo electrónico a minúsculas antes de la validación y enviarlo
     const emailToLower = email.toLowerCase();
@@ -81,11 +131,33 @@ const RegisterClient = () => {
     // Convertir el número de identificación a mayúsculas antes de la validación y enviarlo
     const idNumberToUpper = idNumber.toUpperCase();
 
-    // Validar que todos los campos requeridos estén llenos
-    if (!emailToLower || !password || !confirmPassword2 || !firstName || !lastName || !username || !idNumberToUpper) {
-      Alert.alert('Error', 'Por favor, rellene todos los campos.');
-      return;
-    }
+
+  // Validar que todos los campos requeridos estén llenos
+  if (!emailToLower || !password || !confirmPassword2 || !firstName || !lastName || !username || !idNumberToUpper) {
+    Alert.alert('Error', 'Por favor, rellene todos los campos.');
+    return;
+  }
+
+  const emailExists = await checkEmailExists(emailToLower);
+  if (emailExists) {
+    Alert.alert('Error', 'El correo electrónico ya está en uso.');
+    setIsLoading(false);
+    return;
+  }
+
+  const usernameExists = await checkUsernameExists(username);
+  if (usernameExists) {
+    Alert.alert('Error', 'El nombre de usuario ya existe.');
+    setIsLoading(false);
+    return;
+  }
+
+  const idNumberExists = await checkIdNumberExists(idNumberToUpper);
+  if (idNumberExists) {
+    Alert.alert('Error', 'El número de cédula ya existe.');
+    setIsLoading(false);
+    return;
+  }
 
     if (password !== confirmPassword2) {
       Alert.alert('Error', 'Las contraseñas no coinciden.');

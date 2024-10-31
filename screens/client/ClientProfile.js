@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TextInput, Button, ScrollView } from 'react-native';
+import { View, Image,Text, StyleSheet, ActivityIndicator, TextInput, Button, ScrollView } from 'react-native';
 import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+
+
+
 
 const ClientProfile = ({ route }) => {
   const { freelancerId } = route.params; // Asegúrate de obtener el freelancerId de los parámetros de la ruta
