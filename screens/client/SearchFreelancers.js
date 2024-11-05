@@ -40,7 +40,7 @@ const SearchFreelancers = () => {
   
       // Filtrar por profesión
       if (profession !== '') {
-        filtered = filtered.filter(freelancer => freelancer.Profession === profession);
+        filtered = filtered.filter(freelancer => freelancer.profession === profession);
       }
   
       // Filtrar por nombre de usuario
@@ -93,7 +93,7 @@ const SearchFreelancers = () => {
               <View style={styles.card}>
                 <Text style={styles.freelancerName}>{item.firstName} {item.lastName}</Text>
                 <Text style={styles.freelancerUsername}>Usuario: {item.username}</Text>
-                <Text style={styles.freelancerProfession}>Profesión: {item.Profession}</Text>
+                <Text style={styles.freelancerProfession}>Profesión: {item.profession}</Text>
                 <Text style={styles.freelancerLocation}>Ciudad: {item.city}, {item.state}</Text>
                 <Text style={styles.freelancerVerified}>Verificado: {item.verified ? 'Sí' : 'No'}</Text>
               </View>

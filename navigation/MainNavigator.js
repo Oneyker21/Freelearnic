@@ -22,10 +22,10 @@ import RegisterClient from '../screens/client/RegisterClient';
 import RegisterClient2 from '../screens/client/RegisterClient2';
 import CreateProject from '../screens/client/CreateProject';
 import SelectProposals from '../screens/client/SelectProposals';
-import Grafico from '../screens/client/Graficos';
 import ClientProfile from '../screens/client/ClientProfile';
 import SearchFreelancers from '../screens/client/SearchFreelancers';
 import RateFreelancer from '../screens/client/RateFreelancer';
+import FreelancerList from '../screens/client/FreelancerList';
 
 
 // Importaciones de todas las pantallas a usar en la navegación Freelancer
@@ -35,6 +35,7 @@ import ProposalModal from '../screens/freelancer/ProposalModal';
 import RegisterFreelancer from '../screens/freelancer/RegisterFreelancer';
 import RegisterFreelancer2 from '../screens/freelancer/RegisterFreelancer2';
 import SearchProject from '../screens/freelancer/SearchProjects';
+import ClientList from '../screens/freelancer/ClientList';
 
 
 // Importaciones universales
@@ -130,6 +131,14 @@ function StackHomeMain() {
       />
 
 <HomeMainNavigator.Screen
+        name="ChatScreen"
+        component={Messaging}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+<HomeMainNavigator.Screen
         name="TabsAdmin"
         component={TabsAdmin}
         options={{
@@ -185,8 +194,8 @@ function TabsClient({ route }) {
       />
 
       <Tab.Screen
-        name='Messaging'
-        component={Messaging}
+        name='FreelancerList'
+        component={FreelancerList}
         initialParams={{ clientId }}
         options={{
           tabBarLabel: 'Mensajes',
@@ -234,8 +243,8 @@ function TabsFreelancer({ route }) {
       }}
     />
       <Tab.Screen
-        name='Messaging'
-        component={Messaging}
+        name='ClientList'
+        component={ClientList}
         initialParams={{ freelancerId }}
         options={{
           tabBarLabel: 'Mensajes',
