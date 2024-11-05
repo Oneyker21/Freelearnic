@@ -1,104 +1,77 @@
-import React, {
-    useState,
-    useEffect,
-    useLayoutEffect,
-    useCallback
-  } from 'react';
-  import { TouchableOpacity, Text } from 'react-native';
-  import { GiftedChat } from 'react-native-gifted-chat';
-  import {
-    collection,
-    addDoc,
-    orderBy,
-    query,
-    onSnapshot,
-    getDocs,
-    serverTimestamp
-  } from 'firebase/firestore';
-  import { signOut } from 'firebase/auth';
-  import { auth, db } from '../../connection/firebaseConfig';
-  import { useNavigation } from '@react-navigation/native';
-  import { AntDesign } from '@expo/vector-icons';
+import React, { useState, useEffect, useCallback } from 'react';
+import { GiftedChat } from 'react-native-gifted-chat';
+import { db } from '../../connection/firebaseConfig';
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc } from 'firebase/firestore';
 
+const ChatScreen = ({ route }) => {
+    const { userId, otherUserId } = route.params; // Recibir los IDs desde los parámetros de navegación
 
-  export default function Messaging() {
+    console.log("UserID:", userId); // Depurar el valor de userId
+    console.log("OtherUserID:", otherUserId); // Depurar el valor de otherUserId
 
     const [messages, setMessages] = useState([]);
-    const navigation = useNavigation();
 
-  const onSignOut = () => {
-      signOut(auth).catch(error => console.log('Error logging out: ', error));
+    // Función para obtener o crear un chatId
+    const getOrCreateChatId = async () => {
+        if (!userId || !otherUserId) {
+            console.error("Uno de los IDs es undefined:", userId, otherUserId);
+            return null; // Retornar null si alguno de los IDs es undefined
+        }
+        const ids = [userId, otherUserId].sort();
+        const potentialChatId = `${ids[0]}_${ids[1]}`;
+        const chatRef = doc(db, 'chats', potentialChatId);
+        const chatSnap = await getDoc(chatRef);
+
+        if (!chatSnap.exists()) {
+            // Si el chat no existe, lo creamos
+            await setDoc(chatRef, { participantes: ids });
+        }
+        return potentialChatId;
     };
 
-    useLayoutEffect(() => {
-        navigation.setOptions({
-          headerRight: () => (
-            <TouchableOpacity
-              style={{
-                marginRight: 10
-              }}
-              onPress={onSignOut}
-            >
-              <AntDesign name="logout" size={24}  style={{marginRight: 10}}/>
-            </TouchableOpacity>
-          )
+    useEffect(() => {
+        getOrCreateChatId().then(chatId => {
+            if (!chatId) return; // No hacer nada si chatId es null
+            const q = query(collection(db, 'chats', chatId, 'mensajes'), orderBy('createdAt', 'desc'));
+
+            const unsubscribe = onSnapshot(q, (snapshot) => {
+                setMessages(snapshot.docs.map(doc => ({
+                    _id: doc.id,
+                    text: doc.data().text,
+                    createdAt: doc.data().createdAt ? doc.data().createdAt.toDate() : new Date(), // Usar fecha actual como fallback
+                    user: {
+                        _id: doc.data().senderID,
+                        name: "Nombre del Usuario", // Idealmente, deberías buscar el nombre real del usuario
+                    },
+                })));
+            });
+            return () => unsubscribe();
         });
-      }, [navigation]);
-
-    useLayoutEffect(() => {
-
-        const collectionRef = collection(db, 'chats');
-        const q = query(collectionRef, orderBy('createdAt', 'desc'));
-
-    const unsubscribe = onSnapshot(q, querySnapshot => {
-        setMessages(
-            querySnapshot.docs.map(doc => ({
-              _id: doc.data()._id,
-              createdAt: doc.data().createdAt ? doc.data().createdAt.toDate() : new Date(),
-              text: doc.data().text,
-              user: doc.data().user
-            }))
-          );
-        });
-    return unsubscribe;
-      }, []);
+    }, []);
 
     const onSend = useCallback((messages = []) => {
-        setMessages(previousMessages =>
-          GiftedChat.append(previousMessages, messages)
-        );
-        const { _id, text, user } = messages[0];
-        addDoc(collection(db, 'chats'), {
-          _id,
-          text,
-          user,
-          createdAt: serverTimestamp() // Usar serverTimestamp para asegurar la consistencia de la fecha/hora
+        getOrCreateChatId().then(chatId => {
+            if (!chatId) return; // No hacer nada si chatId es null
+            messages.forEach(async (message) => {
+                await addDoc(collection(db, 'chats', chatId, 'mensajes'), {
+                    text: message.text,
+                    createdAt: serverTimestamp(),
+                    senderID: userId, // Usar el ID del usuario actual
+                });
+            });
         });
-      }, []);
+    }, []);
 
-      return (
-        // <>
-        //   {messages.map(message => (
-        //     <Text key={message._id}>{message.text}</Text>
-        //   ))}
-        // </>
+    return (
         <GiftedChat
-          messages={messages}
-          showAvatarForEveryMessage={false}
-          showUserAvatar={false}
-          onSend={messages => onSend(messages)}
-          messagesContainerStyle={{
-            backgroundColor: '#fff'
-          }}
-          textInputStyle={{
-            backgroundColor: '#fff',
-            borderRadius: 20,
-          }}
-          user={{
-            _id: auth?.currentUser?.email || 'default_id',
-            avatar: 'https://i.pravatar.cc/300'
-          }}
+            messages={messages}
+            onSend={messages => onSend(messages)}
+            user={{
+                _id: userId, // ID del usuario actual
+            }}
         />
-      );
-}
+    );
+};
+
+export default ChatScreen;
 
