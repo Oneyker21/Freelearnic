@@ -30,44 +30,45 @@ export const ProjectList = () => {
     <FlatList
       data={projects}
       keyExtractor={item => item.id}
+      style={styles.FlatContainer}
       renderItem={({ item }) => (
         <View style={styles.card}>
           <Image source={require('../../assets/img/IconoCards.png')} style={styles.logo} />
           <CustomText style={styles.projectTitle} fontFamily="Roboto">{item.title}</CustomText>
           <CustomText style={styles.projectStatus} fontFamily="Roboto">{item.projectStatus}</CustomText>
+          <View style={styles.InfContainer}>
+            <View style={styles.projectTypeContainer}>
+              <CustomText style={styles.projectTypeTitle} fontFamily="OpenSans">Tipo de proyecto: </CustomText>
+              <CustomText style={styles.projectType} fontFamily="OpenSans">{item.projectType}</CustomText>
+            </View>
 
-          <View style={styles.projectTypeContainer}>
-            <CustomText style={styles.projectTypeTitle} fontFamily="OpenSans">Tipo de proyecto: </CustomText>
-            <CustomText style={styles.projectType} fontFamily="OpenSans">{item.projectType}</CustomText>
+            <View style={styles.projectUserContainer}>
+              <CustomText style={styles.projectUserTitle} fontFamily="OpenSans">Cliente:</CustomText>
+              <CustomText style={styles.projectUser} fontFamily="OpenSans">{item.username}</CustomText>
+            </View>
+
+            <View style={styles.projectDescriptionContainer}>
+              <CustomText style={styles.projectDescriptionTitle} fontFamily="OpenSans">Descripción: </CustomText>
+              <CustomText style={styles.projectDescription} fontFamily="OpenSans">{item.description}</CustomText>
+            </View>
           </View>
+          <View style={styles.footContainer}>
+            <View style={styles.priceContainer}>
+              <CustomText style={styles.projectPrice} fontFamily="Roboto">
+                Rango precio:
+              </CustomText>
+              <CustomText style={styles.projectPriceDetail} fontFamily="OpenSans">
+                {item.minPrice ? `\$${item.minPrice}` : 'No especificado'}
+                {' - '}
+                {item.maxPrice ? `\$${item.maxPrice}` : 'No especificado'}
+              </CustomText>
+            </View>
 
-          <View style={styles.projectUserContainer}>
-            <CustomText style={styles.projectUserTitle} fontFamily="OpenSans">Cliente:</CustomText>
-            <CustomText style={styles.projectUser} fontFamily="OpenSans">{item.username}</CustomText>
-          </View>
-
-          <View style={styles.projectDescriptionContainer}>
-            <CustomText style={styles.projectDescriptionTitle} fontFamily="OpenSans">Descripción: </CustomText>
-            <CustomText style={styles.projectDescription} fontFamily="OpenSans">{item.description}</CustomText>
-          </View>
-
-          <View style={styles.priceContainer}>
-            <CustomText style={styles.projectPrice} fontFamily="Roboto">
-              Rango precio:
+            <CustomText style={styles.projectFechaEntrega} fontFamily="OpenSans">
+              Fecha Estimada de Entrega: {item.estimatedDeliveryDate ? item.estimatedDeliveryDate : 'No especificada'}
             </CustomText>
-            <CustomText style={styles.projectPriceDetail} fontFamily="OpenSans">
-              {item.minPrice ? `\$${item.minPrice}` : 'No especificado'}
-              {' - '}
-              {item.maxPrice ? `\$${item.maxPrice}` : 'No especificado'}
-            </CustomText>
           </View>
-
-
-          <CustomText style={styles.projectFechaEntrega} fontFamily="OpenSans">
-            Fecha Estimada de Entrega: {item.estimatedDeliveryDate ? item.estimatedDeliveryDate : 'No especificada'}
-          </CustomText>
-
-        </View>
+        </View >
       )}
     />
   );
@@ -84,6 +85,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#142157',
   },
+  InfContainer: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    width: '76%',
+  },
+  footContainer: {
+    paddingRight: 15,
+    paddingLeft: 15,
+  },
   projectUserTitle: {
     fontWeight: 'bold',
     color: '#142157',
@@ -93,16 +103,17 @@ const styles = StyleSheet.create({
     color: '#142157',
   },
   logo: {
-    width: 60,
-    height: 60,
+    width: 30,
+    height: 30,
     position: 'absolute',
     top: 0,
-    left: 5,
+    left: 0,
     zIndex: 1,
   },
   projectDescriptionContainer: {
     flexDirection: 'row',
     marginVertical: 5,
+    width: '100%',
   },
   projectDescription: {
     fontWeight: 'bold',
@@ -144,7 +155,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2.62,
     elevation: 4,
-    width: 380,
+    width: '100%',
+    marginBottom: 30,
   },
 
   priceContainer: {
@@ -173,12 +185,12 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderColor: '#18D23A',
     backgroundColor: '#18D23A',
-    right: 10,
+    right: 5,
     color: 'white',
     padding: 3,
     zIndex: 1,
     position: 'absolute',
-    marginTop: 10,
+    marginTop: 5,
     alignSelf: 'flex-end',
   },
   projectFechaEntrega: {
@@ -188,6 +200,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginBottom: 10,
     marginRight: 10,
+  },
+  FlatContainer: {
+    marginBottom: 60,
   },
 });
 
