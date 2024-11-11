@@ -9,6 +9,11 @@ const PanelPay = ({ freelancerId }) => {
     useEffect(() => {
         const fetchBalance = async () => {
             try {
+                if (!freelancerId) {
+                    console.error("Freelancer ID es undefined");
+                    return;
+                }
+
                 const freelancerAccountRef = doc(db, 'BankAccounts', 'GeneralAccount', 'FreelancerAccounts', freelancerId);
                 const docSnap = await getDoc(freelancerAccountRef);
 
