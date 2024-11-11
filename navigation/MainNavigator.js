@@ -157,7 +157,7 @@ function TabsClient({ route }) {
   const { clientId } = route.params;
 
   return (
-    <Tab.Navigator initialRouteName="HomeScreenClient">
+    <Tab.Navigator  initialRouteName="HomeScreenClient">
       <Tab.Screen
         name="HomeScreenClient"
         component={HomeScreenClient}

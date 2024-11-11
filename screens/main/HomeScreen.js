@@ -1,19 +1,18 @@
 import React from 'react';
-import { Image, View, Text, StyleSheet, TouchableOpacity, ScrollView,FlatList} from 'react-native';
+import { Image, View, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ProjectListSB from './ProjectListSB'; // Asegúrate de que la ruta sea correcta
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-   // Lista de datos vacía para simular la estructura de FlatList
-   const data = [];
+  // Lista de datos vacía para simular la estructura de FlatList
+  const data = [];
 
   return (
     <View style={styles.container}>
-
       <Image source={require('../../assets/img/superior.png')} style={styles.imageSuperior} />
       <View style={styles.buttonContainer}>
-      <Image source={require('../../assets/img/IconoCards.png')} style={styles.LogoIcon} />
+        <Image source={require('../../assets/img/IconoCards.png')} style={styles.LogoIcon} />
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('TypeUser')}
@@ -30,6 +29,7 @@ const HomeScreen = () => {
       </View>
       <FlatList
         data={data}
+        style={styles.flatList}
         renderItem={null}
         keyExtractor={() => 'dummy'} // Llave única para evitar errores
         ListHeaderComponent={
@@ -64,8 +64,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     marginTop: 35,
+    width: '100%',
   },
- 
+  flatList: {
+    width: '100%',
+  },
+
   backButton: {
     position: 'absolute',
     left: 20,
@@ -101,6 +105,8 @@ const styles = StyleSheet.create({
 
   projectListContainer: {
     width: '100%',
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   imageSuperior: {
     position: 'absolute',
@@ -110,12 +116,12 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   welcomeContainer: {
-    height: '26%',
+    height: '16%',
     width: '100%',
     alignItems: 'center',
     marginTop: 100,
   },
-  
+
   welcomeText: {
     fontSize: 14,
     fontWeight: 'bold',
@@ -144,7 +150,7 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'contain',
   },
-  
+
   LogoIcon: {
     position: 'absolute',
     top: 4,
