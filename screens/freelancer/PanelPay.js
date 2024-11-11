@@ -1,37 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../connection/firebaseConfig';
 
-const PanelPay = ({ freelancerId }) => {
+const PanelPay = ({ route }) => {
     const [totalBalance, setTotalBalance] = useState(0);
+    const { freelancerId } = route.params;
 
     useEffect(() => {
-        const fetchBalance = async () => {
-            try {
-                if (!freelancerId) {
-                    console.error("Freelancer ID es undefined");
-                    return;
-                }
-
-                const freelancerAccountRef = doc(db, 'BankAccounts', 'GeneralAccount', 'FreelancerAccounts', freelancerId);
-                const docSnap = await getDoc(freelancerAccountRef);
-
-                if (docSnap.exists()) {
-                    setTotalBalance(docSnap.data().totalBalance);
-                } else {
-                    console.log("No se encontró la cuenta del freelancer.");
-                }
-            } catch (error) {
-                console.error("Error al obtener el balance del freelancer:", error);
-            }
-        };
-
-        if (freelancerId) {
-            fetchBalance();
-        } else {
-            console.log("Freelancer ID no proporcionado");
+        if (!freelancerId) {
+            console.error("Freelancer ID es undefined");
+            return;
         }
+
+        const freelancerAccountRef = doc(db, 'BankAccounts', 'GeneralAccount', 'FreelancerAccounts', freelancerId);
+
+        // Escucha en tiempo real para cambios en el documento
+        const unsubscribe = onSnapshot(freelancerAccountRef, (doc) => {
+            if (doc.exists()) {
+                setTotalBalance(doc.data().totalBalance);
+            } else {
+                console.log("No se encontró la cuenta del freelancer.");
+            }
+        }, (error) => {
+            console.error("Error al obtener el balance del freelancer:", error);
+        });
+
+        // Limpiar la suscripción cuando el componente se desmonte
+        return () => unsubscribe();
     }, [freelancerId]);
 
     return (
