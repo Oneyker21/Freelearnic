@@ -25,7 +25,7 @@ import SelectProposals from '../screens/client/SelectProposals';
 import ClientProfile from '../screens/client/ClientProfile';
 import SearchFreelancers from '../screens/client/SearchFreelancers';
 import RateFreelancer from '../screens/client/RateFreelancer';
-import FreelancerList from '../screens/client/FreelancerList';
+import FreelancerListChat from '../screens/client/FreelancerListChat';
 
 
 // Importaciones de todas las pantallas a usar en la navegación Freelancer
@@ -194,8 +194,8 @@ function TabsClient({ route }) {
       />
 
       <Tab.Screen
-        name='FreelancerList'
-        component={FreelancerList}
+        name='FreelancerListChat'
+        component={FreelancerListChat}
         initialParams={{ clientId }}
         options={{
           tabBarLabel: 'Mensajes',
