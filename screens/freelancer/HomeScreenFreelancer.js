@@ -37,12 +37,11 @@ const HomeScreenFreelancer = ({ route }) => {
   }
 
   return (
-    
+
     <View style={styles.container}>
       <ProjectList route={{ params: { freelancerId } }} showProposalButton={true} />
-
       <View style={styles.buttonContainer}>
-        </View>
+      </View>
     </View>
   );
 };
@@ -51,7 +50,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    height: '100%', 
+    height: '100%',
     width: '100%',
     marginTop: 50,
   },

@@ -36,10 +36,12 @@ export const ProjectList = () => {
           <Image source={require('../../assets/img/IconoCards.png')} style={styles.logo} />
           <CustomText style={styles.projectTitle} fontFamily="Roboto">{item.title}</CustomText>
           <CustomText style={styles.projectStatus} fontFamily="Roboto">{item.projectStatus}</CustomText>
-          <View style={styles.projectTypeContainer}>
-            <CustomText style={styles.projectTypeTitle} fontFamily="OpenSans">Tipo de proyecto: </CustomText>
-            <CustomText style={styles.projectType} fontFamily="OpenSans">{item.projectType}</CustomText>
-          </View>
+
+          <View style={styles.InfContainer}>
+            <View style={styles.projectTypeContainer}>
+              <CustomText style={styles.projectTypeTitle} fontFamily="OpenSans">Tipo de proyecto: </CustomText>
+              <CustomText style={styles.projectType} fontFamily="OpenSans">{item.projectType}</CustomText>
+            </View>
 
             <View style={styles.projectUserContainer}>
               <CustomText style={styles.projectUserTitle} fontFamily="OpenSans">Cliente:</CustomText>
@@ -85,9 +87,9 @@ const styles = StyleSheet.create({
     color: '#142157',
   },
   InfContainer: {
-    paddingLeft: 15,
-    paddingRight: 15,
-    width: '76%',
+    paddingLeft: 10,
+    width: '80%',
+
   },
   footContainer: {
     paddingRight: 15,
@@ -112,10 +114,11 @@ const styles = StyleSheet.create({
   projectDescriptionContainer: {
     flexDirection: 'row',
     marginVertical: 5,
-    width: '100%',
+    width: 'auto',
   },
   projectDescription: {
     fontWeight: 'bold',
+    marginRight: 20,
   },
   projectTypeContainer: {
     flexDirection: 'row',
