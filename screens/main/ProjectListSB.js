@@ -35,7 +35,6 @@ export const ProjectList = () => {
           <Image source={require('../../assets/img/IconoCards.png')} style={styles.logo} />
           <CustomText style={styles.projectTitle} fontFamily="Roboto">{item.title}</CustomText>
           <CustomText style={styles.projectStatus} fontFamily="Roboto">{item.projectStatus}</CustomText>
-
           <View style={styles.projectTypeContainer}>
             <CustomText style={styles.projectTypeTitle} fontFamily="OpenSans">Tipo de proyecto: </CustomText>
             <CustomText style={styles.projectType} fontFamily="OpenSans">{item.projectType}</CustomText>
