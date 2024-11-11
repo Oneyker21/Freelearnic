@@ -37,15 +37,12 @@ const HomeScreenSb = ({route}) => {
 
   return (
     <View style={styles.container}>
-      <ProjectList route={{ params: { clientId } }} showProposalButton={false} />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('SelectProposal', { clientId })} 
-        >
-          <Text style={styles.buttonText}>Propuestas</Text>
-        </TouchableOpacity>
+      <View style={styles.textContainer}>
+        <Text style={styles.textTitle}>Bienvenido a</Text>
+        <Text style={styles.textTitle2}>Freelearnic</Text>
+        <Text style={styles.textTitle3}>Explora los demás proyectos</Text>
       </View>
+      <ProjectList route={{ params: { clientId } }} showProposalButton={false} />
     </View>
   );
 };
@@ -58,27 +55,29 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 50,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  textContainer: {
+    paddingTop: 15,
+    marginLeft: 10,
+    fontWeight: 'regular',
+    paddingBottom: 15,
   },
-  subtitle: {
+  textTitle: {
+    fontWeight: 'regular',
     fontSize: 16,
-    color: '#666',
+    color: 'rgba(0, 0, 0, 0.61)',
+  },
+  textTitle2: {
+    fontWeight: 'bold',
+    fontSize: 24,
+    color: 'rgba(0, 0, 0, 0.61)',
+  },
+  textTitle3: {
+    fontWeight: 'bold',
+    fontSize: 24,
+    color: 'rgba(0, 0, 0, 0.61)',
   },
   buttonContainer: {
     marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 5, // Espaciado entre botones
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
   },
 });
 
