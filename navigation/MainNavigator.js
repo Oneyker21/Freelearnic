@@ -22,27 +22,32 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Fontisto from "@expo/vector-icons/Fontisto";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 // Importaciones de todas las pantallas a usar en la navegación Cliente
-import HomeScreenClient from "../screens/client/HomeScreenClient";
-import RegisterClient from "../screens/client/RegisterClient";
-import RegisterClient2 from "../screens/client/RegisterClient2";
-import CreateProject from "../screens/client/CreateProject";
-import SelectProposals from "../screens/client/SelectProposals";
-import Grafico from "../screens/client/Graficos";
-import ClientProfile from "../screens/client/ClientProfile";
-import SearchFreelancers from "../screens/client/SearchFreelancers";
-import RateFreelancer from "../screens/client/RateFreelancer";
+import HomeScreenClient from '../screens/client/HomeScreenClient';
+import RegisterClient from '../screens/client/RegisterClient';
+import RegisterClient2 from '../screens/client/RegisterClient2';
+import CreateProject from '../screens/client/CreateProject';
+import SelectProposals from '../screens/client/SelectProposals';
+import ClientProfile from '../screens/client/ClientProfile';
+import SearchFreelancers from '../screens/client/SearchFreelancers';
+import RateFreelancer from '../screens/client/RateFreelancer';
+import FreelancerListChat from '../screens/client/FreelancerListChat';
+
 
 // Importaciones de todas las pantallas a usar en la navegación Freelancer
-import FreelancerProfile from "../screens/freelancer/FreelancerProfile";
-import HomeScreenFreelancer from "../screens/freelancer/HomeScreenFreelancer";
-import ProposalModal from "../screens/freelancer/ProposalModal";
-import RegisterFreelancer from "../screens/freelancer/RegisterFreelancer";
-import RegisterFreelancer2 from "../screens/freelancer/RegisterFreelancer2";
-import SearchProject from "../screens/freelancer/SearchProjects";
+import FreelancerProfile from '../screens/freelancer/FreelancerProfile';
+import HomeScreenFreelancer from '../screens/freelancer/HomeScreenFreelancer';
+import ProposalModal from '../screens/freelancer/ProposalModal';
+import RegisterFreelancer from '../screens/freelancer/RegisterFreelancer';
+import RegisterFreelancer2 from '../screens/freelancer/RegisterFreelancer2';
+import SearchProject from '../screens/freelancer/SearchProjects';
+import ClientList from '../screens/freelancer/ClientList';
+import PanelPay from '../screens/freelancer/PanelPay';
+
 
 // Importaciones universales
 import LoginScreen from "../screens/main/LoginScreen";
@@ -117,6 +122,12 @@ function StackHomeMain() {
         options={{ headerShown: false, title: "Login" }} // Opciones para la pantalla de inicio de sesión
       />
 
+<HomeMainNavigator.Screen
+        name="ChatScreen"
+        component={Messaging}
+        options={{ headerShown: false, title: "ChatScreen" }} // Opciones para la pantalla de inicio de sesión
+      />
+
       <HomeMainNavigator.Screen
         name="TabsClient"
         component={TabsClient}
@@ -132,7 +143,7 @@ function StackHomeMain() {
         }}
       />
 
-      <HomeMainNavigator.Screen
+<HomeMainNavigator.Screen
         name="TabsAdmin"
         component={TabsAdmin}
         options={{
@@ -150,6 +161,7 @@ function TabsClient({ route }) {
   const { clientId } = route.params;
 
   return (
+<<<<<<< HEAD
     <Tab.Navigator
       initialRouteName="HomeScreenClient"
       screenOptions={{
@@ -172,6 +184,9 @@ function TabsClient({ route }) {
         },
       }}
     >
+=======
+    <Tab.Navigator  initialRouteName="HomeScreenClient">
+>>>>>>> origin/RamaCristhian
       <Tab.Screen
         name="HomeScreenClient"
         component={HomeScreenClient}
@@ -264,8 +279,8 @@ function TabsClient({ route }) {
         }}
       />
       <Tab.Screen
-        name="Messaging"
-        component={Messaging}
+        name='FreelancerListChat'
+        component={FreelancerListChat}
         initialParams={{ clientId }}
         options={{
           tabBarIcon: ({ focused }) => (
@@ -350,13 +365,26 @@ function TabsFreelancer({ route }) {
         }}
       />
       <Tab.Screen
-        name="Messaging"
-        component={Messaging}
+        name='ClientList'
+        component={ClientList}
         initialParams={{ freelancerId }}
         options={{
           tabBarLabel: "Mensajes",
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="message1" size={30} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+
+      <Tab.Screen
+        name='PanelPay'
+        component={PanelPay}
+        initialParams={{ freelancerId }}
+        options={{
+          tabBarLabel: "Transacciones",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="payments" size={24} color="black" />
           ),
           headerShown: false,
         }}

@@ -92,11 +92,7 @@ export default function LoginScreen() {
       // Si no se encontró información
       Alert.alert('Error', 'No se encontró información del freelancer, cliente o administrador');
     } catch (error) {
-      if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
-        Alert.alert('Error de inicio de sesión', 'El correo o la contraseña son incorrectos');
-      } else {
-        Alert.alert('Error de inicio de sesión', error.message);
-      }
+      Alert.alert('Error de inicio de sesión', 'El correo o la contraseña son incorrectos');
     }
   };
 
