@@ -47,6 +47,7 @@ import RegisterFreelancer2 from '../screens/freelancer/RegisterFreelancer2';
 import SearchProject from '../screens/freelancer/SearchProjects';
 import ClientList from '../screens/freelancer/ClientList';
 import PanelPay from '../screens/freelancer/PanelPay';
+import PanelUserFreelancer from '../screens/freelancer/PanelUserFreelancer';
 
 
 // Importaciones universales
@@ -387,8 +388,8 @@ function TabsFreelancer({ route }) {
       />
 
       <Tab.Screen
-        name="FreelancerProfile"
-        component={FreelancerProfile}
+        name="PanelUserFreelancer"
+        component={PanelUserFreelancer}
         initialParams={{ freelancerId }}
         options={{
           tabBarLabel: "Perfil",
