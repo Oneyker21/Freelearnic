@@ -10,6 +10,7 @@ import {
   TextInput,
   Image,
   Dimensions,
+  StatusBar,
 } from "react-native";
 import { db } from "../../connection/firebaseConfig";
 import { collection, addDoc, onSnapshot } from "firebase/firestore";
@@ -107,6 +108,12 @@ const ProjectList = ({ route, showProposalButton }) => {
 
   return (
     <View style={{ flex: 1 }}>
+      {/* Barra de estado personalizada */}
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="#107ACC"
+      />
+      
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchBar}
@@ -214,7 +221,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     paddingLeft: width * 0.025,
-    marginLeft: width * 0.01,
+    marginLeft: width * 0.001,
   },
   searchButton: {
     height: height * 0.049,
