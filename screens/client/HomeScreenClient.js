@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { getDoc,doc } from 'firebase/firestore';
-import ProjectList from '../main/ProjectList'; // Asegúrate de que la ruta sea correcta
+import { db } from '../../connection/firebaseConfig';
+import { getDoc, doc } from 'firebase/firestore';
+import ProjectList from '../main/ProjectList';
 
-const HomeScreenSb = ({route}) => {
+const { width, height } = Dimensions.get('window');
+
+const HomeScreenSb = ({ route }) => {
   const navigation = useNavigation();
-  const { clientId } = route.params; // Obtener el ID del freelancer de los parámetros de la ruta
+  const { clientId } = route.params;
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchClientData = async () => {
       try {
-        const docRef = doc(db, 'Clients', clientId); 
+        const docRef = doc(db, 'Clients', clientId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -51,33 +53,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    height: '100%', 
-    width: '100%',
-    marginTop: 50,
+    width: width * 1,
+    alignSelf: 'center',
+    marginTop: height * 0.001,
   },
   textContainer: {
-    paddingTop: 15,
-    marginLeft: 10,
-    fontWeight: 'regular',
-    paddingBottom: 15,
+    paddingTop: height * 0.01,
+    marginLeft: width * 0.03,
+    paddingBottom: height * 0.02,
   },
   textTitle: {
-    fontWeight: 'regular',
-    fontSize: 16,
+    fontWeight: '400',
+    fontSize: width * 0.04,
     color: 'rgba(0, 0, 0, 0.61)',
   },
   textTitle2: {
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: width * 0.06,
     color: 'rgba(0, 0, 0, 0.61)',
   },
   textTitle3: {
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: width * 0.06,
     color: 'rgba(0, 0, 0, 0.61)',
   },
   buttonContainer: {
-    marginBottom: 20,
+    marginBottom: height * 0.02,
   },
 });
 
