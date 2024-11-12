@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   BackHandler,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDoc, doc, getStorage } from "firebase/firestore";
@@ -14,6 +15,7 @@ import { getDoc, doc, getStorage } from "firebase/firestore";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+import { Dimensions } from "react-native";
 
 // Importaciones de iconos para usar en la navegación
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -153,19 +155,63 @@ function StackHomeMain() {
 }
 
 const Tab = createBottomTabNavigator();
+const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
+
 function TabsClient({ route }) {
   const { clientId } = route.params;
 
   return (
-    <Tab.Navigator  initialRouteName="HomeScreenClient">
+    <Tab.Navigator
+      initialRouteName="HomeScreenClient"
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          position: "absolute",
+          bottom: windowHeight * 0.02, // 2% desde el fondo
+          left: windowWidth * 0.022,
+          right: windowWidth * 0.027,
+          backgroundColor: "#007bff",
+          borderRadius: 20,
+          height: windowHeight * 0.08, // 8% de la altura de la pantalla
+          justifyContent: "center",
+          alignItems: "center",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.25,
+          shadowRadius: 5,
+          elevation: 5,
+        },
+      }}
+    >
       <Tab.Screen
         name="HomeScreenClient"
         component={HomeScreenClient}
         initialParams={{ clientId }}
         options={{
-          tabBarLabel: "Inicio",
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="home" size={30} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: windowWidth * 0.002,
+              }}
+            >
+              <Image
+                source={require("../assets/iconsNavigation/Inicio.png")}
+                style={{
+                  width: windowWidth * 0.06,
+                  height: windowWidth * 0.06,
+                  marginBottom: windowWidth * 0.01,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
           ),
           headerShown: false,
         }}
@@ -175,9 +221,30 @@ function TabsClient({ route }) {
         component={SearchFreelancers}
         initialParams={{ clientId }}
         options={{
-          tabBarLabel: "Buscar Freelancers",
-          tabBarIcon: ({ color, size }) => (
-            <Feather name="users" size={24} color="black" />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: windowWidth * 0.001,
+              }}
+            >
+              <Image
+                source={require("../assets/iconsNavigation/Freelancers.png")}
+                style={{
+                  width: windowWidth * 0.08,
+                  height: windowWidth * 0.08,
+                  marginTop: windowWidth * 0.015,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
           ),
           headerShown: false,
         }}
@@ -187,35 +254,86 @@ function TabsClient({ route }) {
         component={CreateProject}
         initialParams={{ clientId }}
         options={{
-          tabBarLabel: "Crear Proyecto",
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="pluscircleo" size={30} color={color} />
+          tabBarIcon: ({}) => (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: windowWidth * 0.002,
+              }}
+            >
+              <Image
+                source={require("../assets/iconsNavigation/Nuevo.png")}
+                style={{
+                  width: windowWidth * 0.13,
+                  height: windowWidth * 0.13,
+                }}
+              />
+            </View>
           ),
           headerShown: false,
         }}
       />
-
       <Tab.Screen
         name='FreelancerListChat'
         component={FreelancerListChat}
         initialParams={{ clientId }}
         options={{
-          tabBarLabel: "Mensajes",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="telegram-plane" size={30} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={require("../assets/iconsNavigation/Mensaje.png")}
+                style={{
+                  width: windowWidth * 0.085,
+                  height: windowWidth * 0.085,
+                  marginRight: windowWidth * 0.004,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
           ),
           headerShown: false,
         }}
       />
-
       <Tab.Screen
         name="ClientProfile"
         component={ClientProfile}
         initialParams={{ clientId }}
         options={{
-          tabBarLabel: "Perfil",
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="message1" size={30} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={require("../assets/iconsNavigation/Perfil.png")}
+                style={{
+                  width: windowWidth * 0.08,
+                  height: windowWidth * 0.08,
+                  marginTop: windowWidth * 0.01,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
           ),
           headerShown: false,
         }}
