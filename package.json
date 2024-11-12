@@ -37,6 +37,7 @@
     "react-native": "0.74.5",
     "react-native-chart-kit": "^6.12.0",
     "react-native-gesture-handler": "~2.16.1",
+    "react-native-get-random-values": "^1.11.0",
     "react-native-gifted-chat": "^2.6.4",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-modal-datetime-picker": "^18.0.0",
@@ -45,7 +46,8 @@
     "react-native-screens": "3.31.1",
     "react-native-skeleton-placeholder": "^5.2.4",
     "react-native-vector-icons": "^10.2.0",
-    "react-native-view-shot": "^4.0.0"
+    "react-native-view-shot": "^4.0.0",
+    "react-native-svg": "^15.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
