@@ -8,6 +8,7 @@ import {
   BackHandler,
   Alert,
   TouchableOpacity,
+  KeyboardAvoidingView, Platform
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDoc, doc, getStorage } from "firebase/firestore";
@@ -125,7 +126,7 @@ function StackHomeMain() {
 <HomeMainNavigator.Screen
         name="ChatScreen"
         component={Messaging}
-        options={{ headerShown: false, title: "ChatScreen" }} // Opciones para la pantalla de inicio de sesión
+        options={{ headerShown: false, title: "ChatScreen", gestureEnabled: true }} // Opciones para la pantalla de inicio de sesión
       />
 
       <HomeMainNavigator.Screen
@@ -161,16 +162,21 @@ function TabsClient({ route }) {
   const { clientId } = route.params;
 
   return (
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+  >
     <Tab.Navigator
       initialRouteName="HomeScreenClient"
       screenOptions={{
         tabBarShowLabel: false,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           position: "absolute",
           bottom: windowHeight * 0.02, // 2% desde el fondo
           left: windowWidth * 0.022,
-          right: windowWidth * 0.027,
-          backgroundColor: "#007bff",
+          right: windowWidth * 0.023,
+          backgroundColor: "#107ACC",
           borderRadius: 20,
           height: windowHeight * 0.08, // 8% de la altura de la pantalla
           justifyContent: "center",
@@ -327,9 +333,9 @@ function TabsClient({ route }) {
               <Image
                 source={require("../assets/iconsNavigation/Perfil.png")}
                 style={{
-                  width: windowWidth * 0.08,
-                  height: windowWidth * 0.08,
-                  marginTop: windowWidth * 0.01,
+                  width: windowWidth * 0.07,
+                  height: windowWidth * 0.07,
+                  marginBottom: windowWidth * 0.012,
                   tintColor: focused ? "#007bff" : "#ffffff",
                 }}
               />
@@ -339,6 +345,7 @@ function TabsClient({ route }) {
         }}
       />
     </Tab.Navigator>
+      </KeyboardAvoidingView>
   );
 }
 
