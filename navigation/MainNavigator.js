@@ -151,6 +151,14 @@ function StackHomeMain() {
           headerShown: false,
         }}
       />
+
+<HomeMainNavigator.Screen
+        name="FreelancerProfile"
+        component={FreelancerProfile}
+        options={{
+          headerShown: false,
+        }}
+      />
     </HomeMainNavigator.Navigator>
   );
 }

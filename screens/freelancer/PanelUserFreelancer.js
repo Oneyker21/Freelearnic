@@ -1,8 +1,12 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-const PanelUserFreelancer = () => {
+const PanelUserFreelancer = ({ route }) => {
+  const navigation = useNavigation();
+  const { freelancerId } = route.params;
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -33,12 +37,16 @@ const PanelUserFreelancer = () => {
         <MaterialIcons name="chevron-right" size={24} color="gray" />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.menuItem}>
+      <TouchableOpacity 
+        style={styles.menuItem}
+        onPress={() => navigation.navigate('FreelancerProfile', { freelancerId })}
+      >
         <MaterialIcons name="person" size={24} color="black" />
         <Text style={styles.menuItemText}>Cuenta</Text>
         <MaterialIcons name="chevron-right" size={24} color="gray" />
       </TouchableOpacity>
 
+      
       <TouchableOpacity style={styles.menuItem}>
         <Ionicons name="settings-outline" size={24} color="black" />
         <Text style={styles.menuItemText}>Ajustes</Text>
@@ -113,3 +121,4 @@ const styles = StyleSheet.create({
 });
 
 export default PanelUserFreelancer;
+  
