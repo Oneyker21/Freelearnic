@@ -37,6 +37,7 @@ import SearchFreelancers from '../screens/client/SearchFreelancers';
 import RateFreelancer from '../screens/client/RateFreelancer';
 import FreelancerListChat from '../screens/client/FreelancerListChat';
 import PanelPayClients from '../screens/client/PanelPayClients';
+import PanelUserClient from "../screens/client/PanelUserClient";
 
 
 // Importaciones de todas las pantallas a usar en la navegación Freelancer
@@ -48,6 +49,7 @@ import RegisterFreelancer2 from '../screens/freelancer/RegisterFreelancer2';
 import SearchProject from '../screens/freelancer/SearchProjects';
 import ClientList from '../screens/freelancer/ClientList';
 import PanelPay from '../screens/freelancer/PanelPay';
+import PanelUserFreelancer from '../screens/freelancer/PanelUserFreelancer';
 
 
 // Importaciones universales
@@ -64,6 +66,7 @@ import ScreenTypeUser from "../screens/main/ScreenTypeUser";
 
 // Importaciones de todas las pantallas a usar en la navegación Admininstrador
 import Reports from "../screens/admin/Reports";
+import UserVerification from "../screens/admin/UserVerification"
 
 const HomeMainNavigator = createStackNavigator();
 function StackHomeMain() {
@@ -129,6 +132,14 @@ function StackHomeMain() {
         options={{ headerShown: false, title: "ChatScreen" }} // Opciones para la pantalla de inicio de sesión
       />
 
+<HomeMainNavigator.Screen
+        name="ClientProfile"
+        component={ClientProfile}
+        options={{
+          headerShown: false,
+        }}
+      />
+
       <HomeMainNavigator.Screen
         name="TabsClient"
         component={TabsClient}
@@ -147,6 +158,14 @@ function StackHomeMain() {
 <HomeMainNavigator.Screen
         name="TabsAdmin"
         component={TabsAdmin}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+<HomeMainNavigator.Screen
+        name="FreelancerProfile"
+        component={FreelancerProfile}
         options={{
           headerShown: false,
         }}
@@ -369,8 +388,8 @@ function TabsClient({ route }) {
         }}
       />
       <Tab.Screen
-        name="ClientProfile"
-        component={ClientProfile}
+        name="PanelUserClient"
+        component={PanelUserClient}
         initialParams={{ clientId }}
         options={{
           tabBarIcon: ({ focused }) => (
@@ -449,8 +468,8 @@ function TabsFreelancer({ route }) {
       />
 
       <Tab.Screen
-        name="FreelancerProfile"
-        component={FreelancerProfile}
+        name="PanelUserFreelancer"
+        component={PanelUserFreelancer}
         initialParams={{ freelancerId }}
         options={{
           tabBarLabel: "Perfil",
@@ -473,6 +492,19 @@ function TabsAdmin({ route }) {
       <Tab3.Screen
         name="Reports"
         component={Reports}
+        initialParams={{ AdminId }}
+        options={{
+          tabBarLabel: "Reportes",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="bar-chart-o" size={24} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+
+<Tab3.Screen
+        name="UserVerification"
+        component={UserVerification}
         initialParams={{ AdminId }}
         options={{
           tabBarLabel: "Reportes",
