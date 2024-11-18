@@ -437,44 +437,134 @@ function TabsClient({ route }) {
 }
 
 const Tab2 = createBottomTabNavigator();
+
 function TabsFreelancer({ route }) {
   const { freelancerId } = route.params;
 
   return (
-    <Tab2.Navigator initialRouteName="HomeScreenFreelancer">
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+  >
+    <Tab2.Navigator 
+    initialRouteName="HomeScreenFreelancer"
+    screenOptions={{
+        tabBarShowLabel: false,
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: {
+          position: "absolute",
+          bottom: windowHeight * 0.02, // 2% desde el fondo
+          left: windowWidth * 0.022,
+          right: windowWidth * 0.023,
+          backgroundColor: "#107ACC",
+          borderRadius: 20,
+          height: windowHeight * 0.08, // 8% de la altura de la pantalla
+          justifyContent: "center",
+          alignItems: "center",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.25,
+          shadowRadius: 5,
+          elevation: 5,
+        },
+      }}
+    >
       <Tab2.Screen
         name="HomeScreenFreelancer"
         component={HomeScreenFreelancer}
         initialParams={{ freelancerId }}
         options={{
-          tabBarLabel: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="home" size={30} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: windowWidth * 0.002,
+              }}
+            >
+                <Image
+                source={require("../assets/iconsNavigation/Inicio.png")}
+                style={{
+                  width: windowWidth * 0.06,
+                  height: windowWidth * 0.06,
+                  marginBottom: windowWidth * 0.01,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
           ),
           headerShown: false,
         }}
       />
-      <Tab.Screen
-        name='ClientList'
-        component={ClientList}
-        initialParams={{ freelancerId }}
-        options={{
-          tabBarLabel: "Mensajes",
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="message1" size={30} color={color} />
-          ),
-          headerShown: false,
-        }}
-      />
+    
 
       <Tab.Screen
         name='PanelPay'
         component={PanelPay}
         initialParams={{ freelancerId }}
         options={{
-          tabBarLabel: "Transacciones",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="payments" size={24} color="black" />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+               <Image
+                source={require("../assets/iconsNavigation/payment.png")}
+                style={{
+                  width: windowWidth * 0.07,
+                  height: windowWidth * 0.07,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
+          ),
+          headerShown: false,
+        }}
+      />
+
+<Tab.Screen
+        name='ClientList'
+        component={ClientList}
+        initialParams={{ freelancerId }}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: windowWidth * 0.001,
+              }}
+            >
+                 <Image
+                source={require("../assets/iconsNavigation/Mensaje.png")}
+                style={{
+                  width: windowWidth * 0.085,
+                  height: windowWidth * 0.085,
+                  marginRight: windowWidth * 0.004,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
           ),
           headerShown: false,
         }}
@@ -485,14 +575,34 @@ function TabsFreelancer({ route }) {
         component={PanelUserFreelancer}
         initialParams={{ freelancerId }}
         options={{
-          tabBarLabel: "Perfil",
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="message1" size={30} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+                      <Image
+                source={require("../assets/iconsNavigation/Perfil.png")}
+                style={{
+                  width: windowWidth * 0.07,
+                  height: windowWidth * 0.07,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
           ),
           headerShown: false,
         }}
       />
     </Tab2.Navigator>
+    </KeyboardAvoidingView>
   );
 }
 
