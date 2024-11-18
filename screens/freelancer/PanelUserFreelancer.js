@@ -102,39 +102,54 @@ const PanelUserFreelancer = ({ route }) => {
     }
 };
 
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#2196F3" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <TouchableOpacity onPress={async () => {
-              const url = await pickImage(setImageUri);
-              if (url) {
-                setImageUri(url); // Asegúrate de que el estado se actualiza con la nueva URL
-              }
-            }}>
-              {imageUri ? (
-                <Image
-                  source={{ uri: imageUri }}
-                  style={styles.logo}
-                />
-              ) : (
-                <View style={styles.placeholderImage}>
-                  <Text>Seleccionar imagen</Text>
-                </View>
-                
-              )}
-            </TouchableOpacity>
-        <Text style={styles.name}>Cristhian Cesar Vargas Martinez</Text>
-        <Text style={styles.username}>Angelica_R</Text>
+        <TouchableOpacity onPress={async () => {
+          const url = await pickImage(setImageUri);
+          if (url) {
+            setImageUri(url);
+          }
+        }}>
+          {imageUri ? (
+            <Image
+              source={{ uri: imageUri }}
+              style={styles.logo}
+            />
+          ) : (
+            <View style={styles.placeholderImage}>
+              <Text>Seleccionar imagen</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+        <Text style={styles.name}>
+          {freelancerData ? `${freelancerData.firstName} ${freelancerData.lastName}` : 'Cargando...'}
+        </Text>
+        <Text style={styles.username}>
+          {freelancerData ? freelancerData.username : 'Cargando...'}
+        </Text>
       </View>
       
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
           <Ionicons name="call-outline" size={24} color="gray" />
-          <Text style={styles.infoText}>(505) 8859-9564</Text>
+          <Text style={styles.infoText}>
+            {freelancerData ? freelancerData.phone || 'No disponible' : 'Cargando...'}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <MaterialIcons name="email" size={24} color="gray" />
-          <Text style={styles.infoText}>rodriguezrosa203@gmail.com</Text>
+          <Text style={styles.infoText}>
+            {freelancerData ? freelancerData.email : 'Cargando...'}
+          </Text>
         </View>
       </View>
 
@@ -235,6 +250,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#ccc',
     borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
