@@ -13,7 +13,7 @@ import {
   StatusBar,
 } from "react-native";
 import { db } from "../../connection/firebaseConfig";
-import { collection, addDoc, onSnapshot } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, getDoc, doc } from "firebase/firestore";
 import ProposalModal from "../freelancer/ProposalModal";
 import { CustomPicker } from "../../utils/inputs";
 import CustomText from "../../utils/CustomText";
@@ -43,14 +43,32 @@ const ProjectList = ({ route, showProposalButton }) => {
     { label: "Desarrollo Web", value: "Desarrollo Web" },
   ];
 
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "Projects"),
-      (querySnapshot) => {
-        const projectsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+      async (querySnapshot) => {
+        const projectsData = [];
+        for (const docSnapshot of querySnapshot.docs) {
+          const project = {
+            id: docSnapshot.id,
+            ...docSnapshot.data(),
+          };
+          console.log("Procesando proyecto con ID:", project.id);
+          console.log("Client ID del proyecto:", project.clientID);
+  
+          const clientRef = doc(db, "Clients", project.clientID);
+          const clientDoc = await getDoc(clientRef);
+          if (clientDoc.exists()) {
+            const clientData = clientDoc.data();
+            project.clientName = clientData.firstName + " " + clientData.lastName;
+            console.log("Nombre del cliente encontrado:", project.clientName);
+          } else {
+            project.clientName = "Cliente desconocido";
+            console.log("No se encontró el documento para el clientID:", project.clientID);
+          }
+          projectsData.push(project);
+        }
         setProjects(projectsData);
         filterProjects(searchQuery, categoryFilter, projectsData);
         setLoading(false);
@@ -60,9 +78,14 @@ const ProjectList = ({ route, showProposalButton }) => {
         setLoading(false);
       }
     );
-
+  
     return () => unsubscribe();
   }, [categoryFilter]);
+
+
+
+
+
 
   const filterProjects = (text, type, projectsData) => {
     let filtered = projectsData;
@@ -79,6 +102,7 @@ const ProjectList = ({ route, showProposalButton }) => {
 
     setFilteredProjects(filtered);
   };
+  
 
   const handleSearchPress = () => {
     filterProjects(searchQuery, categoryFilter, projects);
@@ -153,8 +177,8 @@ const ProjectList = ({ route, showProposalButton }) => {
             </View>
 
             <View style={styles.projectClientContainer}>
-              <Text style={styles.titleClient}>Cliente ID:</Text>
-              <Text style={styles.projectUser}>{item.clientID}</Text>
+              <Text style={styles.titleClient}>Cliente:</Text>
+              <Text style={styles.projectUser}>{item.clientName}</Text>
             </View>
 
             <Text style={styles.projectDescription}>{item.description}</Text>

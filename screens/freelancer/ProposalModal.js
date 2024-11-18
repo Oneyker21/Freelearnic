@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { Modal, View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 
-
-const ProposalModal = ({ visible, onClose, onSubmit, clientId }) => { // Accepts clientId as a prop
+const ProposalModal = ({ visible, onClose, onSubmit, clientId }) => {
   const [proposalPrice, setProposalPrice] = useState('');
   const [proposalMessage, setProposalMessage] = useState('');
 
@@ -12,11 +11,10 @@ const ProposalModal = ({ visible, onClose, onSubmit, clientId }) => { // Accepts
       return;
     }
 
-    // Includes clientId in the proposal data
-    onSubmit({ 
-      proposedPrice: parseFloat(proposalPrice), 
+    onSubmit({
+      proposedPrice: parseFloat(proposalPrice),
       proposalMessage: proposalMessage,
-      client_id: clientId // Adds the clientId here
+      client_id: clientId
     });
     setProposalPrice('');
     setProposalMessage('');
@@ -41,17 +39,15 @@ const ProposalModal = ({ visible, onClose, onSubmit, clientId }) => { // Accepts
             value={proposalMessage}
             onChangeText={setProposalMessage}
           />
-              <TextInput
-            style={styles.input}
-            placeholder="Requesitos adicionales"
-            value={proposalMessage}
-            onChangeText={setProposalMessage}
-          />
           <View style={styles.buttonContainer}>
-            <Button title="Enviar" onPress={handleSubmit} color='#15297C' />
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+              <Text style={styles.buttonText}>Enviar</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.buttonContainer}>
-            <Button title="Cancelar" onPress={onClose} color="green" />
+            <TouchableOpacity style={styles.button} onPress={onClose}>
+              <Text style={styles.buttonText}>Cancelar</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -64,15 +60,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semi-transparente
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 10,
   },
   modalContent: {
-    width: '80%', // Ancho del modal
+    width: '80%',
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 20,
-    elevation: 5, // Sombra para Android
-    shadowColor: '#000', // Sombra para iOS
+    elevation: 5,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -88,13 +85,23 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#15297C',
-    borderRadius: 5,
+    borderRadius: 10,
     padding: 10,
     marginBottom: 10,
-    color: '#000', // Color del texto
+    color: '#000',
   },
   buttonContainer: {
     marginVertical: 10,
+  },
+  button: {
+    backgroundColor: '#15297C',
+    padding: 10,
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 

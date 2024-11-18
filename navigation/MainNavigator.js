@@ -36,6 +36,7 @@ import ClientProfile from '../screens/client/ClientProfile';
 import SearchFreelancers from '../screens/client/SearchFreelancers';
 import RateFreelancer from '../screens/client/RateFreelancer';
 import FreelancerListChat from '../screens/client/FreelancerListChat';
+import PanelPayClients from '../screens/client/PanelPayClients';
 
 
 // Importaciones de todas las pantallas a usar en la navegación Freelancer
@@ -248,6 +249,33 @@ function TabsClient({ route }) {
           ),
           headerShown: false,
         }}
+        
+      />
+
+<Tab.Screen
+        name="PanelPayClients"
+        component={PanelPayClients}
+        initialParams={{ clientId }}
+        options={{
+          tabBarIcon: ({}) => (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: windowWidth * 0.002,
+              }}
+            >
+              <Image
+                source={require("../assets/iconsNavigation/Nuevo.png")}
+                style={{
+                  width: windowWidth * 0.13,
+                  height: windowWidth * 0.13,
+                }}
+              />
+            </View>
+          ),
+          headerShown: false,
+        }}
       />
       <Tab.Screen
         name="CreateProject"
@@ -274,6 +302,40 @@ function TabsClient({ route }) {
           headerShown: false,
         }}
       />
+
+<Tab.Screen
+        name='SelectProposal'
+        component={SelectProposals}
+        initialParams={{ clientId }}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={require("../assets/iconsNavigation/Mensaje.png")}
+                style={{
+                  width: windowWidth * 0.085,
+                  height: windowWidth * 0.085,
+                  marginRight: windowWidth * 0.004,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
+          ),
+          headerShown: false,
+        }}
+      />
+
       <Tab.Screen
         name='FreelancerListChat'
         component={FreelancerListChat}

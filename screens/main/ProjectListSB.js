@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text, StyleSheet, FlatList, ActivityIndicator, Button } from 'react-native';
 import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { collection, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection,onSnapshot,getDoc,doc } from 'firebase/firestore';
 import CustomText from '../../utils/CustomText';
 
 //prueba
@@ -10,12 +10,20 @@ export const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'Projects'), (querySnapshot) => {
-      const projectsData = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        return { id: doc.id, ...data, username: data.username }; // Cambio clientID por username
-      });
+    const unsubscribe = onSnapshot(collection(db, 'Projects'), async (querySnapshot) => {
+      const projectsData = await Promise.all(querySnapshot.docs.map(async (docSnapshot) => {
+        const data = docSnapshot.data();
+        const clientRef = doc(db, 'Clients', data.clientID);
+        const clientDoc = await getDoc(clientRef);
+        const clientData = clientDoc.exists() ? clientDoc.data() : { firstName: 'Desconocido', lastName: '' };
+        return {
+          id: docSnapshot.id,
+          ...data,
+          clientName: `${clientData.firstName} ${clientData.lastName}`
+        };
+      }));
       setProjects(projectsData);
       setLoading(false);
     }, (error) => {
@@ -25,6 +33,10 @@ export const ProjectList = () => {
 
     return () => unsubscribe();
   }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#007AFF" />;
+  }
 
   return (
     <FlatList
@@ -45,7 +57,7 @@ export const ProjectList = () => {
 
             <View style={styles.projectUserContainer}>
               <CustomText style={styles.projectUserTitle} fontFamily="OpenSans">Cliente:</CustomText>
-              <CustomText style={styles.projectUser} fontFamily="OpenSans">{item.username}</CustomText>
+              <CustomText style={styles.projectUser} fontFamily="OpenSans">{item.clientName}</CustomText>
             </View>
 
             <View style={styles.projectDescriptionContainer}>
