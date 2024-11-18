@@ -113,20 +113,15 @@ const PanelUserFreelancer = ({ route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={async () => {
-          const url = await pickImage(setImageUri);
-          if (url) {
-            setImageUri(url);
-          }
-        }}>
+        <TouchableOpacity onPress={pickImage} style={styles.profileImageContainer}>
           {imageUri ? (
             <Image
               source={{ uri: imageUri }}
-              style={styles.logo}
+              style={styles.profileImage}
             />
           ) : (
             <View style={styles.placeholderImage}>
-              <Text>Seleccionar imagen</Text>
+              <MaterialIcons name="person" size={40} color="#fff" />
             </View>
           )}
         </TouchableOpacity>
@@ -197,21 +192,38 @@ const styles = StyleSheet.create({
     backgroundColor: '#2196F3',
     alignItems: 'center',
     padding: 20,
+    paddingTop: 40,
+  },
+  profileImageContainer: {
+    marginBottom: 15,
   },
   profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 10,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: '#fff',
+  },
+  placeholderImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#fff',
   },
   name: {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#fff',
+    marginTop: 10,
   },
   username: {
     fontSize: 16,
     color: '#e0e0e0',
+    marginTop: 5,
   },
   infoContainer: {
     padding: 20,
@@ -243,15 +255,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 16,
-  },
-  placeholderImage: {
-    width: 100,
-    height: 100,
-    borderWidth: 2,
-    borderColor: '#ccc',
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   loadingContainer: {
     justifyContent: 'center',
