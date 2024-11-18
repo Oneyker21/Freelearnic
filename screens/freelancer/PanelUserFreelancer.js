@@ -1,19 +1,128 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, Image, Button, ScrollView, TouchableOpacity, Alert, TextInput, ActivityIndicator } from 'react-native';
+import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Asegúrate de importar estos módulos
+import * as ImagePicker from 'expo-image-picker'; // Importa ImagePicker
+import { CustomTextInput, CustomPickerInput,CustomPicker,CustomTextInputLarge, CustomTextInputEditable } from '../../utils/inputs'; // Importa el nuevo componente
+
 
 const PanelUserFreelancer = ({ route }) => {
   const navigation = useNavigation();
   const { freelancerId } = route.params;
+  const [freelancerData, setFreelancerData] = useState(null);
+  const [imageUri, setImageUri] = useState(null); // Para almacenar la URI de la imagen
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFreelancerData = async () => {
+      const docRef = doc(db, 'Freelancers', freelancerId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setFreelancerData(data);
+        setImageUri(data.profilePic || null); // Establecer la imagen de perfil o null
+      } else {
+        console.log("No such document!");
+      }
+      setLoading(false);
+    };
+
+    fetchFreelancerData();
+  }, [freelancerId]);
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso denegado', 'Se requieren permisos para acceder a las fotos.');
+      return;
+    }
+  
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [1, 1],
+      quality: 1,
+    });
+  
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      let imageUri = result.assets[0].uri;
+  
+      // Redimensionar la imagen antes de cargarla
+      const manipulatedImage = await ImageManipulator.manipulateAsync(
+          imageUri,
+          [{ resize: { width: 800 } }], // Cambia el tamaño a 800px de ancho
+          { compress: 0.7 } // Compresión entre 0 y 1
+      );
+    }
+  
+    if (result.assets && result.assets.length > 0) {
+      const imageUri = result.assets[0].uri;
+      console.log("URI de la imagen seleccionada:", imageUri);
+      const imageUrl = await uploadImageToStorage(imageUri);
+      if (imageUrl) {
+        setImageUri(imageUrl); // Actualiza el estado con la nueva URL
+      }
+    } else {
+      console.error("No se pudo obtener el URI de la imagen.");
+    }
+  };
+  
+  
+
+  const uploadImageToStorage = async (uri) => {
+    if (!uri) {
+        Alert.alert("Error", "No se proporcionó URI para la imagen.");
+        return null;
+    }
+
+    const storage = getStorage();
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const filename = uri.substring(uri.lastIndexOf('/') + 1);
+    const storageRef = ref(storage, `images/${filename}`);
+
+    console.log("Cargando la imagen a Firebase...");
+    setIsLoading(true); // Mostrar indicador de carga
+
+    try {
+        await uploadBytes(storageRef, blob);
+        const downloadURL = await getDownloadURL(storageRef);
+        console.log("Imagen cargada, URL de descarga: ", downloadURL);
+        return downloadURL; // Retorna la URL de descarga
+    } catch (error) {
+        console.error("Error al cargar la imagen: ", error);
+        Alert.alert("Error al cargar la imagen", error.message);
+        return null;
+    } finally {
+        setIsLoading(false); // Ocultar indicador de carga
+    }
+};
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={{ uri: 'https://ejemplo.com/foto-perfil.jpg' }}
-          style={styles.profileImage}
-        />
+      <TouchableOpacity onPress={async () => {
+              const url = await pickImage(setImageUri);
+              if (url) {
+                setImageUri(url); // Asegúrate de que el estado se actualiza con la nueva URL
+              }
+            }}>
+              {imageUri ? (
+                <Image
+                  source={{ uri: imageUri }}
+                  style={styles.logo}
+                />
+              ) : (
+                <View style={styles.placeholderImage}>
+                  <Text>Seleccionar imagen</Text>
+                </View>
+                
+              )}
+            </TouchableOpacity>
         <Text style={styles.name}>Cristhian Cesar Vargas Martinez</Text>
         <Text style={styles.username}>Angelica_R</Text>
       </View>
@@ -119,6 +228,15 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 16,
+  },
+  placeholderImage: {
+    width: 100,
+    height: 100,
+    borderWidth: 2,
+    borderColor: '#ccc',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
