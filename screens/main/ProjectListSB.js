@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, Text, StyleSheet, FlatList, ActivityIndicator, Button } from 'react-native';
+import {
+  View,
+  Image,
+  Text,
+  StyleSheet,
+  FlatList,
+  StatusBar,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
 import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { collection,onSnapshot,getDoc,doc } from 'firebase/firestore';
 import CustomText from '../../utils/CustomText';
 
-//prueba
+const { width, height } = Dimensions.get("window");
 
-export const ProjectList = () => {
+const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,20 +48,29 @@ export const ProjectList = () => {
   }
 
   return (
-    <FlatList
-      data={projects}
-      keyExtractor={item => item.id}
-      style={styles.FlatContainer}
-      renderItem={({ item }) => (
-        <View style={styles.card}>
-          <Image source={require('../../assets/img/IconoCards.png')} style={styles.logo} />
-          <CustomText style={styles.projectTitle} fontFamily="Roboto">{item.title}</CustomText>
-          <CustomText style={styles.projectStatus} fontFamily="Roboto">{item.projectStatus}</CustomText>
+    <View style={{ flex: 1 }}>
+      <View style={styles.textContainer}>
+        <Text style={styles.textTitle}>Algunos proyectos</Text>
+      </View>
 
-          <View style={styles.InfContainer}>
+      <FlatList
+        data={projects}
+        keyExtractor={(item) => item.id}
+        style={styles.FlatContainer}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Image
+              source={require("../../assets/img/IconoCards.png")}
+              style={styles.logo}
+            />
+            <CustomText style={styles.projectStatus} fontFamily="Roboto">
+              {item.projectStatus}
+            </CustomText>
+            <Text style={styles.projectTitle}>{item.title}</Text>
+
             <View style={styles.projectTypeContainer}>
-              <CustomText style={styles.projectTypeTitle} fontFamily="OpenSans">Tipo de proyecto: </CustomText>
-              <CustomText style={styles.projectType} fontFamily="OpenSans">{item.projectType}</CustomText>
+              <Text style={styles.tipoProyecto}> Tipo de Proyecto:</Text>
+              <Text style={styles.projectTipoTitle}>{item.projectType}</Text>
             </View>
 
             <View style={styles.projectUserContainer}>
@@ -60,108 +78,102 @@ export const ProjectList = () => {
               <CustomText style={styles.projectUser} fontFamily="OpenSans">{item.clientName}</CustomText>
             </View>
 
-            <View style={styles.projectDescriptionContainer}>
-              <CustomText style={styles.projectDescriptionTitle} fontFamily="OpenSans">Descripción: </CustomText>
-              <CustomText style={styles.projectDescription} fontFamily="OpenSans">{item.description}</CustomText>
-            </View>
-          </View>
-          <View style={styles.footContainer}>
+            <Text style={styles.projectDescription}>{item.description}</Text>
+
             <View style={styles.priceContainer}>
-              <CustomText style={styles.projectPrice} fontFamily="Roboto">
-                Rango precio:
-              </CustomText>
-              <CustomText style={styles.projectPriceDetail} fontFamily="OpenSans">
-                {item.minPrice ? `\$${item.minPrice}` : 'No especificado'}
-                {' - '}
-                {item.maxPrice ? `\$${item.maxPrice}` : 'No especificado'}
-              </CustomText>
+              <Text style={styles.projectPriceTitle}> Rango de precio:</Text>
+              <Text style={styles.projectPrecio}>
+                {item.minPrice ? `\$${item.minPrice}` : "No especificado"} -{" "}
+                {item.maxPrice ? `\$${item.maxPrice}` : "No especificado"}
+              </Text>
             </View>
 
-            <CustomText style={styles.projectFechaEntrega} fontFamily="OpenSans">
-              Fecha Estimada de Entrega: {item.estimatedDeliveryDate ? item.estimatedDeliveryDate : 'No especificada'}
-            </CustomText>
+            <View style={styles.projectFechaEntregaContainer}>
+              <Text style={styles.projectFechaEntrega}>
+                Fecha Estimada de Entrega:
+              </Text>
+              <Text style={styles.projectFechaEntrega2}>
+                {item.estimatedDeliveryDate
+                  ? item.estimatedDeliveryDate
+                  : "No especificada"}
+              </Text>
+            </View>
           </View>
-        </View >
-      )}
-    />
+        )}
+      />
+    </View>
   );
 };
 
-
 const styles = StyleSheet.create({
-  projectItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  projectTypeTitle: {
-    fontWeight: 'bold',
-    color: '#142157',
-  },
-  InfContainer: {
-    paddingLeft: 10,
-    width: '80%',
-
-  },
-  footContainer: {
-    paddingRight: 15,
-    paddingLeft: 15,
-  },
-  projectUserTitle: {
-    fontWeight: 'bold',
-    color: '#142157',
-  },
-  projectDescriptionTitle: {
-    fontWeight: 'bold',
-    color: '#142157',
+  textTitle: {
+    fontWeight: "bold",
+    fontSize: width * 0.045,
+    color: "rgba(0, 0, 0, 0.61)",
+    marginLeft: width * 0.01,
+    marginBottom: height * 0.02,
   },
   logo: {
-    width: 30,
-    height: 30,
-    position: 'absolute',
-    top: 0,
-    left: 0,
+    width: width * 0.13,
+    height: width * 0.13,
+    position: "absolute",
+    top: height * 0.01,
+    left: width * 0.015,
     zIndex: 1,
   },
-  projectDescriptionContainer: {
-    flexDirection: 'row',
-    marginVertical: 5,
-    width: 'auto',
-  },
   projectDescription: {
-    fontWeight: 'bold',
-    marginRight: 20,
+    fontWeight: "bold",
+    fontSize: width * 0.04,
+    marginLeft: width * 0.042,
+    marginRight: width * 0.05,
   },
   projectTypeContainer: {
-    flexDirection: 'row',
-    marginVertical: 5,
+    flexDirection: "row",
+    marginVertical: height * 0.01,
   },
-  projectUserContainer: {
-    flexDirection: 'row',
-    marginVertical: 5,
+  tipoProyecto: {
+    color: "rgba(21, 41, 124, 1)",
+    fontWeight: "bold",
+    marginRight: width * 0.015,
+    marginLeft: width * 0.03,
+  },
+  projectTipoTitle: {
+    color: "black",
+    fontWeight: "bold",
+  },
+  projectClientContainer: {
+    flexDirection: "row",
+    marginBottom: height * 0.005,
+  },
+  titleClient: {
+    color: "rgba(21, 41, 124, 1)",
+    fontWeight: "bold",
+    marginLeft: width * 0.04,
+    marginRight: width * 0.005,
   },
   projectUser: {
-    fontWeight: 'bold',
-  },
-  projectType: {
-    fontWeight: 'bold',
+    marginRight: width * 0.03,
+    color: "rgba(21, 41, 124, 1)",
+    fontWeight: "bold",
   },
   projectTitle: {
-    fontWeight: 'bold',
-    fontSize: 15,
+    fontWeight: "bold",
+    fontSize: width * 0.05,
     borderWidth: 1,
-    borderRadius: 12,
-    paddingTop: 30,
-    paddingBottom: 30,
-    borderColor: '#107ACC',
-    backgroundColor: '#107ACC',
-    color: 'white',
-    textAlign: 'center',
+    borderRadius: 8,
+    paddingTop: height * 0.07,
+    paddingBottom: height * 0.02,
+    borderColor: "#107ACC",
+    backgroundColor: "#107ACC",
+    color: "white",
+    textAlign: "center",
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
-    shadowColor: '#000',
+    marginBottom: height * 0.02,
+    marginLeft: width * 0.005,
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -169,54 +181,69 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2.62,
     elevation: 4,
-    width: '100%',
-    marginBottom: 30,
+    width: width * 0.95,
   },
-
   priceContainer: {
-    flexDirection: 'column',
-    marginVertical: 5,
-    paddingLeft: 30,
-    paddingRight: 30,
-    paddingTop: 10,
-    paddingBottom: 10,
+    flexDirection: "column",
+    marginVertical: height * 0.01,
+    marginRight: width * 0.05,
+    paddingLeft: 0,
+    paddingRight: width * 0.1,
+    paddingTop: height * 0.015,
+    paddingBottom: height * 0.015,
     borderWidth: 1,
-    borderColor: '#107ACC',
+    borderColor: "#107ACC",
     borderRadius: 12,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
+    alignSelf: "flex-end",
+    alignItems: "center",
   },
-  projectPrice: {
-    fontWeight: 'bold',
-    color: '#007AFF',
+  projectPriceTitle: {
+    fontSize: width * 0.035,
+    fontWeight: "bold",
+    color: "#007AFF",
   },
-  projectPropuestas: {
-    color: '#666',
+  projectPrecio: {
+    marginLeft: width * 0.04,
+    fontWeight: "bold",
+    fontSize: width * 0.04,
   },
   projectStatus: {
-    borderWidth: 1,
-    fontSize: 12,
+    width: width * 0.27,
+    height: height * 0.04,
+    borderWidth: 3,
+    fontSize: width * 0.035,
     borderRadius: 6,
-    borderColor: '#18D23A',
-    backgroundColor: '#18D23A',
-    right: 5,
-    color: 'white',
-    padding: 3,
+    borderColor: "#18D23A",
+    backgroundColor: "#18D23A",
+    right: width * 0.025,
+    color: "white",
+    padding: height * 0.0051,
+    paddingHorizontal: width * 0.04,
     zIndex: 1,
-    position: 'absolute',
-    marginTop: 5,
-    alignSelf: 'flex-end',
-  },
-  projectFechaEntrega: {
-    color: '#142157',
-    fontSize: 12,
-    fontWeight: 'bold',
-    alignSelf: 'flex-end',
-    marginBottom: 10,
-    marginRight: 10,
+    position: "absolute",
+    marginTop: height * 0.015,
+    alignSelf: "flex-end",
   },
   FlatContainer: {
-    marginBottom: 60,
+    marginBottom: 0,
+  },
+  projectFechaEntregaContainer: {
+    flexDirection: "row",
+    alignSelf: "flex-end",
+    marginBottom: height * 0.02,
+    marginRight: width * 0.08,
+  },
+  projectFechaEntrega: {
+    color: "rgba(21, 41, 124, 1)",
+    fontSize: width * 0.033,
+    fontWeight: "bold",
+    marginRight: width * 0.015,
+  },
+  projectFechaEntrega2: {
+    color: "black",
+    fontSize: width * 0.033,
+    fontWeight: "bold",
+    alignSelf: "flex-end",
   },
 });
 

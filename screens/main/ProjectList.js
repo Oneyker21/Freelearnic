@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   projectStatus: {
-    width: width * 0.25,
+    width: width * 0.27,
     height: height * 0.04,
     borderWidth: 3,
     fontSize: width * 0.035,
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#18D23A",
     right: width * 0.025,
     color: "white",
-    padding: height * 0.01,
+    padding: height * 0.0051,
     paddingHorizontal: width * 0.04,
     zIndex: 1,
     position: "absolute",
@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 8,
     marginBottom: height * 0.02,
-    marginLeft: width * 0.022,
+    marginLeft: width * 0.025,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

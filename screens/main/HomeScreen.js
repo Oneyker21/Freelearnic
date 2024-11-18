@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
 
   welcomeText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     paddingLeft: 65,
     paddingRight: 65,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   },
   welcomeImageContainer: {
     width: "100%",
-    marginTop: 10,
+    marginTop: 25,
     height: 200,
   },
   welcomeImage: {

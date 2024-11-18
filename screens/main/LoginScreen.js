@@ -133,7 +133,7 @@ export default function LoginScreen() {
                 showPassword={showPassword}
                 toggleShowPassword={() => setShowPassword(!showPassword)}
               />
-           {/*   <CustomTextInput
+          {/*   <CustomTextInput
                 onChangeText={setConfirmPassword} showPassword={showPassword}
                 toggleShowPassword={() => setShowPassword(!showPassword)}
                 value={confirmPassword}
