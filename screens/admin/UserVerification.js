@@ -1,66 +1,100 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
+import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../connection/firebaseConfig';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const UserVerification = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // 'clients', 'freelancers', 'all'
+  const [clients, setClients] = useState([]);
+  const [freelancers, setFreelancers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
-    fetchUsers();
+    setLoading(true);
+    const db = getFirestore();
+
+    const fetchUsers = () => {
+      let unsubscribeClients = null;
+      let unsubscribeFreelancers = null;
+
+      if (filter === 'all' || filter === 'clients') {
+        unsubscribeClients = onSnapshot(
+          query(collection(db, 'Clients'), where('verified', '==', false)),
+          (snapshot) => {
+            const clientsData = snapshot.docs.map(doc => ({
+              id: doc.id,
+              type: 'Client',
+              ...doc.data()
+            }));
+            setClients(clientsData);
+            updateAllUsers(clientsData, filter === 'clients' ? [] : freelancers);
+          },
+          (error) => {
+            console.error('Error fetching clients:', error);
+          }
+        );
+      }
+
+      if (filter === 'all' || filter === 'freelancers') {
+        unsubscribeFreelancers = onSnapshot(
+          query(collection(db, 'Freelancers'), where('verified', '==', false)),
+          (snapshot) => {
+            const freelancersData = snapshot.docs.map(doc => ({
+              id: doc.id,
+              type: 'Freelancer',
+              ...doc.data()
+            }));
+            setFreelancers(freelancersData);
+            updateAllUsers(filter === 'freelancers' ? [] : clients, freelancersData);
+          },
+          (error) => {
+            console.error('Error fetching freelancers:', error);
+          }
+        );
+      }
+
+      setLoading(false);
+
+      return () => {
+        unsubscribeClients && unsubscribeClients();
+        unsubscribeFreelancers && unsubscribeFreelancers();
+      };
+    };
+
+    return fetchUsers();
   }, [filter]);
 
-  const fetchUsers = async () => {
-    setLoading(true);
+  const updateAllUsers = (clients, freelancers) => {
+    setAllUsers([...clients, ...freelancers]);
+  };
+
+  const verifyUser = async (userId, userType) => {
+    const db = getFirestore();
+    const userRef = doc(db, userType === 'Client' ? 'Clients' : 'Freelancers', userId);
     try {
-      let usersData = [];
-      if (filter === 'all' || filter === 'clients') {
-        const clientsQuery = query(collection(db, 'Clients'));
-        const clientsSnapshot = await getDocs(clientsQuery);
-        clientsSnapshot.forEach(doc => {
-          const userData = { id: doc.id, type: 'Client', ...doc.data() };
-          if (userData.idFrontPhoto && userData.idBackPhoto && userData.idNum) {
-            usersData.push(userData);
-          }
-        });
-      }
-      if (filter === 'all' || filter === 'freelancers') {
-        const freelancersQuery = query(collection(db, 'Freelancers'));
-        const freelancersSnapshot = await getDocs(freelancersQuery);
-        freelancersSnapshot.forEach(doc => {
-          const userData = { id: doc.id, type: 'Freelancer', ...doc.data() };
-          if (userData.idFrontPhoto && userData.idBackPhoto && userData.idNum) {
-            usersData.push(userData);
-          }
-        });
-      }
-      setUsers(usersData);
+      await updateDoc(userRef, {
+        verified: true
+      });
+      alert('Usuario verificado exitosamente!');
     } catch (error) {
-      console.error('Error fetching users:', error);
-    } finally {
-      setLoading(false);
+      console.error('Error al verificar el usuario:', error);
+      alert('Error al verificar el usuario.');
     }
   };
 
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
-
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => setFilter('all')} style={styles.filterButton}>
-        <Text>Todos</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => setFilter('clients')} style={styles.filterButton}>
-        <Text>Clientes</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => setFilter('freelancers')} style={styles.filterButton}>
-        <Text>Freelancers</Text>
-      </TouchableOpacity>
+    <View>
+      <View style={styles.filterContainer}>
+        <Button title="Todos" onPress={() => setFilter('all')} />
+        <Button title="Clientes" onPress={() => setFilter('clients')} />
+        <Button title="Freelancers" onPress={() => setFilter('freelancers')} />
+      </View>
+    
       <FlatList
-        data={users}
+        data={allUsers}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.userCard}>
@@ -68,27 +102,33 @@ const UserVerification = () => {
             <Text>ID Frontal: {item.idFrontPhoto}</Text>
             <Text>ID Trasera: {item.idBackPhoto}</Text>
             <Text>Número de ID: {item.idNum}</Text>
+            <Button title="Eliminar" onPress={() => alert('Eliminar usuario!')} />
+            <Button title="Verificar" onPress={() => verifyUser(item.id, item.type)} />
           </View>
         )}
+       
       />
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  filterButton: {
-    padding: 10,
-    margin: 5,
-    backgroundColor: '#ddd',
-  },
   userCard: {
     padding: 10,
-    marginVertical: 5,
-    backgroundColor: '#eee',
+    margin: 10,
+    backgroundColor: '#f8f8f8',
+    borderBottomWidth: 10,
+    borderBottomColor: '#eee',
+    paddingBottom: 220,
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    marginTop: 60,
+    marginBottom: 20,
   }
 });
 

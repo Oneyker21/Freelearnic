@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput, Dimensions, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { db } from '../../connection/firebaseConfig';
 import { collection, onSnapshot } from 'firebase/firestore';
@@ -107,11 +107,16 @@ const SearchFreelancers = () => {
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.freelancerName}>{item.firstName} {item.lastName}</Text>
-            <Text style={styles.freelancerUsername}>Usuario: {item.username}</Text>
-            <Text style={styles.freelancerProfession}>Profesión: {item.profession}</Text>
-            <Text style={styles.freelancerLocation}>Ciudad: {item.city}, {item.state}</Text>
-            <Text style={styles.freelancerVerified}>Verificado: {item.verified ? 'Sí' : 'No'}</Text>
+            <View style={styles.imageContainer}>
+              <Image source={{ uri: item.imageUrl }} style={styles.freelancerImage} />
+            </View>
+            <View style={styles.dataContainer}>
+              <Text style={styles.freelancerName}>{item.firstName} {item.lastName}</Text>
+              <Text style={styles.freelancerUsername}>Usuario: {item.username}</Text>
+              <Text style={styles.freelancerProfession}>Profesión: {item.profession}</Text>
+              <Text style={styles.freelancerLocation}>Ciudad: {item.city}, {item.state}</Text>
+              <Text style={styles.freelancerVerified}>Verificado: {item.verified ? 'Sí' : 'No'}</Text>
+            </View>
           </View>
         )}
       />
@@ -158,18 +163,39 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   card: {
+    flexDirection: 'row', // Alinear elementos horizontalmente
     backgroundColor: '#fff',
     borderRadius: 8,
-    padding: 15,
+    padding: 10,
     marginVertical: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 2.62,
-    elevation: 4,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    alignItems: 'center', // Alinear elementos verticalmente
+  },
+  imageContainer: {
+    left: -10,
+    top: -10,
+    marginBottom: -20,
+    width: '35%', // Ancho fijo para la imagen
+    height: 200, // Altura fija para la imagen
+    marginRight: 10, // Espacio entre la imagen y los datos
+  },
+  freelancerImage: {
+    width: '100%', // Ocupar todo el ancho del contenedor de imagen
+    height: '100%', // Ocupar toda la altura del contenedor de imagen
+    borderRadius: 8, // Radio de borde para la imagen
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  dataContainer: {
+    flex: 1, // Ocupar el espacio restante
+    justifyContent: 'center', // Centrar contenido verticalmente
   },
   freelancerName: {
     fontWeight: 'bold',
