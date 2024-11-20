@@ -102,14 +102,19 @@ const SearchFreelancers = () => {
       />
 
       <FlatList
-        contentContainerStyle={styles.listContainer} // Estilo adicional para el contenido de la lista
+        contentContainerStyle={styles.listContainer}
         data={filteredFreelancers}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
+            <View style={styles.cardBackground}></View>
             <View style={styles.imageContainer}>
-              <Image source={{ uri: item.imageUrl }} style={styles.freelancerImage} />
+              {/* <Image source={{ uri: item.imageUrl }} style={styles.freelancerImage} /> */}
+              <Image source={require('../../assets/img/Freelearnic.png')} style={styles.freelancerImage} />
             </View>
+            <Text style={[styles.userStatus, { backgroundColor: item.userStatus ? '#18D23A' : '#FF0000' }]}>
+              {item.userStatus ? 'Disponible' : 'No Disponible' }
+            </Text>
             <View style={styles.dataContainer}>
               <Text style={styles.freelancerName}>{item.firstName} {item.lastName}</Text>
               <Text style={styles.freelancerUsername}>Usuario: {item.username}</Text>
@@ -163,9 +168,9 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   card: {
-    flexDirection: 'row', // Alinear elementos horizontalmente
+    flexDirection: 'row',
     backgroundColor: '#fff',
-    borderRadius: 8,
+    borderRadius: 12,
     padding: 10,
     marginVertical: 10,
     shadowColor: '#000',
@@ -176,13 +181,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    alignItems: 'center', // Alinear elementos verticalmente
+    alignItems: 'center',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  cardBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '50%',
+    borderBottomRightRadius: 12,
+    backgroundColor: '#15297C',
   },
   imageContainer: {
     left: -10,
     top: -10,
     marginBottom: -20,
-    width: '35%', // Ancho fijo para la imagen
+    width: '38%', // Ancho fijo para la imagen
     height: 200, // Altura fija para la imagen
     marginRight: 10, // Espacio entre la imagen y los datos
   },
@@ -190,7 +206,7 @@ const styles = StyleSheet.create({
     width: '100%', // Ocupar todo el ancho del contenedor de imagen
     height: '100%', // Ocupar toda la altura del contenedor de imagen
     borderRadius: 8, // Radio de borde para la imagen
-    borderWidth: 1,
+    backgroundColor: '#fff',
     borderColor: '#ccc',
   },
   dataContainer: {
@@ -200,9 +216,19 @@ const styles = StyleSheet.create({
   freelancerName: {
     fontWeight: 'bold',
     fontSize: 16,
+    color: '#ffff',
+  },
+  userStatus: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    color: '#ffff',
+    backgroundColor: '#007AFF',
+    padding: 5,
+    borderRadius: 5,
   },
   freelancerUsername: {
-    color: '#666',
+    color: '#ffff',
   },
   freelancerProfession: {
     color: '#666',
