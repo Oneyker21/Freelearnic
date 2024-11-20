@@ -102,39 +102,49 @@ const PanelUserFreelancer = ({ route }) => {
     }
 };
 
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#2196F3" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <TouchableOpacity onPress={async () => {
-              const url = await pickImage(setImageUri);
-              if (url) {
-                setImageUri(url); // Asegúrate de que el estado se actualiza con la nueva URL
-              }
-            }}>
-              {imageUri ? (
-                <Image
-                  source={{ uri: imageUri }}
-                  style={styles.logo}
-                />
-              ) : (
-                <View style={styles.placeholderImage}>
-                  <Text>Seleccionar imagen</Text>
-                </View>
-                
-              )}
-            </TouchableOpacity>
-        <Text style={styles.name}>Cristhian Cesar Vargas Martinez</Text>
-        <Text style={styles.username}>Angelica_R</Text>
+        <TouchableOpacity onPress={pickImage} style={styles.profileImageContainer}>
+          {imageUri ? (
+            <Image
+              source={{ uri: imageUri }}
+              style={styles.profileImage}
+            />
+          ) : (
+            <View style={styles.placeholderImage}>
+              <MaterialIcons name="person" size={40} color="#fff" />
+            </View>
+          )}
+        </TouchableOpacity>
+        <Text style={styles.name}>
+          {freelancerData ? `${freelancerData.firstName} ${freelancerData.lastName}` : 'Cargando...'}
+        </Text>
+        <Text style={styles.username}>
+          {freelancerData ? freelancerData.username : 'Cargando...'}
+        </Text>
       </View>
       
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
           <Ionicons name="call-outline" size={24} color="gray" />
-          <Text style={styles.infoText}>(505) 8859-9564</Text>
+          <Text style={styles.infoText}>
+            {freelancerData ? freelancerData.phone || 'No disponible' : 'Cargando...'}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <MaterialIcons name="email" size={24} color="gray" />
-          <Text style={styles.infoText}>rodriguezrosa203@gmail.com</Text>
+          <Text style={styles.infoText}>
+            {freelancerData ? freelancerData.email : 'Cargando...'}
+          </Text>
         </View>
       </View>
 
@@ -182,21 +192,38 @@ const styles = StyleSheet.create({
     backgroundColor: '#2196F3',
     alignItems: 'center',
     padding: 20,
+    paddingTop: 40,
+  },
+  profileImageContainer: {
+    marginBottom: 15,
   },
   profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 10,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: '#fff',
+  },
+  placeholderImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#fff',
   },
   name: {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#fff',
+    marginTop: 10,
   },
   username: {
     fontSize: 16,
     color: '#e0e0e0',
+    marginTop: 5,
   },
   infoContainer: {
     padding: 20,
@@ -229,12 +256,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
   },
-  placeholderImage: {
-    width: 100,
-    height: 100,
-    borderWidth: 2,
-    borderColor: '#ccc',
-    borderRadius: 50,
+  loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },

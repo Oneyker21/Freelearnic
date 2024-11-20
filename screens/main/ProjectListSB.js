@@ -152,9 +152,21 @@ const styles = StyleSheet.create({
     marginRight: width * 0.005,
   },
   projectUser: {
-    marginRight: width * 0.03,
     color: "rgba(21, 41, 124, 1)",
     fontWeight: "bold",
+    fontSize: width * 0.035,
+  },
+  projectUserTitle: {
+    color: "rgba(21, 41, 124, 1)",
+    fontWeight: "bold",
+    fontSize: width * 0.035,
+    flexDirection: "row",
+    marginBottom: height * 0.005,
+    marginLeft: width * 0.040,
+  },
+  projectUserContainer: {
+    flexDirection: "row",
+    marginBottom: height * 0.005,
   },
   projectTitle: {
     fontWeight: "bold",
