@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { Button, Modal, TextInput, View, Text, StyleSheet } from 'react-native';
 import { db } from '../../connection/firebaseConfig';
-import { collection, addDoc, query, where, getDocs, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, runTransaction, limit } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, runTransaction, limit, increment } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const ChatScreen = ({ route }) => {
@@ -107,7 +107,7 @@ const ChatScreen = ({ route }) => {
             return (
                 <Button
                     title="Entregado"
-                    onPress={() => handleDelivery(userId)}
+                    onPress={() => registerDeposit(userId)}
                 />
             );
         }
@@ -295,6 +295,59 @@ const ChatScreen = ({ route }) => {
             console.log("No hay fondos para transferir.");
         }
     };
+
+    const registerDeposit  = async (freelancerId) => {
+        const amount = await getLastDepositAmount(); // Obtener el monto del último depósito
+    
+        if (amount > 0) {
+            // Referencias a las cuentas
+            const generalAccountRef = doc(db, 'BankAccounts', '22802373'); // Cuenta general
+            const freelancerAccountRef = doc(db, 'BankAccounts', 'GeneralAccount', 'FreelancerAccounts', freelancerId); // Cuenta del freelancer
+            const depositsRef = collection(db, 'BankAccounts', 'GeneralAccount', 'FreelancerAccounts', freelancerId, 'Deposits'); // Subcolección Deposits del freelancer
+    
+            try {
+                await runTransaction(db, async (transaction) => {
+                    // Obtener los documentos
+                    const generalAccountSnap = await transaction.get(generalAccountRef);
+                    const freelancerAccountSnap = await transaction.get(freelancerAccountRef);
+    
+                    if (!generalAccountSnap.exists() || !freelancerAccountSnap.exists()) {
+                        throw new Error("Las cuentas no existen.");
+                    }
+    
+                    // Calcular los nuevos balances
+                    const newGeneralBalance = generalAccountSnap.data().totalBalance - amount;
+                    const newFreelancerBalance = freelancerAccountSnap.data().totalBalance + amount;
+    
+                    if (newGeneralBalance < 0) {
+                        throw new Error("Fondos insuficientes en la cuenta general.");
+                    }
+    
+                    // Actualizar balances
+                    transaction.update(generalAccountRef, { totalBalance: newGeneralBalance });
+                    transaction.update(freelancerAccountRef, { totalBalance: newFreelancerBalance });
+    
+                    // Registrar el depósito en la subcolección Deposits
+                    const newDepositRef = doc(depositsRef); // Firebase genera un ID único para el depósito
+                    transaction.set(newDepositRef, {
+                        toFreelancerId: freelancerId,
+                        amount,
+                        timestamp: serverTimestamp()
+                    });
+                });
+    
+                alert("Trabajo entregado y pago transferido correctamente.");
+            } catch (error) {
+                console.error("Error al procesar la entrega:", error);
+                alert("Error al realizar la transferencia.");
+            }
+        } else {
+            console.log("No hay fondos para transferir.");
+        }
+    };
+    
+
+    
 
     const renderFreelancerActions = () => {
         if (userType === 'freelancer') {

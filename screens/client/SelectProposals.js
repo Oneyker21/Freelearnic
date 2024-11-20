@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { collection, getDocs, query, where, updateDoc, doc, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, query, where, updateDoc, doc, writeBatch,onSnapshot,getDoc } from 'firebase/firestore';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -12,28 +12,49 @@ const SelectProposals = ({ route }) => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    const fetchProposals = async () => {
-      try {
-        // Obtener propuestas directamente de la colección 'Propuestas'
-        const proposalsQuery = query(collection(db, 'Proposals'), where('clientID', '==', clientId));
-        const querySnapshot = await getDocs(proposalsQuery);
+    const unsubscribe = onSnapshot(
+      query(collection(db, "Proposals"), where("clientID", "==", clientId)),
+      async (querySnapshot) => {
         const proposalsData = [];
-
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          proposalsData.push({ id: doc.id, ...data }); // Agregar el ID del documento
-        });
-
+        for (const docSnapshot of querySnapshot.docs) {
+          const proposal = {
+            id: docSnapshot.id,
+            ...docSnapshot.data(),
+          };
+          console.log("Procesando propuesta con ID:", proposal.id);
+          console.log("Freelancer ID de la propuesta:", proposal.freelancerID);
+  
+          // Obtener datos del freelancer
+          if (proposal.freelancerID) {
+            const freelancerRef = doc(db, "Freelancers", proposal.freelancerID);
+            const freelancerDoc = await getDoc(freelancerRef);
+            if (freelancerDoc.exists()) {
+              const freelancerData = freelancerDoc.data();
+              proposal.freelancerName =
+                freelancerData.firstName + " " + freelancerData.lastName;
+              console.log("Nombre del freelancer encontrado:", proposal.freelancerName);
+            } else {
+              proposal.freelancerName = "Freelancer desconocido";
+              console.log("No se encontró el documento para el freelancerID:", proposal.freelancerID);
+            }
+          } else {
+            proposal.freelancerName = "Freelancer no especificado";
+          }
+  
+          proposalsData.push(proposal);
+        }
         setProposals(proposalsData);
-      } catch (error) {
-        console.error('Error fetching proposals: ', error);
-      } finally {
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching proposals in real-time:", error);
         setLoading(false);
       }
-    };
-
-    fetchProposals();
+    );
+  
+    return () => unsubscribe();
   }, [clientId]);
+  
 
   const acceptProposal = async (proposal) => {
     try {
@@ -75,27 +96,27 @@ const SelectProposals = ({ route }) => {
 
   return (
     <View style={styles.container}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={30} color="#15297C" />
-          </TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+      <Ionicons name="arrow-back" size={30} color="#15297C" />
+    </TouchableOpacity>
     <FlatList
       data={proposals}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <View style={styles.card}>
           <Text style={styles.title}>
-            {`Propuesta de ${item.freelancerID || 'Desconocido'}`}
+            {`Propuesta de ${item.freelancerName || 'Desconocido'}`}
           </Text>
-          <Text>{`Precion minimo: $${item.proposedPrice || 'N/A'}`}</Text>
+          <Text>{`Precio mínimo: $${item.proposedPrice || 'N/A'}`}</Text>
           <Text>{`Mensaje: ${item.proposalMessage || 'Sin mensaje'}`}</Text>
           <Text>{`Estado: ${item.proposalStatus || 'Desconocido'}`}</Text>
           <TouchableOpacity onPress={() => acceptProposal(item)} style={styles.button}>
             <Text style={styles.buttonText}>Aceptar Propuesta</Text>
           </TouchableOpacity>
         </View>
-        )}
-      />
-    </View>
+      )}
+    />
+  </View>
   );
 };
 

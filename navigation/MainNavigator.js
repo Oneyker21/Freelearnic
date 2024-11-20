@@ -8,6 +8,7 @@ import {
   BackHandler,
   Alert,
   TouchableOpacity,
+  KeyboardAvoidingView, Platform
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDoc, doc, getStorage } from "firebase/firestore";
@@ -36,6 +37,8 @@ import ClientProfile from '../screens/client/ClientProfile';
 import SearchFreelancers from '../screens/client/SearchFreelancers';
 import RateFreelancer from '../screens/client/RateFreelancer';
 import FreelancerListChat from '../screens/client/FreelancerListChat';
+import PanelPayClients from '../screens/client/PanelPayClients';
+import PanelUserClient from "../screens/client/PanelUserClient";
 
 
 // Importaciones de todas las pantallas a usar en la navegación Freelancer
@@ -64,6 +67,7 @@ import ScreenTypeUser from "../screens/main/ScreenTypeUser";
 
 // Importaciones de todas las pantallas a usar en la navegación Admininstrador
 import Reports from "../screens/admin/Reports";
+import UserVerification from "../screens/admin/UserVerification"
 
 const HomeMainNavigator = createStackNavigator();
 function StackHomeMain() {
@@ -126,7 +130,15 @@ function StackHomeMain() {
 <HomeMainNavigator.Screen
         name="ChatScreen"
         component={Messaging}
-        options={{ headerShown: false, title: "ChatScreen" }} // Opciones para la pantalla de inicio de sesión
+        options={{ headerShown: false, title: "ChatScreen", gestureEnabled: true }} // Opciones para la pantalla de inicio de sesión
+      />
+
+<HomeMainNavigator.Screen
+        name="ClientProfile"
+        component={ClientProfile}
+        options={{
+          headerShown: false,
+        }}
       />
 
       <HomeMainNavigator.Screen
@@ -151,6 +163,14 @@ function StackHomeMain() {
           headerShown: false,
         }}
       />
+
+<HomeMainNavigator.Screen
+        name="FreelancerProfile"
+        component={FreelancerProfile}
+        options={{
+          headerShown: false,
+        }}
+      />
     </HomeMainNavigator.Navigator>
   );
 }
@@ -162,16 +182,21 @@ function TabsClient({ route }) {
   const { clientId } = route.params;
 
   return (
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+  >
     <Tab.Navigator
       initialRouteName="HomeScreenClient"
       screenOptions={{
         tabBarShowLabel: false,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           position: "absolute",
           bottom: windowHeight * 0.02, // 2% desde el fondo
           left: windowWidth * 0.022,
-          right: windowWidth * 0.027,
-          backgroundColor: "#007bff",
+          right: windowWidth * 0.023,
+          backgroundColor: "#107ACC",
           borderRadius: 20,
           height: windowHeight * 0.08, // 8% de la altura de la pantalla
           justifyContent: "center",
@@ -249,6 +274,39 @@ function TabsClient({ route }) {
           ),
           headerShown: false,
         }}
+        
+      />
+
+<Tab.Screen
+        name="PanelPayClients"
+        component={PanelPayClients}
+        initialParams={{ clientId }}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={require("../assets/iconsNavigation/payment.png")}
+                style={{
+                  width: windowWidth * 0.07,
+                  height: windowWidth * 0.07,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
+          ),
+          headerShown: false,
+        }}
       />
       <Tab.Screen
         name="CreateProject"
@@ -275,6 +333,40 @@ function TabsClient({ route }) {
           headerShown: false,
         }}
       />
+
+<Tab.Screen
+        name='SelectProposal'
+        component={SelectProposals}
+        initialParams={{ clientId }}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={require("../assets/iconsNavigation/aprobacion.png")}
+                style={{
+                  width: windowWidth * 0.07,
+                  height: windowWidth * 0.07,
+                  marginRight: windowWidth * 0.004,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
+          ),
+          headerShown: false,
+        }}
+      />
+
       <Tab.Screen
         name='FreelancerListChat'
         component={FreelancerListChat}
@@ -308,8 +400,8 @@ function TabsClient({ route }) {
         }}
       />
       <Tab.Screen
-        name="ClientProfile"
-        component={ClientProfile}
+        name="PanelUserClient"
+        component={PanelUserClient}
         initialParams={{ clientId }}
         options={{
           tabBarIcon: ({ focused }) => (
@@ -328,9 +420,9 @@ function TabsClient({ route }) {
               <Image
                 source={require("../assets/iconsNavigation/Perfil.png")}
                 style={{
-                  width: windowWidth * 0.08,
-                  height: windowWidth * 0.08,
-                  marginTop: windowWidth * - 0.01,
+                  width: windowWidth * 0.07,
+                  height: windowWidth * 0.07,
+                  marginBottom: windowWidth * 0.012,
                   tintColor: focused ? "#007bff" : "#ffffff",
                 }}
               />
@@ -340,48 +432,139 @@ function TabsClient({ route }) {
         }}
       />
     </Tab.Navigator>
+      </KeyboardAvoidingView>
   );
 }
 
 const Tab2 = createBottomTabNavigator();
+
 function TabsFreelancer({ route }) {
   const { freelancerId } = route.params;
 
   return (
-    <Tab2.Navigator initialRouteName="HomeScreenFreelancer">
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+  >
+    <Tab2.Navigator 
+    initialRouteName="HomeScreenFreelancer"
+    screenOptions={{
+        tabBarShowLabel: false,
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: {
+          position: "absolute",
+          bottom: windowHeight * 0.02, // 2% desde el fondo
+          left: windowWidth * 0.022,
+          right: windowWidth * 0.023,
+          backgroundColor: "#107ACC",
+          borderRadius: 20,
+          height: windowHeight * 0.08, // 8% de la altura de la pantalla
+          justifyContent: "center",
+          alignItems: "center",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.25,
+          shadowRadius: 5,
+          elevation: 5,
+        },
+      }}
+    >
       <Tab2.Screen
         name="HomeScreenFreelancer"
         component={HomeScreenFreelancer}
         initialParams={{ freelancerId }}
         options={{
-          tabBarLabel: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="home" size={30} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: windowWidth * 0.002,
+              }}
+            >
+                <Image
+                source={require("../assets/iconsNavigation/Inicio.png")}
+                style={{
+                  width: windowWidth * 0.06,
+                  height: windowWidth * 0.06,
+                  marginBottom: windowWidth * 0.01,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
           ),
           headerShown: false,
         }}
       />
-      <Tab.Screen
-        name='ClientList'
-        component={ClientList}
-        initialParams={{ freelancerId }}
-        options={{
-          tabBarLabel: "Mensajes",
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="message1" size={30} color={color} />
-          ),
-          headerShown: false,
-        }}
-      />
+    
 
       <Tab.Screen
         name='PanelPay'
         component={PanelPay}
         initialParams={{ freelancerId }}
         options={{
-          tabBarLabel: "Transacciones",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="payments" size={24} color="black" />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+               <Image
+                source={require("../assets/iconsNavigation/payment.png")}
+                style={{
+                  width: windowWidth * 0.07,
+                  height: windowWidth * 0.07,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
+          ),
+          headerShown: false,
+        }}
+      />
+
+<Tab.Screen
+        name='ClientList'
+        component={ClientList}
+        initialParams={{ freelancerId }}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: windowWidth * 0.001,
+              }}
+            >
+                 <Image
+                source={require("../assets/iconsNavigation/Mensaje.png")}
+                style={{
+                  width: windowWidth * 0.085,
+                  height: windowWidth * 0.085,
+                  marginRight: windowWidth * 0.004,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
           ),
           headerShown: false,
         }}
@@ -392,14 +575,34 @@ function TabsFreelancer({ route }) {
         component={PanelUserFreelancer}
         initialParams={{ freelancerId }}
         options={{
-          tabBarLabel: "Perfil",
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="message1" size={30} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: windowWidth * 0.12,
+                height: windowWidth * 0.12,
+                borderRadius: windowWidth * 0.06,
+                backgroundColor: focused
+                  ? "rgba(255, 255, 255, 0.3)"
+                  : "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+                      <Image
+                source={require("../assets/iconsNavigation/Perfil.png")}
+                style={{
+                  width: windowWidth * 0.07,
+                  height: windowWidth * 0.07,
+                  tintColor: focused ? "#007bff" : "#ffffff",
+                }}
+              />
+            </View>
           ),
           headerShown: false,
         }}
       />
     </Tab2.Navigator>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -412,6 +615,19 @@ function TabsAdmin({ route }) {
       <Tab3.Screen
         name="Reports"
         component={Reports}
+        initialParams={{ AdminId }}
+        options={{
+          tabBarLabel: "Reportes",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="bar-chart-o" size={24} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+
+<Tab3.Screen
+        name="UserVerification"
+        component={UserVerification}
         initialParams={{ AdminId }}
         options={{
           tabBarLabel: "Reportes",

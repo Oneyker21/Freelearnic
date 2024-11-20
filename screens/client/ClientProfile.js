@@ -271,13 +271,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   placeholderImage: {
-    width: 100,
-    height: 100,
+    width: 130,
+    height: 130,
     borderWidth: 2,
     borderColor: '#ccc',
-    borderRadius: 50,
+    borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 25,
+    marginBottom: 10,
   },
 });
 
