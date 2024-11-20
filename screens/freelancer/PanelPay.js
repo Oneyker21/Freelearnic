@@ -65,10 +65,11 @@ const PanelPay = ({ route }) => {
         <View style={styles.container}>
             <Text style={styles.balanceText}>Balance Total: ${totalBalance}</Text>
             <FlatList
+            style={styles.depositList}
         data={deposits}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-            <Text>
+            <Text style={styles.depositText}>
                 {`Depósito: $${item.amount}, Fecha: ${
                     item.timestamp 
                         ? item.timestamp.toDate().toLocaleDateString() 
@@ -91,6 +92,15 @@ const styles = StyleSheet.create({
     balanceText: {
         fontSize: 24,
         fontWeight: 'bold'
+    },
+    depositList: {
+        marginTop: 30,
+        flex: 1,
+        width: '100%',
+    },
+    depositText: {
+        fontSize: 16,
+        marginBottom: 10
     }
 });
 
