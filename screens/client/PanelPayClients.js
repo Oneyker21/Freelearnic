@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Button } from 'react-native';
+import { View, Text, FlatList, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { collection, query, where, onSnapshot, doc } from 'firebase/firestore';
 import { db } from '../../connection/firebaseConfig';
 
@@ -57,21 +57,76 @@ const PanelPayClients = ({ route }) => {
         }
     };
 
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            padding: 20,
+            backgroundColor: '#f4f4f8',
+        },
+        header: {
+            fontSize: 22,
+            fontWeight: 'bold',
+            color: '#333',
+            marginBottom: 20,
+        },
+        listItem: {
+            backgroundColor: '#fff',
+            padding: 15,
+            borderRadius: 10,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginBottom: 10,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.22,
+            shadowRadius: 2.22,
+            elevation: 3,
+        },
+        listItemText: {
+            fontSize: 16,
+            color: '#555',
+        },
+        totalBalance: {
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: '#1a73e8',
+            marginTop: 20,
+            textAlign: 'center',
+        },
+        button: {
+            marginTop: 20,
+            backgroundColor: '#007bff',
+            padding: 10,
+            borderRadius: 5,
+        },
+        buttonText: {
+            color: '#fff',
+            textAlign: 'center',
+            fontSize: 18,
+        }
+    });
+
     return (
-        <View>
-            <Text>Depósitos</Text>
+        <View style={styles.container}>
+            <Text style={styles.header}>Depósitos</Text>
             <FlatList
                 data={deposits}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
-                    <Text>{`Depósito: ${item.depositAmount}, Fecha: ${item.timestamp.toDate().toLocaleDateString()}`}</Text>
+                    <View style={styles.listItem}>
+                        <Text style={styles.listItemText}>
+                            {`Depósito: ${item.depositAmount}`}
+                        </Text>
+                        <Text style={styles.listItemText}>
+                            {`Fecha: ${item.timestamp.toDate().toLocaleDateString()}`}
+                        </Text>
+                    </View>
                 )}
             />
-            <Text>Balance Total: ${totalBalance}</Text>
-            <Button
-                title="Inicializar Cuenta del Cliente"
-                onPress={initializeClientAccount}
-            />
+            <Text style={styles.totalBalance}>Balance Total: ${totalBalance}</Text>
+            <TouchableOpacity style={styles.button} onPress={initializeClientAccount}>
+                <Text style={styles.buttonText}>Inicializar Cuenta del Cliente</Text>
+            </TouchableOpacity>
         </View>
     );
 };
