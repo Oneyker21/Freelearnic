@@ -7,6 +7,9 @@ import { CustomPicker } from '../../utils/inputs';
 
 const { width, height } = Dimensions.get("window");
 
+// Importa la imagen estática
+import defaultProfilePic from '../../assets/img/usuario.png';
+
 const SearchFreelancers = () => {
   const [freelancers, setFreelancers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -109,18 +112,16 @@ const SearchFreelancers = () => {
           <View style={styles.card}>
             <View style={styles.cardBackground}></View>
             <View style={styles.imageContainer}>
-              {/* <Image source={{ uri: item.imageUrl }} style={styles.freelancerImage} /> */}
-              <Image source={require('../../assets/img/Freelearnic.png')} style={styles.freelancerImage} />
+              <Image
+                source={item.profilePic ? { uri: item.profilePic } : defaultProfilePic}
+                style={styles.freelancerImage}
+              />
             </View>
-            <Text style={[styles.userStatus, { backgroundColor: item.userStatus ? '#18D23A' : '#FF0000' }]}>
-              {item.userStatus ? 'Disponible' : 'No Disponible' }
-            </Text>
             <View style={styles.dataContainer}>
               <Text style={styles.freelancerName}>{item.firstName} {item.lastName}</Text>
-              <Text style={styles.freelancerUsername}>Usuario: {item.username}</Text>
               <Text style={styles.freelancerProfession}>Profesión: {item.profession}</Text>
-              <Text style={styles.freelancerLocation}>Ciudad: {item.city}, {item.state}</Text>
-              <Text style={styles.freelancerVerified}>Verificado: {item.verified ? 'Sí' : 'No'}</Text>
+              <Text style={styles.freelancerDescripcion}>Descripcion: {item.description}</Text>
+  
             </View>
           </View>
         )}
@@ -198,8 +199,8 @@ const styles = StyleSheet.create({
     left: -10,
     top: -10,
     marginBottom: -20,
-    width: '38%', // Ancho fijo para la imagen
-    height: 200, // Altura fija para la imagen
+    width: '40%', // Ancho fijo para la imagen
+    height: 270, // Altura fija para la imagen
     marginRight: 10, // Espacio entre la imagen y los datos
   },
   freelancerImage: {
@@ -217,6 +218,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     color: '#ffff',
+    marginBottom: 70,
   },
   userStatus: {
     position: 'absolute',
@@ -227,16 +229,11 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
   },
-  freelancerUsername: {
-    color: '#ffff',
-  },
   freelancerProfession: {
     color: '#666',
+    marginBottom: 40
   },
-  freelancerLocation: {
-    color: '#666',
-  },
-  freelancerVerified: {
+  freelancerDescripcion: {
     color: '#666',
   },
 });

@@ -69,7 +69,7 @@ const PanelUserFreelancer = ({ route }) => {
         <View style={styles.infoItem}>
           <Ionicons name="call-outline" size={24} color="gray" />
           <Text style={styles.infoText}>
-            {freelancerData ? freelancerData.phone || 'No disponible' : 'Cargando...'}
+            {freelancerData ? freelancerData.telephone || 'No disponible' : 'Cargando...'}
           </Text>
         </View>
         <View style={styles.infoItem}>
@@ -107,7 +107,7 @@ const PanelUserFreelancer = ({ route }) => {
       <TouchableOpacity style={styles.menuItem}
         onPress={() => navigation.navigate('HomeScreen')}
       >        
-        <MaterialIcons name="group-add" size={24} color="black" />
+        <MaterialIcons name="logout" size={24} color="black" />
         <Text style={styles.menuItemText}>Cerra Sesión</Text>
         <MaterialIcons name="chevron-right" size={24} color="gray" />
       </TouchableOpacity>

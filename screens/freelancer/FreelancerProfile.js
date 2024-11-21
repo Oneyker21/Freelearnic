@@ -174,13 +174,41 @@ const FreelancerProfile = ({ route }) => {
               <Text style={styles.title}>
                 Edita tu <Text>cuenta de</Text> <Text style={{ fontWeight: 'bold' }}>Freelancer</Text>
               </Text>
+              <CustomTextInputEditable
+                style={styles.input}
+                value={editableData.firstName + ' ' + editableData.lastName}
+                editable={false}
+                placeholder="Nombre completo"
+              />
+
+              <CustomTextInputEditable
+                style={styles.input}
+                value={editableData.username}
+                editable={false}
+                placeholder="Nombre de usuario"
+              />
+
+              <CustomTextInputEditable
+                style={styles.input}
+                value={editableData.email}
+                editable={false}
+                placeholder="Correo electrónico"
+              />
+
           <CustomTextInputEditable
             style={styles.input}
             value={editableData.city}
             onChangeText={(value) => handleInputChange('city', value)}
             placeholder="Ciudad"
           />
-          <CustomTextInput
+          <CustomTextInputEditable
+            style={styles.input}
+            value={editableData.telephone}
+            onChangeText={(value) => handleInputChange('telephone', value)}
+            placeholder="Teléfono"
+            keyboardType="phone-pad"
+          />
+          <CustomTextInputEditable
             style={styles.input}
             value={editableData.state}
             onChangeText={(value) => handleInputChange('state', value)}
@@ -212,39 +240,10 @@ const FreelancerProfile = ({ route }) => {
                   ]}
                   placeholder="Seleccione la profesión"
                 />
-             <CustomTextInputLarge
-            value={editableData.professionalExp}
-            onChangeText={(value) => handleInputChange('professionalExp', value)}
-            placeholder="Describe tu experiencia laboral: roles, proyectos y logros relevantes"
-          />
           <CustomTextInputLarge
             value={editableData.description}
             onChangeText={(value) => handleInputChange('description', value)}
             placeholder="Descripción"
-          />
-          <CustomTextInputEditable
-            style={styles.input}
-            value={editableData.skills.join(', ')} // Permite la entrada de habilidades como texto
-            onChangeText={(value) => handleInputChange('skills', value.split(',').map(skill => skill.trim()))}
-            placeholder="Habilidades (separadas por comas)"
-          />
-          <CustomTextInputEditable
-            style={styles.input}
-            value={editableData.portfolio.join(', ')} // Permite la entrada de URLs como texto
-            onChangeText={(value) => handleInputChange('portfolio', value.split(',').map(url => url.trim()))}
-            placeholder="Portfolio (separadas por comas)"
-          />
-          <CustomTextInput
-            style={styles.input}
-            value={editableData.certifications.join(', ')} // Permite la entrada de certificaciones como texto
-            onChangeText={(value) => handleInputChange('certifications', value.split(',').map(cert => cert.trim()))}
-            placeholder="Certificaciones (separadas por comas)"
-          />
-          <CustomTextInput
-            style={styles.input}
-            value={editableData.languages.join(', ')} // Permite la entrada de idiomas como texto
-            onChangeText={(value) => handleInputChange('languages', value.split(',').map(lang => lang.trim()))}
-            placeholder="Idiomas (separados por comas)"
           />
 
               <TouchableOpacity style={styles.buttonRegister} onPress={handleSave}>

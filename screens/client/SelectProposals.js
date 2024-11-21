@@ -10,6 +10,7 @@ const SelectProposals = ({ route }) => {
   const [proposals, setProposals] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
+  
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -90,9 +91,7 @@ const SelectProposals = ({ route }) => {
     }
   };
 
-  if (loading) {
-    return <Text>Cargando...</Text>;
-  }
+ 
 
   return (
     <View style={styles.container}>
@@ -145,7 +144,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#107acc',
     padding: 10,
     borderRadius: 5,
     marginTop: 10,

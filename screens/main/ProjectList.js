@@ -237,6 +237,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: width * 0.025,
   },
+  button:{
+    backgroundColor: '#107acc',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  buttonText:{
+    color: "white",
+    textAlign: "center",
+    fontSize: 14, 
+
+  },
   searchBar: {
     flex: 1,
     height: height * 0.05,

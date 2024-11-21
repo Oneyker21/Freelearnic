@@ -5,7 +5,7 @@ import { db } from '../../connection/firebaseConfig';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
-import { CustomTextInput, CustomTextInputEditable } from '../../utils/inputs';
+import { CustomTextInput, CustomTextInputEditable,CustomTextInputLarge } from '../../utils/inputs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImageManipulator from 'expo-image-manipulator';
 
@@ -156,23 +156,53 @@ const ClientProfile = ({ route }) => {
 
               <CustomTextInputEditable
                 style={styles.input}
+                value={editableData.firstName + ' ' + editableData.lastName}
+                editable={false}
+                placeholder="Nombre completo"
+              />
+
+              <CustomTextInputEditable
+                style={styles.input}
+                value={editableData.username}
+                editable={false}
+                placeholder="Nombre de usuario"
+              />
+
+              <CustomTextInputEditable
+                style={styles.input}
+                value={editableData.email}
+                editable={false}
+                placeholder="Correo electrónico"
+              />
+
+              <CustomTextInputEditable
+                style={styles.input}
                 value={editableData.city}
                 onChangeText={(value) => handleInputChange('city', value)}
                 placeholder="Ciudad"
               />
 
-              <CustomTextInput
+                <CustomTextInputEditable
+                  style={styles.input}
+                  value={editableData.state}
+                  onChangeText={(value) => handleInputChange('state', value)}
+                  placeholder="Estado"
+                />
+          
+
+              <CustomTextInputLarge
                 style={styles.input}
-                value={editableData.state}
-                onChangeText={(value) => handleInputChange('state', value)}
-                placeholder="Estado"
+                value={editableData.clientDesc}
+                onChangeText={(value) => handleInputChange('clientDesc', value)}
+                placeholder="Descripción"
               />
 
               <CustomTextInputEditable
                 style={styles.input}
-                value={editableData.description}
-                onChangeText={(value) => handleInputChange('description', value)}
-                placeholder="Descripción"
+                value={editableData.telephone}
+                onChangeText={(value) => handleInputChange('telephone', value)}
+                placeholder="Teléfono"
+                keyboardType="phone-pad"
               />
 
               <TouchableOpacity style={styles.buttonRegister} onPress={handleSave}>
