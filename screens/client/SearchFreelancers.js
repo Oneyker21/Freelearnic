@@ -266,6 +266,7 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     fontSize: 14,
+    fontWeight: 'bold',
     color: '#666',
   },
   freelancerDescription: {
