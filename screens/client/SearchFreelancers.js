@@ -117,8 +117,8 @@ const SearchFreelancers = () => {
             </Text>
             <View style={styles.dataContainer}>
               <Text style={styles.freelancerName}>{item.firstName} {item.lastName}</Text>
-              <Text style={styles.freelancerUsername}>Usuario: {item.username}</Text>
               <Text style={styles.freelancerProfession}>Profesión: {item.profession}</Text>
+              <Text style={styles.freelancerDescription}>Descripción: {item.description}</Text>
               <Text style={styles.freelancerLocation}>Ciudad: {item.city}, {item.state}</Text>
               <Text style={styles.freelancerVerified}>Verificado: {item.verified ? 'Sí' : 'No'}</Text>
             </View>
@@ -132,7 +132,7 @@ const SearchFreelancers = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16, // Margen alrededor del contenedor principal
+    padding: 16, 
     backgroundColor: '#f4f4f4',
     marginTop: 30,
   },
@@ -181,7 +181,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    alignItems: 'center',
     position: 'relative',
     overflow: 'hidden',
   },
@@ -191,45 +190,54 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: '50%',
-    borderBottomRightRadius: 12,
     backgroundColor: '#15297C',
   },
-  imageContainer: {
-    left: -10,
+  dataContainer: {
     top: -10,
+    marginRight: -20,
     marginBottom: -20,
-    width: '38%', // Ancho fijo para la imagen
-    height: 200, // Altura fija para la imagen
-    marginRight: 10, // Espacio entre la imagen y los datos
+    flex: 1,
+    justifyContent: 'center',
+    borderWidth: 1,
+    paddingLeft: 10,
+    left: -10,
+  },
+  imageContainer: {
+    top: -10,
+    left: -10,
+    marginBottom: -20,
+    width: '35%',
+    height: 200,
   },
   freelancerImage: {
-    width: '100%', // Ocupar todo el ancho del contenedor de imagen
-    height: '100%', // Ocupar toda la altura del contenedor de imagen
-    borderRadius: 8, // Radio de borde para la imagen
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
     backgroundColor: '#fff',
     borderColor: '#ccc',
   },
-  dataContainer: {
-    flex: 1, // Ocupar el espacio restante
-    justifyContent: 'center', // Centrar contenido verticalmente
-  },
+
   freelancerName: {
+    position: 'absolute',
+    top: '10%',
+    left: 0,
+    right: 0,
+    textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 16,
-    color: '#ffff',
+    fontSize: 20,
+    color: '#fff',
   },
   userStatus: {
     position: 'absolute',
+    fontSize: 8,
     top: 8,
     right: 8,
     color: '#ffff',
     backgroundColor: '#007AFF',
-    padding: 5,
+    padding: 3,
     borderRadius: 5,
   },
-  freelancerUsername: {
-    color: '#ffff',
-  },
+
   freelancerProfession: {
     color: '#666',
   },
