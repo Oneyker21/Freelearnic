@@ -25,8 +25,13 @@ const ClientList = ({ navigation, route }) => {
         return () => unsubscribe();
     }, []);
 
-    const handleStartChat = (clientId) => { // 'clientId' es el ID del cliente seleccionado
-        navigation.navigate('ChatScreen', { userId: freelancerId, otherUserId: clientId });
+    const handleStartChat = (clientId,firstName, lastName, profilePic) => { // 'clientId' es el ID del cliente seleccionado
+        navigation.navigate('ChatScreen', { 
+        userId: freelancerId,
+        otherUserId: clientId,
+        otherUserName: `${firstName} ${lastName}`,
+        otherUserPic: profilePic
+    });
     };
 
     const filteredClients = clients.filter(client => {
@@ -89,12 +94,19 @@ const ClientList = ({ navigation, route }) => {
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
                     <TouchableOpacity 
-                        style={styles.card} 
-                        onPress={() => handleStartChat(item.id)}
-                    >
-                        <View style={styles.iconContainer}>
+                    style={styles.card} 
+                    onPress={() => handleStartChat(item.id, item.firstName, item.lastName, item.profilePic)}
+                >
+                    <View style={styles.iconContainer}>
+                        {item.profilePic ? (
+                            <Image
+                                source={{ uri: item.profilePic }}
+                                style={{ width: 40, height: 40, borderRadius: 20 }}
+                            />
+                        ) : (
                             <FontAwesome name="user-circle" size={40} color="#666" />
-                        </View>
+                        )}
+                    </View>
                         <View style={styles.infoContainer}>
                             <Text style={styles.name}>
                                 {item.firstName || ''} {item.lastName || ''}

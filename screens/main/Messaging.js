@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { GiftedChat } from 'react-native-gifted-chat';
-import { Button, Modal, TextInput, View, Text, StyleSheet } from 'react-native';
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { Button, Modal, TextInput, View, Text, StyleSheet, Image,TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { db } from '../../connection/firebaseConfig';
 import { collection, addDoc, query, where, getDocs, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, runTransaction, limit, increment } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { FontAwesome } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+
 
 const ChatScreen = ({ route }) => {
-    const { userId, otherUserId } = route.params;
+    const { userId, otherUserId, otherUserName, otherUserPic } = route.params;
     const [messages, setMessages] = useState([]);
     const [userType, setUserType] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [depositAmount, setDepositAmount] = useState('');
+    const navigation = useNavigation();
 
     const auth = getAuth();
     const user = auth.currentUser;
@@ -87,28 +92,28 @@ const ChatScreen = ({ route }) => {
                     text: message.text,
                     createdAt: serverTimestamp(),
                     senderID: userId, // Usar el ID del usuario actual
+                    
                 });
             });
         });
-    }, []);
+    }, [otherUserPic]);
 
     const renderCustomActions = (props) => {
         // Renderizar botón de pago para clientes
         if (userType === 'client') {
             return (
-                <Button
-                    title="Pagar"
-                    onPress={() => setModalVisible(true)}  // Abrir el modal para ingresar el monto
-                />
+                <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.button}>
+                 <Text style={styles.buttonText}>Pagar</Text>   
+                </TouchableOpacity>
             );
         }
         // Renderizar botón de entrega para freelancers
         else if (userType === 'freelancer') {
             return (
-                <Button
-                    title="Entregado"
-                    onPress={() => registerDeposit(userId)}
-                />
+                <TouchableOpacity onPress={() => registerDeposit(userId)}
+                style={styles.button}>
+                  <Text style={styles.buttonText}>Entregar</Text>  
+                </TouchableOpacity>
             );
         }
         return null;
@@ -216,6 +221,18 @@ const ChatScreen = ({ route }) => {
             alignItems: "center",
             marginTop: 22
         },
+        button:{
+            backgroundColor: '#007AFF',
+            padding: 10,
+            borderRadius: 5,
+            marginTop: 10,
+            marginBottom: 10,
+            marginLeft: 10,
+        },
+        buttonText: {
+            color: '#fff',
+            textAlign: 'center',
+        },
         modalView: {
             margin: 20,
             backgroundColor: "white",
@@ -234,6 +251,22 @@ const ChatScreen = ({ route }) => {
         modalText: {
             marginBottom: 15,
             textAlign: "center"
+        },
+        header: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: 10,
+            backgroundColor: '#f5f5f5'
+        },
+        profilePic: {
+            width: 40,
+            height: 40,
+            borderRadius: 20
+        },
+        userName: {
+            marginLeft: 10,
+            fontSize: 18,
+            fontWeight: 'bold'
         }
     });
 
@@ -379,8 +412,48 @@ const ChatScreen = ({ route }) => {
         }
     };
 
+    const renderBubble = (props) => {
+        return (
+            <Bubble
+                {...props}
+                wrapperStyle={{
+                    right: {
+                        backgroundColor: '#107ACC',  // Color azul claro para mensajes enviados
+                        marginRight: 0,  // Asegurarse de que no hay margen extra a la derecha
+                    },
+                    left: {
+                        backgroundColor: '#FFFFFF',  // Color blanco para mensajes recibidos
+                        marginLeft: 0,  // Añadir un margen a la izquierda para compensar la ausencia del avatar
+                    }
+                }}
+                textStyle={{
+                    right: {
+                        color: 'white'  // Texto blanco para mensajes enviados
+                    },
+                    left: {
+                        color: '#000000'  // Texto negro para mensajes recibidos
+                    }
+                }}
+            />
+        );
+    };
+    const renderAvatar = () => null; 
     return (
         <View style={{ flex: 1 }}>
+            <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+      <Ionicons name="arrow-back" size={30} color="#15297C" />
+    </TouchableOpacity>
+                {otherUserPic ? (
+                    <Image
+                        source={{ uri: otherUserPic }}
+                        style={styles.profilePic}
+                    />
+                ) : (
+                    <FontAwesome name="user-circle" size={40} color="#666" />
+                )}
+                <Text style={styles.userName}>{otherUserName}</Text>
+            </View>
             {renderPaymentModal()}
             <GiftedChat
                 messages={messages}
@@ -389,10 +462,13 @@ const ChatScreen = ({ route }) => {
                     _id: userId,
                 }}
                 renderActions={renderCustomActions}
+                renderBubble={renderBubble}
+                renderAvatar={renderAvatar}
             />
         </View>
     );
 };
+
 
 export default ChatScreen;
 

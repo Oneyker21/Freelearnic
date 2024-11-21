@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, TextInput, Animated, Dimensions } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, TextInput, Animated, Dimensions, Image } from 'react-native';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { FontAwesome } from '@expo/vector-icons';
 import { db } from '../../connection/firebaseConfig';
@@ -26,8 +26,13 @@ const FreelancerList = ({ navigation, route }) => {
         return () => unsubscribe();
     }, []);
 
-    const handleStartChat = (freelancerId) => {
-        navigation.navigate('ChatScreen', { userId: clientId, otherUserId: freelancerId });
+    const handleStartChat = (freelancerId, firstName, lastName, profilePic) => {
+        navigation.navigate('ChatScreen', {
+            userId: clientId,
+            otherUserId: freelancerId,
+            otherUserName: `${firstName} ${lastName}`,
+            otherUserPic: profilePic
+        });
     };
 
     const filteredFreelancers = freelancers.filter(freelancer => {
@@ -92,10 +97,17 @@ const FreelancerList = ({ navigation, route }) => {
                     renderItem={({ item }) => (
                         <TouchableOpacity 
                             style={styles.card} 
-                            onPress={() => handleStartChat(item.id)}
+                            onPress={() => handleStartChat(item.id, item.firstName, item.lastName, item.profilePic)}
                         >
                             <View style={styles.iconContainer}>
-                                <FontAwesome name="user-circle" size={40} color="#666" />
+                                {item.profilePic ? (
+                                    <Image
+                                        source={{ uri: item.profilePic }}
+                                        style={{ width: 40, height: 40, borderRadius: 20 }}
+                                    />
+                                ) : (
+                                    <FontAwesome name="user-circle" size={40} color="#666" />
+                                )}
                             </View>
                             <View style={styles.infoContainer}>
                                 <Text style={styles.name}>

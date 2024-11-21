@@ -3,7 +3,7 @@ import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, StyleSheet, Image, Button, ScrollView, TouchableOpacity, Alert, TextInput, ActivityIndicator } from 'react-native';
 import { db } from '../../connection/firebaseConfig'; // Asegúrate de que la ruta sea correcta
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Asegúrate de importar estos módulos
 import * as ImagePicker from 'expo-image-picker'; // Importa ImagePicker
 import { CustomTextInput, CustomPickerInput,CustomPicker,CustomTextInputLarge, CustomTextInputEditable } from '../../utils/inputs'; // Importa el nuevo componente
@@ -17,90 +17,22 @@ const PanelUserFreelancer = ({ route }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFreelancerData = async () => {
-      const docRef = doc(db, 'Freelancers', freelancerId);
-      const docSnap = await getDoc(docRef);
-
+    const docRef = doc(db, 'Freelancers', freelancerId);
+    
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         setFreelancerData(data);
-        setImageUri(data.profilePic || null); // Establecer la imagen de perfil o null
+        setImageUri(data.profilePic || null);
       } else {
         console.log("No such document!");
       }
       setLoading(false);
-    };
-
-    fetchFreelancerData();
-  }, [freelancerId]);
-
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permiso denegado', 'Se requieren permisos para acceder a las fotos.');
-      return;
-    }
-  
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      aspect: [1, 1],
-      quality: 1,
     });
-  
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      let imageUri = result.assets[0].uri;
-  
-      // Redimensionar la imagen antes de cargarla
-      const manipulatedImage = await ImageManipulator.manipulateAsync(
-          imageUri,
-          [{ resize: { width: 800 } }], // Cambia el tamaño a 800px de ancho
-          { compress: 0.7 } // Compresión entre 0 y 1
-      );
-    }
-  
-    if (result.assets && result.assets.length > 0) {
-      const imageUri = result.assets[0].uri;
-      console.log("URI de la imagen seleccionada:", imageUri);
-      const imageUrl = await uploadImageToStorage(imageUri);
-      if (imageUrl) {
-        setImageUri(imageUrl); // Actualiza el estado con la nueva URL
-      }
-    } else {
-      console.error("No se pudo obtener el URI de la imagen.");
-    }
-  };
-  
-  
 
-  const uploadImageToStorage = async (uri) => {
-    if (!uri) {
-        Alert.alert("Error", "No se proporcionó URI para la imagen.");
-        return null;
-    }
-
-    const storage = getStorage();
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    const filename = uri.substring(uri.lastIndexOf('/') + 1);
-    const storageRef = ref(storage, `images/${filename}`);
-
-    console.log("Cargando la imagen a Firebase...");
-    setIsLoading(true); // Mostrar indicador de carga
-
-    try {
-        await uploadBytes(storageRef, blob);
-        const downloadURL = await getDownloadURL(storageRef);
-        console.log("Imagen cargada, URL de descarga: ", downloadURL);
-        return downloadURL; // Retorna la URL de descarga
-    } catch (error) {
-        console.error("Error al cargar la imagen: ", error);
-        Alert.alert("Error al cargar la imagen", error.message);
-        return null;
-    } finally {
-        setIsLoading(false); // Ocultar indicador de carga
-    }
-};
+    // Cleanup subscription
+    return () => unsubscribe();
+  }, [freelancerId]);
 
   if (loading) {
     return (
@@ -113,7 +45,7 @@ const PanelUserFreelancer = ({ route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={pickImage} style={styles.profileImageContainer}>
+        <View style={styles.profileImageContainer}>
           {imageUri ? (
             <Image
               source={{ uri: imageUri }}
@@ -124,7 +56,7 @@ const PanelUserFreelancer = ({ route }) => {
               <MaterialIcons name="person" size={40} color="#fff" />
             </View>
           )}
-        </TouchableOpacity>
+        </View>
         <Text style={styles.name}>
           {freelancerData ? `${freelancerData.firstName} ${freelancerData.lastName}` : 'Cargando...'}
         </Text>
