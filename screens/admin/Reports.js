@@ -184,19 +184,31 @@ export default function Reports() {
       const querySnapshot = await getDocs(collection(db, "Freelancers"));
       const data = querySnapshot.docs.map(doc => doc.data());
   
-      const countByCity = {};
+      const countByProfession = {};
+      const avgRatingByProfession = {};
   
       data.forEach(freelancer => {
-        const { city } = freelancer;
-        if (city) {
-          countByCity[city] = (countByCity[city] || 0) + 1;
+        const { profession, avgRating } = freelancer;
+        if (profession) {
+          if (!countByProfession[profession]) {
+            countByProfession[profession] = 1;
+            avgRatingByProfession[profession] = avgRating;
+          } else {
+            countByProfession[profession] += 1;
+            avgRatingByProfession[profession] += avgRating;
+          }
         }
       });
   
+      // Calcular el promedio de calificaciones
+      for (const profession in avgRatingByProfession) {
+        avgRatingByProfession[profession] /= countByProfession[profession];
+      }
+  
       const chartData = {
-        labels: Object.keys(countByCity),
+        labels: Object.keys(countByProfession),
         datasets: [{
-          data: Object.values(countByCity)
+          data: Object.values(avgRatingByProfession)
         }]
       };
   
@@ -254,6 +266,7 @@ export default function Reports() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Reporte de Proyectos</Text>
       <View ref={chartRef} collapsable={false} style={styles.chartContainer}>
         <PieChart
           data={dataProyectos.datasets[0].data.map((value, index) => ({
@@ -283,19 +296,29 @@ export default function Reports() {
         />
       </View>
       <Button title="Generar y Compartir PDF" onPress={generarPDFConSVG} />
-      <View>
+
+<View>
+      <Text style={styles.title2}>Reporte de Freelancers</Text>
         <BarChart
           data={dataFreelancers}
           width={300}
           height={220}
           yAxisLabel=""
           chartConfig={{
-            backgroundColor: '#e26a00',
-            backgroundGradientFrom: '#fb8c00',
-            backgroundGradientTo: '#ffa726',
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            backgroundColor: '#ffffff',
+            backgroundGradientFrom: '#ffffff',
+            backgroundGradientTo: '#ffffff',
+            decimalPlaces: 2,
+            color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            style: {
+              borderRadius: 16
+            },
+            propsForDots: {
+              r: '6',
+              strokeWidth: '2',
+              stroke: '#ffa726'
+            }
           }}
           style={{
             marginVertical: 8,
@@ -303,7 +326,7 @@ export default function Reports() {
           }}
         />
       </View>
-      <Button title="Generar y Compartir PDF de Freelancers por Ciudad" onPress={generarPDFFreelancers} />
+      <Button title="Generar y Compartir PDF" onPress={generarPDFFreelancers} />
     </View>
   );
 }
@@ -319,5 +342,17 @@ const styles = StyleSheet.create({
     width: 300,
     height: 220,
     backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  title2: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    marginTop: 40,
   },
 });

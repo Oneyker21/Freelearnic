@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Freelearnic",
-    "slug": "Freelearnic",
+    "slug": "freelearnic",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/img/Freelearnic.png",
@@ -18,10 +18,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/img/Freelearnic.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.crisvargasmz.freelearnic"
     },
     "web": {
       "favicon": "./assets/img/Freelearnic.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ee6fa87a-94f0-448f-b004-23124e042db4"
+      }
+    },
+    "owner": "crisvargasmz"
   }
 }
