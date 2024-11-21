@@ -109,7 +109,7 @@ const SearchFreelancers = () => {
           <View style={styles.card}>
             <View style={styles.cardBackground}></View>
             <View style={styles.imageContainer}>
-              {/* <Image source={{ uri: item.imageUrl }} style={styles.freelancerImage} /> */}
+               {/* <Image source={{ uri: item.imageUrl }} style={styles.freelancerImage} /> */}
               <Image source={require('../../assets/img/Freelearnic.png')} style={styles.freelancerImage} />
             </View>
             <Text style={[styles.userStatus, { backgroundColor: item.userStatus ? '#18D23A' : '#FF0000' }]}>
@@ -122,6 +122,10 @@ const SearchFreelancers = () => {
               </View>
               <View style={styles.descriptionContainer}>
                 <Text style={styles.freelancerDescription}>{item.description}</Text>
+              </View>
+              <View style={styles.ratingContainer}>
+                <Text style={styles.stars}>⭐</Text>
+                <Text style={styles.ratingText}>{item.rating}</Text>
               </View>
             </View>
           </View>
@@ -241,13 +245,28 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   descriptionContainer: {
-    zIndex: 100,
     position: 'absolute',
     top: '40%',
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 30,
     padding: 10,
+  },
+  ratingContainer: {
+    position: 'absolute',
+    left: 10,
+    right: 0,
+    bottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  stars: {
+    color: '#FFD700',
+    marginRight: 5,
+  },
+  ratingText: {
+    fontSize: 14,
+    color: '#666',
   },
   freelancerDescription: {
     textAlign: 'center',
