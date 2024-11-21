@@ -154,6 +154,27 @@ const ClientProfile = ({ route }) => {
                 Edita tu <Text>cuenta de</Text> <Text style={{ fontWeight: 'bold' }}>Cliente</Text>
               </Text>
 
+              <CustomTextInput
+                style={styles.input}
+                value={editableData.firstName + ' ' + editableData.lastName}
+                editable={false}
+                placeholder="Nombre completo"
+              />
+
+              <CustomTextInput
+                style={styles.input}
+                value={editableData.username}
+                editable={false}
+                placeholder="Nombre de usuario"
+              />
+
+              <CustomTextInput
+                style={styles.input}
+                value={editableData.email}
+                editable={false}
+                placeholder="Correo electrónico"
+              />
+
               <CustomTextInputEditable
                 style={styles.input}
                 value={editableData.city}
@@ -161,18 +182,20 @@ const ClientProfile = ({ route }) => {
                 placeholder="Ciudad"
               />
 
-              <CustomTextInput
+              <CustomTextInputEditable
                 style={styles.input}
-                value={editableData.state}
-                onChangeText={(value) => handleInputChange('state', value)}
-                placeholder="Estado"
+                value={editableData.clientDesc}
+                onChangeText={(value) => handleInputChange('clientDesc', value)}
+                placeholder="Descripción"
+                multiline={true}
               />
 
               <CustomTextInputEditable
                 style={styles.input}
-                value={editableData.description}
-                onChangeText={(value) => handleInputChange('description', value)}
-                placeholder="Descripción"
+                value={editableData.telephone}
+                onChangeText={(value) => handleInputChange('telephone', value)}
+                placeholder="Teléfono"
+                keyboardType="phone-pad"
               />
 
               <TouchableOpacity style={styles.buttonRegister} onPress={handleSave}>
