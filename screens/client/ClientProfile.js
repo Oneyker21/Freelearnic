@@ -252,6 +252,7 @@ const styles = StyleSheet.create({
   },
   login: {
     width: '100%',
+    height: '85%',
     alignItems: 'center',
   },
   title: {
