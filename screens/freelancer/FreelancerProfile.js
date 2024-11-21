@@ -45,7 +45,10 @@ const FreelancerProfile = ({ route }) => {
   const handleSave = async () => {
     try {
       const docRef = doc(db, 'Freelancers', freelancerId);
-      const updatedData = { ...editableData, profilePic: imageUri };
+      const updatedData = { 
+        ...editableData, 
+        profilePic: imageUri 
+      };
       await updateDoc(docRef, updatedData);
       Alert.alert('Perfil actualizado con éxito');
       setFreelancerData(updatedData);
