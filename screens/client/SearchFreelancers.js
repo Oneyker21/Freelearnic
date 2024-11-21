@@ -116,11 +116,13 @@ const SearchFreelancers = () => {
               {item.userStatus ? 'Disponible' : 'No Disponible' }
             </Text>
             <View style={styles.dataContainer}>
-              <Text style={styles.freelancerName}>{item.firstName} {item.lastName}</Text>
-              <Text style={styles.freelancerProfession}>Profesión: {item.profession}</Text>
-              <Text style={styles.freelancerDescription}>Descripción: {item.description}</Text>
-              <Text style={styles.freelancerLocation}>Ciudad: {item.city}, {item.state}</Text>
-              <Text style={styles.freelancerVerified}>Verificado: {item.verified ? 'Sí' : 'No'}</Text>
+              <View style={styles.nameAndProfessionContainer}>
+                <Text style={styles.freelancerName}>{item.firstName} {item.lastName}</Text>
+                <Text style={styles.freelancerProfession}>{item.profession}</Text>
+              </View>
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.freelancerDescription}>{item.description}</Text>
+              </View>
             </View>
           </View>
         )}
@@ -136,10 +138,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4f4f4',
     marginTop: 30,
   },
+  listContainer: {
+    paddingBottom: 100,
+  },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    margin: width * 0.025,
+    margin: width * 0.010,
+    marginTop: -20,
   },
   searchBar: {
     flex: 1,
@@ -198,7 +204,6 @@ const styles = StyleSheet.create({
     marginBottom: -20,
     flex: 1,
     justifyContent: 'center',
-    borderWidth: 1,
     paddingLeft: 10,
     left: -10,
   },
@@ -217,30 +222,48 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
 
-  freelancerName: {
+  nameAndProfessionContainer: {
     position: 'absolute',
-    top: '10%',
+    top: 3,
     left: 0,
     right: 0,
+    padding: 10,
+  },
+  freelancerName: {
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 20,
     color: '#fff',
   },
+  freelancerProfession: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#fff',
+  },
+  descriptionContainer: {
+    zIndex: 100,
+    position: 'absolute',
+    top: '40%',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: 10,
+  },
+  freelancerDescription: {
+    textAlign: 'center',
+    color: '#000',
+  },
   userStatus: {
     position: 'absolute',
     fontSize: 8,
-    top: 8,
-    right: 8,
+    top: 2,
+    right: 2,
     color: '#ffff',
     backgroundColor: '#007AFF',
     padding: 3,
-    borderRadius: 5,
+    borderRadius: 9,
   },
 
-  freelancerProfession: {
-    color: '#666',
-  },
   freelancerLocation: {
     color: '#666',
   },
