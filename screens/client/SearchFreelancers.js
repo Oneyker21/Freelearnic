@@ -104,7 +104,7 @@ const SearchFreelancers = () => {
         placeholder="Seleccionar profesión"
       />
 
-      <FlatList
+<FlatList
         contentContainerStyle={styles.listContainer}
         data={filteredFreelancers}
         keyExtractor={item => item.id}
@@ -112,16 +112,26 @@ const SearchFreelancers = () => {
           <View style={styles.card}>
             <View style={styles.cardBackground}></View>
             <View style={styles.imageContainer}>
-              <Image
-                source={item.profilePic ? { uri: item.profilePic } : defaultProfilePic}
-                style={styles.freelancerImage}
-              />
+            <Image
+              source={item.profilePic ? { uri: item.profilePic } : defaultProfilePic}
+              style={styles.freelancerImage}
+            />
             </View>
+            <Text style={[styles.userStatus, { backgroundColor: item.userStatus ? '#18D23A' : '#FF0000' }]}>
+              {item.userStatus ? 'Disponible' : 'No Disponible' }
+            </Text>
             <View style={styles.dataContainer}>
-              <Text style={styles.freelancerName}>{item.firstName} {item.lastName}</Text>
-              <Text style={styles.freelancerProfession}>Profesión: {item.profession}</Text>
-              <Text style={styles.freelancerDescripcion}>Descripcion: {item.description}</Text>
-  
+              <View style={styles.nameAndProfessionContainer}>
+                <Text style={styles.freelancerName}>{item.firstName} {item.lastName}</Text>
+                <Text style={styles.freelancerProfession}>{item.profession}</Text>
+              </View>
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.freelancerDescription}>{item.description}</Text>
+              </View>
+              <View style={styles.ratingContainer}>
+                <Text style={styles.stars}>⭐</Text>
+                <Text style={styles.ratingText}>{item.avgRating}</Text>
+              </View>
             </View>
           </View>
         )}
@@ -133,14 +143,18 @@ const SearchFreelancers = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16, // Margen alrededor del contenedor principal
+    padding: 16, 
     backgroundColor: '#f4f4f4',
     marginTop: 30,
+  },
+  listContainer: {
+    paddingBottom: 100,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    margin: width * 0.025,
+    margin: width * 0.010,
+    marginTop: -20,
   },
   searchBar: {
     flex: 1,
@@ -182,7 +196,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    alignItems: 'center',
     position: 'relative',
     overflow: 'hidden',
   },
@@ -192,50 +205,94 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: '50%',
-    borderBottomRightRadius: 12,
     backgroundColor: '#15297C',
   },
-  imageContainer: {
-    left: -10,
+  dataContainer: {
     top: -10,
+    marginRight: -20,
     marginBottom: -20,
-    width: '40%', // Ancho fijo para la imagen
-    height: 270, // Altura fija para la imagen
-    marginRight: 10, // Espacio entre la imagen y los datos
+    flex: 1,
+    justifyContent: 'center',
+    paddingLeft: 10,
+    left: -10,
+  },
+  imageContainer: {
+    top: -10,
+    left: -10,
+    marginBottom: -20,
+    width: '35%',
+    height: 200,
   },
   freelancerImage: {
-    width: '100%', // Ocupar todo el ancho del contenedor de imagen
-    height: '100%', // Ocupar toda la altura del contenedor de imagen
-    borderRadius: 8, // Radio de borde para la imagen
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
     backgroundColor: '#fff',
     borderColor: '#ccc',
   },
-  dataContainer: {
-    flex: 1, // Ocupar el espacio restante
-    justifyContent: 'center', // Centrar contenido verticalmente
+
+  nameAndProfessionContainer: {
+    position: 'absolute',
+    top: 3,
+    left: 0,
+    right: 0,
+    padding: 10,
   },
   freelancerName: {
+    textAlign: 'center',
     fontWeight: 'bold',
+    fontSize: 20,
+    color: '#fff',
+  },
+  freelancerProfession: {
+    textAlign: 'center',
     fontSize: 16,
-    color: '#ffff',
-    marginBottom: 70,
+    color: '#fff',
+  },
+  descriptionContainer: {
+    position: 'absolute',
+    top: '40%',
+    left: 0,
+    right: 0,
+    bottom: 30,
+    padding: 10,
+  },
+  ratingContainer: {
+    position: 'absolute',
+    left: 10,
+    right: 0,
+    bottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  stars: {
+    color: '#FFD700',
+    marginRight: 5,
+  },
+  ratingText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  freelancerDescription: {
+    textAlign: 'center',
+    color: '#000',
   },
   userStatus: {
     position: 'absolute',
-    top: 8,
-    right: 8,
+    fontSize: 8,
+    top: 2,
+    right: 2,
     color: '#ffff',
     backgroundColor: '#007AFF',
-    padding: 5,
-    borderRadius: 5,
+    padding: 3,
+    borderRadius: 9,
   },
-  freelancerProfession: {
+
+  freelancerLocation: {
     color: '#666',
-    marginBottom: 40
   },
-  freelancerDescripcion: {
+  freelancerVerified: {
     color: '#666',
   },
 });
-
 export default SearchFreelancers;
