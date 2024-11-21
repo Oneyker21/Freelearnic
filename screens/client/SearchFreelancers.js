@@ -125,7 +125,7 @@ const SearchFreelancers = () => {
               </View>
               <View style={styles.ratingContainer}>
                 <Text style={styles.stars}>⭐</Text>
-                <Text style={styles.ratingText}>{item.rating}</Text>
+                <Text style={styles.ratingText}>{item.avgRating}</Text>
               </View>
             </View>
           </View>
