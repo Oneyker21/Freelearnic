@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Button, TouchableOpacity, StyleSheet } from 'react-native';
-import { collection, query, where, onSnapshot, doc } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc ,setDoc, serverTimestamp} from 'firebase/firestore';
 import { db } from '../../connection/firebaseConfig';
 
 const PanelPayClients = ({ route }) => {
@@ -68,6 +68,7 @@ const PanelPayClients = ({ route }) => {
             fontWeight: 'bold',
             color: '#333',
             marginBottom: 20,
+            marginTop: 40,
         },
         listItem: {
             backgroundColor: '#fff',
@@ -87,7 +88,7 @@ const PanelPayClients = ({ route }) => {
             color: '#555',
         },
         totalBalance: {
-            fontSize: 20,
+            fontSize: 28,
             fontWeight: 'bold',
             color: '#1a73e8',
             marginTop: 20,
@@ -108,12 +109,14 @@ const PanelPayClients = ({ route }) => {
 
     return (
         <View style={styles.container}>
+             <Text style={styles.totalBalance}>Balance Total: ${totalBalance}</Text>
             <Text style={styles.header}>Depósitos</Text>
             <FlatList
                 data={deposits}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
                     <View style={styles.listItem}>
+
                         <Text style={styles.listItemText}>
                             {`Depósito: ${item.depositAmount}`}
                         </Text>
@@ -123,7 +126,7 @@ const PanelPayClients = ({ route }) => {
                     </View>
                 )}
             />
-            <Text style={styles.totalBalance}>Balance Total: ${totalBalance}</Text>
+           
             <TouchableOpacity style={styles.button} onPress={initializeClientAccount}>
                 <Text style={styles.buttonText}>Inicializar Cuenta del Cliente</Text>
             </TouchableOpacity>

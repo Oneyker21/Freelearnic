@@ -64,18 +64,21 @@ const PanelPay = ({ route }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.balanceText}>Balance Total: ${totalBalance}</Text>
+            <Text style={styles.header}>Depósitos</Text>
             <FlatList
             style={styles.depositList}
         data={deposits}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-            <Text style={styles.depositText}>
+            <View style={styles.listItem}>
+            <Text style={styles.listItemText}>
                 {`Depósito: $${item.amount}, Fecha: ${
                     item.timestamp 
                         ? item.timestamp.toDate().toLocaleDateString() 
                         : 'Fecha no disponible'
                 }`}
             </Text>
+            </View>
         )}
     />
         </View>
@@ -90,8 +93,18 @@ const styles = StyleSheet.create({
         padding: 20
     },
     balanceText: {
-        fontSize: 24,
-        fontWeight: 'bold'
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#1a73e8',
+        marginTop: 20,
+        textAlign: 'center',
+    },
+    header: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 20,
+        marginTop: 40,
     },
     depositList: {
         marginTop: 30,
@@ -101,7 +114,24 @@ const styles = StyleSheet.create({
     depositText: {
         fontSize: 16,
         marginBottom: 10
-    }
+    },
+    listItem: {
+        backgroundColor: '#fff',
+        padding: 15,
+        borderRadius: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+        elevation: 3,
+    },
+    listItemText: {
+        fontSize: 16,
+        color: '#555',
+    },
 });
 
 export default PanelPay;
