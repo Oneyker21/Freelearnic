@@ -69,7 +69,7 @@ const PanelUserFreelancer = ({ route }) => {
         <View style={styles.infoItem}>
           <Ionicons name="call-outline" size={24} color="gray" />
           <Text style={styles.infoText}>
-            {freelancerData ? freelancerData.phone || 'No disponible' : 'Cargando...'}
+            {freelancerData ? freelancerData.telephone || 'No disponible' : 'Cargando...'}
           </Text>
         </View>
         <View style={styles.infoItem}>

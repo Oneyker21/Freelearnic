@@ -180,6 +180,13 @@ const FreelancerProfile = ({ route }) => {
             onChangeText={(value) => handleInputChange('city', value)}
             placeholder="Ciudad"
           />
+          <CustomTextInputEditable
+            style={styles.input}
+            value={editableData.telephone}
+            onChangeText={(value) => handleInputChange('telephone', value)}
+            placeholder="Teléfono"
+            keyboardType="phone-pad"
+          />
           <CustomTextInput
             style={styles.input}
             value={editableData.state}
