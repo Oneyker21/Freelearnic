@@ -1,31 +1,77 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { db } from '../../connection/firebaseConfig';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 const PanelUserClient = ({ route }) => {
   const navigation = useNavigation();
   const { clientId } = route.params;
+  const [clientData, setClientData] = useState(null);
+  const [imageUri, setImageUri] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const docRef = doc(db, 'Clients', clientId);
+    
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setClientData(data);
+        setImageUri(data.profilePic || null);
+      } else {
+        console.log("No such document!");
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [clientId]);
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#2196F3" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={{ uri: 'https://ejemplo.com/foto-perfil.jpg' }}
-          style={styles.profileImage}
-        />
-        <Text style={styles.name}>Cristhian Cesar Vargas Martinez</Text>
-        <Text style={styles.username}>Angelica_R</Text>
+        <View style={styles.profileImageContainer}>
+          {imageUri ? (
+            <Image
+              source={{ uri: imageUri }}
+              style={styles.profileImage}
+            />
+          ) : (
+            <View style={styles.placeholderImage}>
+              <MaterialIcons name="person" size={40} color="#fff" />
+            </View>
+          )}
+        </View>
+        <Text style={styles.name}>
+          {clientData ? `${clientData.firstName} ${clientData.lastName}` : 'Cargando...'}
+        </Text>
+        <Text style={styles.username}>
+          {clientData ? clientData.username : 'Cargando...'}
+        </Text>
       </View>
       
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
           <Ionicons name="call-outline" size={24} color="gray" />
-          <Text style={styles.infoText}>(505) 8859-9564</Text>
+          <Text style={styles.infoText}>
+            {clientData ? clientData.telephone || 'No disponible' : 'Cargando...'}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <MaterialIcons name="email" size={24} color="gray" />
-          <Text style={styles.infoText}>rodriguezrosa203@gmail.com</Text>
+          <Text style={styles.infoText}>
+            {clientData ? clientData.email : 'Cargando...'}
+          </Text>
         </View>
       </View>
 
@@ -46,18 +92,18 @@ const PanelUserClient = ({ route }) => {
         <MaterialIcons name="chevron-right" size={24} color="gray" />
       </TouchableOpacity>
 
-      
       <TouchableOpacity style={styles.menuItem}>
         <Ionicons name="settings-outline" size={24} color="black" />
         <Text style={styles.menuItemText}>Ajustes</Text>
         <MaterialIcons name="chevron-right" size={24} color="gray" />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.menuItem}
+      <TouchableOpacity 
+        style={styles.menuItem}
         onPress={() => navigation.navigate('HomeScreen')}
-      >        
-        <MaterialIcons name="group-add" size={24} color="black" />
-        <Text style={styles.menuItemText}>Cerra Sesión</Text>
+      >
+        <MaterialIcons name="logout" size={24} color="black" />
+        <Text style={styles.menuItemText}>Cerrar Sesión</Text>
         <MaterialIcons name="chevron-right" size={24} color="gray" />
       </TouchableOpacity>
     </View>
@@ -73,21 +119,38 @@ const styles = StyleSheet.create({
     backgroundColor: '#2196F3',
     alignItems: 'center',
     padding: 20,
+    paddingTop: 40,
+  },
+  profileImageContainer: {
+    marginBottom: 15,
   },
   profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 10,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: '#fff',
+  },
+  placeholderImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#fff',
   },
   name: {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#fff',
+    marginTop: 10,
   },
   username: {
     fontSize: 16,
     color: '#e0e0e0',
+    marginTop: 5,
   },
   infoContainer: {
     padding: 20,
@@ -119,6 +182,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 16,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

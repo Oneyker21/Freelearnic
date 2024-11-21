@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, TextInput, Animated, Dimensions } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, TextInput, Animated, Dimensions,Image } from 'react-native';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { FontAwesome } from '@expo/vector-icons';
 import { db } from '../../connection/firebaseConfig';

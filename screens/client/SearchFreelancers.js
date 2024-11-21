@@ -7,6 +7,9 @@ import { CustomPicker } from '../../utils/inputs';
 
 const { width, height } = Dimensions.get("window");
 
+// Importa la imagen estática
+import defaultProfilePic from '../../assets/img/usuario.png';
+
 const SearchFreelancers = () => {
   const [freelancers, setFreelancers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -101,7 +104,7 @@ const SearchFreelancers = () => {
         placeholder="Seleccionar profesión"
       />
 
-      <FlatList
+<FlatList
         contentContainerStyle={styles.listContainer}
         data={filteredFreelancers}
         keyExtractor={item => item.id}
@@ -109,8 +112,10 @@ const SearchFreelancers = () => {
           <View style={styles.card}>
             <View style={styles.cardBackground}></View>
             <View style={styles.imageContainer}>
-               {/* <Image source={{ uri: item.imageUrl }} style={styles.freelancerImage} /> */}
-              <Image source={require('../../assets/img/Freelearnic.png')} style={styles.freelancerImage} />
+            <Image
+              source={item.profilePic ? { uri: item.profilePic } : defaultProfilePic}
+              style={styles.freelancerImage}
+            />
             </View>
             <Text style={[styles.userStatus, { backgroundColor: item.userStatus ? '#18D23A' : '#FF0000' }]}>
               {item.userStatus ? 'Disponible' : 'No Disponible' }
@@ -291,5 +296,4 @@ const styles = StyleSheet.create({
     color: '#666',
   },
 });
-
 export default SearchFreelancers;
