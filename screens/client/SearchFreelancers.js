@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput, Dimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput, Dimensions, Image, Modal, Button } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { db } from '../../connection/firebaseConfig';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { CustomPicker } from '../../utils/inputs';
+import { Rating } from 'react-native-ratings';
 
 const { width, height } = Dimensions.get("window");
 
@@ -16,6 +17,9 @@ const SearchFreelancers = () => {
   const [professionFilter, setProfessionFilter] = useState('');
   const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentRating, setCurrentRating] = useState(null);
+  const [selectedFreelancerId, setSelectedFreelancerId] = useState(null);
 
   // Opciones de profesiones para el filtro
   const professions = [
@@ -71,6 +75,71 @@ const SearchFreelancers = () => {
   // Función para manejar el evento de presión del botón de búsqueda
   const handleSearchPress = () => {
     filterFreelancers(searchQuery, professionFilter, freelancers);
+  };
+
+  const updateFreelancerRating = async (freelancerId, newRating) => {
+    const freelancerRef = doc(db, 'Freelancers', freelancerId);
+
+    try {
+      const freelancerDoc = await getDoc(freelancerRef);
+      if (freelancerDoc.exists()) {
+        const data = freelancerDoc.data();
+        const currentTotalRating = data.totalRating || 0;
+        const ratingCount = data.ratingCount || 0;
+        const newTotalRating = currentTotalRating + newRating;
+        const newAvgRating = newTotalRating / (ratingCount + 1);
+
+        await updateDoc(freelancerRef, {
+          avgRating: newAvgRating,
+          totalRating: newTotalRating,
+          ratingCount: ratingCount + 1
+        });
+
+        console.log('Calificación actualizada correctamente.');
+      } else {
+        console.log('No se encontró el documento del freelancer.');
+      }
+    } catch (error) {
+      console.error('Error al actualizar la calificación: ', error);
+    }
+  };
+
+  // Ejemplo de cómo podrías llamar a la función
+  // Supongamos que esto se hace en un componente donde el usuario selecciona una calificación
+  const handleRatingSubmit = () => {
+    if (currentRating !== null && selectedFreelancerId) {
+        updateFreelancerRating(selectedFreelancerId, currentRating);
+        handleCloseModal();  // Cierra el modal después de enviar la calificación
+        setCurrentRating(null);  // Opcional: resetea la calificación después de enviar
+    } else {
+        console.log('Selecciona una calificación antes de enviar.');
+    }
+  };
+
+  const renderStars = () => {
+    return (
+        <Rating
+            type='star'
+            ratingCount={5}
+            imageSize={40}
+            showRating
+            startingValue={0}
+            onFinishRating={(rating) => {
+                console.log("Calificación seleccionada:", rating);
+                setCurrentRating(rating);
+            }}
+        />
+    );
+  };
+
+  const handleOpenModal = () => {
+    setCurrentRating(0);  // Resetear la calificación cada vez que se abre el modal
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setCurrentRating(0);  // Opcionalmente resetear al cerrar también
+    setModalVisible(false);
   };
 
   if (loading) {
@@ -129,13 +198,35 @@ const SearchFreelancers = () => {
                 <Text style={styles.freelancerDescription}>{item.description}</Text>
               </View>
               <View style={styles.ratingContainer}>
-                <Text style={styles.stars}>⭐</Text>
+                <TouchableOpacity onPress={() => {
+                  setSelectedFreelancerId(item.id);
+                  handleOpenModal();
+                }}>
+                  <Text style={styles.stars}>⭐</Text>
+                </TouchableOpacity>
                 <Text style={styles.ratingText}>{item.avgRating}</Text>
               </View>
             </View>
           </View>
         )}
       />
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={handleCloseModal}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Califica al Freelancer</Text>
+            {renderStars()}
+            <TouchableOpacity style={styles.submitButton} onPress={handleRatingSubmit}>
+              <Text style={styles.submitButtonText}>Enviar Calificación</Text>
+              </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -146,6 +237,16 @@ const styles = StyleSheet.create({
     padding: 16, 
     backgroundColor: '#f4f4f4',
     marginTop: 30,
+  },
+  submitButton: {
+    backgroundColor: '#107ACC',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   listContainer: {
     paddingBottom: 100,
@@ -268,6 +369,7 @@ const styles = StyleSheet.create({
   stars: {
     color: '#FFD700',
     marginRight: 5,
+    fontSize: 24,
   },
   ratingText: {
     fontSize: 14,
@@ -294,5 +396,30 @@ const styles = StyleSheet.create({
   freelancerVerified: {
     color: '#666',
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
+  }
 });
 export default SearchFreelancers;
